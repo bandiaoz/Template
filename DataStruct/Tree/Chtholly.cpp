@@ -18,8 +18,8 @@ struct Chtholly {
     };
 
     set<node> s;
-    void insert(int l, int r, int v) {
-        s.insert(node(l, r, v));
+    auto insert(int l, int r, int v) {
+        return s.insert(node(l, r, v));
     }
     auto split(int pos) {  //拆区间，将区间分为[l,pos), [pos,r)两段
         auto it = s.lower_bound(node(pos, -1, 0));
@@ -30,9 +30,9 @@ struct Chtholly {
         int L = it->l, R = it->r;
         ll V = it->v;
         s.erase(it);
-        s.insert(node(L, pos, V));
+        insert(L, pos, V);
         //返回第二个区间的地址
-        return s.insert(node(pos, R, V)).first;
+        return insert(pos, R, V).first;
     }
     void add(int l, int r, ll x) {  //区间加
         for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
@@ -42,7 +42,7 @@ struct Chtholly {
     void assign_val(int l, int r, ll x) {  //区间推平，全部赋值x
         auto itr = split(r), itl = split(l);  //划分区间,注意顺序，否则会引起itl迭代器失效
         s.erase(itl, itr);
-        s.insert(node(l, r, x));
+        insert(l, r, x);
     }
     ll ranks(int l, int r, int k) {  //区间第k小
         vector<pair<ll, int>> vp;
