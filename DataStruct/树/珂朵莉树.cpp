@@ -1,107 +1,138 @@
-#include <algorithm>
-#include <cstdio>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <set>
-#include <vector>
+#include <bits/stdc++.h>
+
 using namespace std;
-typedef long long ll;
-#define IT set<node>::iterator
-const int MOD7 = 1e9 + 7;
-const int maxn = 1e5 + 5;
-struct node {
-    int l, r;
-    mutable ll v;
-    node(int L, int R = -1, ll V = 0) : l(L), r(R), v(V) {}
-    bool operator<(const node &A) const { return l < A.l; }
+using ll = long long;
+
+struct Chtholly {
+    struct node {
+        int l, r;
+        mutable ll v;
+
+        node(int l, int r, ll v) : l(l), r(r), v(v) {}
+        int size() const {
+            return r - l;
+        }
+        bool operator<(const node &A) const { 
+            return l < A.l; 
+        }
+    };
+
+    set<node> s;
+    void insert(int l, int r, int v) {
+        s.insert(node(l, r, v));
+    }
+    auto split(int pos) {  //拆区间，将区间分为[l,pos), [pos,r)两段
+        auto it = s.lower_bound(node(pos, -1, 0));
+        if (it != s.end() && it->l == pos) {
+            return it;
+        }
+        --it;
+        int L = it->l, R = it->r;
+        ll V = it->v;
+        s.erase(it);
+        s.insert(node(L, pos, V));
+        //返回第二个区间的地址
+        return s.insert(node(pos, R, V)).first;
+    }
+    void add(int l, int r, ll x) {  //区间加
+        for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
+            itl->v += x;
+        }
+    }
+    void assign_val(int l, int r, ll x) {  //区间推平，全部赋值x
+        auto itr = split(r), itl = split(l);  //划分区间,注意顺序，否则会引起itl迭代器失效
+        s.erase(itl, itr);
+        s.insert(node(l, r, x));
+    }
+    ll ranks(int l, int r, int k) {  //区间第k小
+        vector<pair<ll, int>> vp;
+        for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
+            vp.push_back({itl->v, itl->size()});
+        }
+        sort(vp.begin(), vp.end());
+        for (auto it : vp) {
+            k -= it.second;
+            if (k <= 0) {
+                return it.first;
+            } 
+        }
+        assert(false);
+        return -1;
+    }
+    ll sum(int l, int r, int ex, int mod) { //区间幂次和
+        auto powmod = [](ll a, int b, int mod) {
+            ll ans = 1;
+            for (a %= mod; b; b >>= 1, a = a * a % mod) {
+                if (b & 1) {
+                    ans = ans * a % mod;
+                }
+            }
+            return ans;
+        };
+
+        ll res = 0;
+        for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
+            res = (res + itl->size() * powmod(itl->v, ex, mod)) % mod;
+        }
+        return res;
+    }
 };
-ll powmod(ll a, ll b, ll mod) {
-    ll ans = 1;
-    a %= mod;
-    while (b) {
-        if (b & 1) ans = ans * a % mod;
-        b >>= 1;
-        a = a * a % mod;
-    }
-    return ans;
-}
-set<node> s;
-IT split(ll pos) {  //拆区间，将区间分为[l,pos-1],[pos,r]两段
-    IT it = s.lower_bound(node(pos));
-    if (it != s.end() && it->l == pos) return it;
-    --it;
-    int L = it->l, R = it->r;
-    ll V = it->v;
-    s.erase(it);
-    s.insert(node(L, pos - 1, V));
-    return s.insert(node(pos, R, V)).first;
-    //返回第二个区间的地址
-}
-void add(int l, int r, ll x) {  //区间加
-    IT itr = split(r + 1), itl = split(l);
-    for (; itl != itr; ++itl) itl->v += x;
-}
-void assign_val(int l, int r, ll x) {  //区间推平，全部赋值x
-    IT itr = split(r + 1),
-       itl = split(l);  //划分区间,注意顺序，否则会引起itl迭代器失效
-    s.erase(itl, itr);
-    s.insert(node(l, r, x));
-}
-ll ranks(int l, int r, int k) {  //区间第k小
-    vector<pair<ll, int>> vp;
-    IT itr = split(r + 1), itl = split(l);  //划分区间
-    vp.clear();
-    for (; itl != itr; ++itl) vp.push_back({itl->v, itl->r - itl->l + 1});
-    sort(vp.begin(), vp.end());
-    for (auto it : vp) {
-        k -= it.second;
-        if (k <= 0) return it.first;
-    }
-    return 0;
-}
-ll sum(ll l, ll r, ll ex, ll mod) {         //区间幂次和,ai^x
-    IT itr = split(r + 1), itl = split(l);  //划分区间
-    ll res = 0;
-    for (; itl != itr; ++itl)
-        res = (res + (ll)(itl->r - itl->l + 1) * powmod(itl->v, ll(ex), ll(mod))) % mod;
-    return res;
-}
-ll seed, vmax;
-ll rnd() {
-    ll ret = seed;
-    seed = (seed * 7 + 13) % MOD7;
+
+const int mod = 1e9 + 7;
+
+int seed, vmax;
+int rnd() {
+    int ret = seed;
+    seed = (seed * 7LL + 13) % mod;
     return ret;
 }
-ll a[maxn];
+
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int n, m;
     cin >> n >> m >> seed >> vmax;
-    for (int i = 1; i <= n; ++i) {
-        a[i] = (rnd() % vmax) + 1;
-        s.insert(node(i, i, a[i]));
+
+    Chtholly cho;
+    for (int i = 0; i < n; ++i) {
+        int x = rnd() % vmax + 1; 
+        cho.insert(i, i + 1, x);
     }
-    s.insert(node(n + 1, n + 1, 0));
+    
     while (m--) {
-        int op = (rnd() % 4) + 1;
-        ll l = rnd() % n + 1;
-        ll r = rnd() % n + 1;
-        if (l > r) swap(l, r);
+        int op = rnd() % 4 + 1;
+
+        int l = rnd() % n;
+        int r = rnd() % n;
+        if (l > r) {
+            swap(l, r);
+        }
+        r++;
+
         ll x, y;
-        if (op == 3)
-            x = rnd() % (r - l + 1) + 1;
-        else
+        if (op == 3) {
+            x = rnd() % (r - l) + 1;
+        } else {
             x = rnd() % vmax + 1;
-        if (op == 4) y = rnd() % vmax + 1;
-        if (op == 1)
-            add(l, r, x);
-        else if (op == 2)
-            assign_val(l, r, ll(x));
-        else if (op == 3)
-            cout << ranks(l, r, x) << endl;
-        else
-            cout << sum(l, r, x, y) << endl;
+        }
+
+        if (op == 4) {
+            y = rnd() % vmax + 1;
+        }
+
+        if (op == 1) {
+            cho.add(l, r, x);
+        } else if (op == 2) {
+            cho.assign_val(l, r, x);
+        } else if (op == 3) {
+            cout << cho.ranks(l, r, x) << "\n";
+        } else {
+            cout << cho.sum(l, r, x, y) << "\n";
+        }
     }
+
+    return 0;
 }
+
+// test problem: https://codeforces.com/problemset/problem/896/C
