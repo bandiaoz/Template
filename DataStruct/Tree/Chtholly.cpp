@@ -18,7 +18,7 @@ struct Chtholly {
     };
 
     set<node> s;
-    auto insert(int l, int r, int v) {
+    auto insert(int l, int r, ll v) {
         return s.insert(node(l, r, v));
     }
     auto split(int pos) {  //拆区间，将区间分为[l,pos), [pos,r)两段
@@ -134,5 +134,3 @@ int main() {
 
     return 0;
 }
-
-// test problem: https://codeforces.com/problemset/problem/896/C
