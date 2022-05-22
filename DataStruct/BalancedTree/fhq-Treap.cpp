@@ -92,7 +92,7 @@ struct Treap {
         pos = merge(merge(res2[0], res2[1]), res1[1]);
         return key;
     }
-    // Delete all nodes that equal to key
+    // Delete one node that equal to key
     void erase(int &pos, key_t key) {
         array<int, 2> res1 = split(pos, key);
         array<int, 2> res2 = split(res1[0], key - 1);
