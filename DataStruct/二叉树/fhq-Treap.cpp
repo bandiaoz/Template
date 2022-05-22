@@ -1,133 +1,170 @@
 #include <bits/stdc++.h>
-#define rep(i, a, n) for (int i = a; i <= n; ++i)
-#define per(i, a, n) for (int i = n; i >= a; --i)
-#ifdef LOCAL
-#include "Print.h"
-#define de(...) W('[', #__VA_ARGS__,"] =", __VA_ARGS__)
-#else
-#define de(...)
-#endif
-using namespace std;
-typedef long long ll;
-const int maxn = 2e5 + 5;
 
-namespace fhq {
-#define tr t[root]
-#define lson t[tr.lc]
-#define rson t[tr.rc]
-mt19937 rnd(233);
-struct node {
-    int lc, rc, val, key, sz;
-} t[maxn];
-int cnt, Root;
-// 重新计算以 root 为根的子树大小
-inline void update(int root) { tr.sz = lson.sz + rson.sz + 1; }
-// 新建一个权值为val的结点
-int newNode(int val) {
-    t[++cnt] = {0, 0, val, (int)rnd(), 1};
-    return cnt;
-}
-// 合并成小根堆，参数保证x树的权值严格小于y树的权值
-int merge(int x, int y) {
-    if (!x || !y) return x + y;
-    if (t[x].key < t[y].key) {
-        t[x].rc = merge(t[x].rc, y);
-        update(x); return x;
-    } else {
-        t[y].lc = merge(x, t[y].lc);
-        update(y); return y;
+using namespace std;
+using ll = long long;
+
+template <typename key_t>
+struct Treap {
+    struct Node {
+        int l, r;
+        int pri, sz;
+        key_t key;
+        Node(key_t a, int b) : key(a), pri(b), l(-1), r(-1), sz(1) {}
+    };
+
+    int root = -1;
+    vector<Node> tree;
+
+    // split by key, the key of x treap less than y treap
+    array<int, 2> split(int pos, key_t key) {
+        if (pos == -1) return {-1, -1};
+
+        if (tree[pos].key <= key) {
+            array<int, 2> res = split(tree[pos].r, key);
+            tree[pos].r = res[0];
+            update(pos);
+            return {pos, res[1]};
+        } else {
+            array<int, 2> res = split(tree[pos].l, key);
+            tree[pos].l = res[1];
+            update(pos);
+            return {res[0], pos};
+        }
     }
-}
-// 在以 root 为根的子树内树按值分裂，x树的权值小于等于val，y树的权值大于val
-void split_val(int root, int val, int &x, int &y) {
-    if (!root) x = y = 0;
-    else {
-        if (val < tr.val) y = root, split_val(tr.lc, val, x, tr.lc);
-        else x = root, split_val(tr.rc, val, tr.rc, y);
-        update(root);
+
+    // split by size, the size of x treap equal to sz
+    array<int, 2> split_sz(int pos, int sz) {
+        if (pos == -1) return {-1, -1};
+
+        if (tree[tree[pos].l].sz + 1 <= sz) {
+            array<int, 2> res = split_sz(tree[pos].r, sz - tree[tree[pos].l].sz - 1);
+            tree[pos].r = res[0];
+            update(pos);
+            return {pos, res[1]};
+        } else {
+            array<int, 2> res = split_sz(tree[pos].l, sz);
+            tree[pos].l = res[1];
+            update(pos);
+            return {res[0], pos};
+        }
     }
-}
-// 在以 root 为根的子树内树按值分裂，x树的大小等于k
-void split_sz(int root, int k, int &x, int &y) {
-    if (!root) x = y = 0;
-    else {
-        if (k <= lson.sz) y = root, split_sz(tr.lc, k, x, tr.lc); 
-        else x = root, split_sz(tr.rc, k - lson.sz - 1, tr.rc, y);
-        update(root);
+
+    // small root heap, the key of x treap less than y treap
+    int merge(int x, int y) {
+        if (x == -1) return y;
+        if (y == -1) return x;
+
+        if (tree[x].pri > tree[y].pri) {
+            swap(x, y);
+        }
+
+        array<int, 2> res = split(y, tree[x].key);
+        tree[x].l = merge(tree[x].l, res[0]);
+        tree[x].r = merge(tree[x].r, res[1]);
+        update(x);
+        return x;
     }
-}
-// 以 root 为根的子树中，名次为 rnk 的权值
-int Getnum(int root, int rnk) {
-    if (rnk == lson.sz + 1) return tr.val;
-    if (rnk <= lson.sz) return Getnum(tr.lc, rnk);
-    return Getnum(tr.rc, rnk - lson.sz - 1);
-}
-int x, y, z;
-// 在以 Root 为根的子树内添加权值为 val 节点
-inline void insert(int val) {
-    split_val(Root, val, x, y);
-    Root = merge(merge(x, newNode(val)), y);
-}
-// 从以 Root 为根子树移除权值为 val 节点
-inline void del(int val) {
-    split_val(Root, val, x, z);
-    split_val(x, val - 1, x, y);
-    y = merge(t[y].lc, t[y].rc);
-    Root = merge(merge(x, y), z);
-}
-// 以 Root 为根的子树中，权值为 val 的名次
-inline int getrnk(int val) {
-    split_val(Root, val - 1, x, y);
-    int rnk = t[x].sz + 1;
-    Root = merge(x, y);
-    return rnk;
-}
-// 以 Root 为根的子树中，名次为 rnk 的权值
-inline int getnum(int rnk) { return Getnum(Root, rnk); }
-// 以 Root 为根的子树中，查val的前驱
-inline int getpre(int val) {
-    split_val(Root, val - 1, x, y);
-    int ans = Getnum(x, t[x].sz);
-    Root = merge(x, y);
-    return ans;
-}
-// 以 Root 为根的子树中，查val的后继
-inline int getnex(int val) {
-    split_val(Root, val, x, y);
-    int ans = Getnum(y, 1);
-    Root = merge(x, y);
-    return ans;
-}
-#undef tr
-#undef lson
-#undef rson
-} // namespace fhq
-int case_Test() {
-    int T;
-    scanf("%d", &T);
-    while (T--) {
-        int op, x;
-        scanf("%d%d", &op, &x);
-        if (op == 1) fhq::insert(x);
-        if (op == 2) fhq::del(x);
-        if (op == 3) printf("%d\n", fhq::getrnk(x));
-        if (op == 4) printf("%d\n", fhq::getnum(x));
-        if (op == 5) printf("%d\n", fhq::getpre(x)); 
-        if (op == 6) printf("%d\n", fhq::getnex(x));
+
+    void update(int pos) {
+        tree[pos].sz = tree[tree[pos].l].sz + tree[tree[pos].r].sz + 1;
     }
-    return 0;
-}
+
+    int create(key_t key) {
+        mt19937 rng((unsigned int) chrono::steady_clock::now().time_since_epoch().count());
+        int pri = (int)(rng() & ((1ll << 31) - 1));
+        tree.emplace_back(key, pri);
+        return (int)tree.size() - 1;
+    }
+
+    void insert(int &pos, key_t key) {
+        int o = create(key);
+        array<int, 2> res = split(pos, key);
+        pos = merge(merge(res[0], o), res[1]);
+    }
+
+    // Return rank with power is key
+    int rank(int &pos, key_t key) {
+        array<int, 2> res = split(pos, key - 1);
+        int rk = (res[0] == -1) ? 1 : tree[res[0]].sz + 1;
+        pos = merge(res[0], res[1]);
+        return rk;
+    }
+
+    // Return the key of the k largest
+    key_t kth(int &pos, int k) {
+        assert(k <= tree[pos].sz);
+        array<int, 2> res1 = split_sz(pos, k);
+        array<int, 2> res2 = split_sz(res1[0], k - 1);
+        int key = tree[res2[1]].key;
+        pos = merge(merge(res2[0], res2[1]), res1[1]);
+        return key;
+    }
+
+    // Delete all nodes that equal to key
+    void erase(int &pos, key_t key) {
+        array<int, 2> res1 = split(pos, key);
+        array<int, 2> res2 = split(res1[0], key - 1);
+
+        if (res2[1] != -1) {
+            res2[1] = merge(tree[res2[1]].l, tree[res2[1]].r);
+        }
+
+        pos = merge(merge(res2[0], res2[1]), res1[1]);
+    }
+
+    // Return the precursor of key
+    key_t pre(int &pos, key_t key) {
+        array<int, 2> res = split(pos, key - 1);
+        int ans = kth(res[0], tree[res[0]].sz);
+        pos = merge(res[0], res[1]);
+        return ans;
+    }
+
+    // Return the next of key
+    key_t nxt(int &pos, key_t key) {
+        array<int, 2> res = split(pos, key);
+        int ans = kth(res[1], 1);
+        pos = merge(res[0], res[1]);
+        return ans;
+    }
+
+    void insert(key_t x) { insert(root, x); }
+    void erase(key_t x) { erase(root, x); }
+    int rank(key_t x) { return rank(root, x); }
+    key_t kth(int x) { return kth(root, x); }
+    key_t pre(key_t x) { return pre(root, x); }
+    key_t nxt(key_t x) { return nxt(root, x); }
+};
+
 int main() {
-#ifdef LOCAL
-    freopen("/Users/chenjinglong/Desktop/cpp_code/in.in", "r", stdin);
-    freopen("/Users/chenjinglong/Desktop/cpp_code/out.out", "w", stdout);
-    clock_t start = clock();
-#endif
-    int _ = 1;
-    // scanf("%d", &_);
-    while (_--) case_Test();
-#ifdef LOCAL
-    printf("Time used: %.3lfs\n", (double)(clock() - start) / CLOCKS_PER_SEC);
-#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    Treap<int> t;
+
+    for (int i = 1; i <= n; i++) {
+        int op, x;
+        cin >> op >> x;
+
+        if (op == 1) {
+            t.insert(x);
+        } else if (op == 2) {
+            t.erase(x);
+        } else if (op == 3) {
+            cout << t.rank(x) << "\n";
+        } else if (op == 4) {
+            cout << t.kth(x) << "\n";
+        } else if (op == 5) {
+            cout << t.pre(x) << "\n";
+        } else if (op == 6) {
+            cout << t.nxt(x) << "\n";
+        }
+    }
+
     return 0;
 }
+
+// test problem: https://loj.ac/p/104
