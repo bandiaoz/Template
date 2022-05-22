@@ -3,20 +3,18 @@
 using namespace std;
 using ll = long long;
 
-template <typename key_t>
 struct Treap {
     struct Node {
         int l, r;
-        int pri, sz;
-        key_t key;
-        Node(key_t a, int b) : key(a), pri(b), l(-1), r(-1), sz(1) {}
+        int key, pri, sz;
+        Node(int a, int b) : key(a), pri(b), l(-1), r(-1), sz(1) {}
     };
 
     int root = -1;
     vector<Node> tree;
 
     // split by key, the key of x treap less than y treap
-    array<int, 2> split(int pos, key_t key) {
+    array<int, 2> split(int pos, int key) {
         if (pos == -1) return {-1, -1};
 
         if (tree[pos].key <= key) {
@@ -69,21 +67,21 @@ struct Treap {
         tree[pos].sz = tree[tree[pos].l].sz + tree[tree[pos].r].sz + 1;
     }
 
-    int create(key_t key) {
+    int create(int key) {
         mt19937 rng((unsigned int) chrono::steady_clock::now().time_since_epoch().count());
         int pri = (int)(rng() & ((1ll << 31) - 1));
         tree.emplace_back(key, pri);
         return (int)tree.size() - 1;
     }
 
-    void insert(int &pos, key_t key) {
+    void insert(int &pos, int key) {
         int o = create(key);
         array<int, 2> res = split(pos, key);
         pos = merge(merge(res[0], o), res[1]);
     }
 
     // Return rank with power is key
-    int rank(int &pos, key_t key) {
+    int rank(int &pos, int key) {
         array<int, 2> res = split(pos, key - 1);
         int rk = (res[0] == -1) ? 1 : tree[res[0]].sz + 1;
         pos = merge(res[0], res[1]);
@@ -91,7 +89,7 @@ struct Treap {
     }
 
     // Return the key of the k largest
-    key_t kth(int &pos, int k) {
+    int kth(int &pos, int k) {
         assert(k <= tree[pos].sz);
         array<int, 2> res1 = split_sz(pos, k);
         array<int, 2> res2 = split_sz(res1[0], k - 1);
@@ -101,7 +99,7 @@ struct Treap {
     }
 
     // Delete all nodes that equal to key
-    void erase(int &pos, key_t key) {
+    void erase(int &pos, int key) {
         array<int, 2> res1 = split(pos, key);
         array<int, 2> res2 = split(res1[0], key - 1);
 
@@ -113,7 +111,7 @@ struct Treap {
     }
 
     // Return the precursor of key
-    key_t pre(int &pos, key_t key) {
+    int pre(int &pos, int key) {
         array<int, 2> res = split(pos, key - 1);
         int ans = kth(res[0], tree[res[0]].sz);
         pos = merge(res[0], res[1]);
@@ -121,19 +119,19 @@ struct Treap {
     }
 
     // Return the next of key
-    key_t nxt(int &pos, key_t key) {
+    int nxt(int &pos, int key) {
         array<int, 2> res = split(pos, key);
         int ans = kth(res[1], 1);
         pos = merge(res[0], res[1]);
         return ans;
     }
 
-    void insert(key_t x) { insert(root, x); }
-    void erase(key_t x) { erase(root, x); }
-    int rank(key_t x) { return rank(root, x); }
-    key_t kth(int x) { return kth(root, x); }
-    key_t pre(key_t x) { return pre(root, x); }
-    key_t nxt(key_t x) { return nxt(root, x); }
+    void insert(int x) { insert(root, x); }
+    void erase(int x) { erase(root, x); }
+    int rank(int x) { return rank(root, x); }
+    int kth(int x) { return kth(root, x); }
+    int pre(int x) { return pre(root, x); }
+    int nxt(int x) { return nxt(root, x); }
 };
 
 int main() {
@@ -143,24 +141,24 @@ int main() {
     int n;
     cin >> n;
 
-    Treap<int> t;
+    Treap T;
 
     for (int i = 1; i <= n; i++) {
         int op, x;
         cin >> op >> x;
 
         if (op == 1) {
-            t.insert(x);
+            T.insert(x);
         } else if (op == 2) {
-            t.erase(x);
+            T.erase(x);
         } else if (op == 3) {
-            cout << t.rank(x) << "\n";
+            cout << T.rank(x) << "\n";
         } else if (op == 4) {
-            cout << t.kth(x) << "\n";
+            cout << T.kth(x) << "\n";
         } else if (op == 5) {
-            cout << t.pre(x) << "\n";
+            cout << T.pre(x) << "\n";
         } else if (op == 6) {
-            cout << t.nxt(x) << "\n";
+            cout << T.nxt(x) << "\n";
         }
     }
 
