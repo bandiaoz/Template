@@ -31,7 +31,6 @@ struct Treap {
             return {res[0], pos};
         }
     }
-
     // split by size, the size of x treap equal to sz
     array<int, 2> split_sz(int pos, int sz) {
         if (pos == -1) return {-1, -1};
@@ -48,7 +47,6 @@ struct Treap {
             return {res[0], pos};
         }
     }
-
     // small root heap, the key of x treap less than y treap
     int merge(int x, int y) {
         if (x == -1) return y;
@@ -64,24 +62,20 @@ struct Treap {
         update(x);
         return x;
     }
-
     void update(int pos) {
         tree[pos].sz = tree[tree[pos].l].sz + tree[tree[pos].r].sz + 1;
     }
-
     int create(key_t key) {
         mt19937 rng((unsigned int) chrono::steady_clock::now().time_since_epoch().count());
         int pri = (int)(rng() & ((1ll << 31) - 1));
         tree.emplace_back(key, pri);
         return (int)tree.size() - 1;
     }
-
     void insert(int &pos, key_t key) {
         int o = create(key);
         array<int, 2> res = split(pos, key);
         pos = merge(merge(res[0], o), res[1]);
     }
-
     // Return rank with power is key
     int rank(int &pos, key_t key) {
         array<int, 2> res = split(pos, key - 1);
@@ -89,7 +83,6 @@ struct Treap {
         pos = merge(res[0], res[1]);
         return rk;
     }
-
     // Return the key of the k largest
     key_t kth(int &pos, int k) {
         assert(k <= tree[pos].sz);
@@ -99,7 +92,6 @@ struct Treap {
         pos = merge(merge(res2[0], res2[1]), res1[1]);
         return key;
     }
-
     // Delete all nodes that equal to key
     void erase(int &pos, key_t key) {
         array<int, 2> res1 = split(pos, key);
@@ -111,7 +103,6 @@ struct Treap {
 
         pos = merge(merge(res2[0], res2[1]), res1[1]);
     }
-
     // Return the precursor of key
     key_t pre(int &pos, key_t key) {
         array<int, 2> res = split(pos, key - 1);
@@ -119,7 +110,6 @@ struct Treap {
         pos = merge(res[0], res[1]);
         return ans;
     }
-
     // Return the next of key
     key_t nxt(int &pos, key_t key) {
         array<int, 2> res = split(pos, key);
