@@ -18,4 +18,4 @@ void _W(const vector<T> &x) {
 void W() {}
 template <class T, class... U>
 void W(const T &head, const U &... tail) { _W(head), putchar(sizeof...(tail) ? ' ' : '\n'), W(tail...); }
-
+ 
