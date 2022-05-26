@@ -10,45 +10,45 @@ struct SegmentTree {
     vector<Info> info;
     SegmentTree(int n) : n(n), merge(Merge()), info(4 << (32 - __builtin_clz(n))) {}
     SegmentTree(vector<Info> init) : SegmentTree(init.size()) {
-        function<void(int, int, int)> build = [&](int root, int l, int r) {
+        function<void(int, int, int)> _build = [&](int root, int l, int r) {
             if (r - l == 1) {
                 info[root] = init[l];
                 return;
             }
             int mid = (l + r) / 2;
-            build(root << 1, l, mid);
-            build(root << 1 | 1, mid, r);
-            pull(root);
+            _build(root << 1, l, mid);
+            _build(root << 1 | 1, mid, r);
+            _pull(root);
         };
-        build(1, 0, n);
+        _build(1, 0, n);
     }
-    void pull(int root) {
+    void _pull(int root) {
         info[root] = merge(info[root << 1], info[root << 1 | 1]);
     }
-    void modify(int root, int l, int r, int pos, const Info &x) {
+    void _modify(int root, int l, int r, int pos, const Info &x) {
         if (r - l == 1) {
             info[root] = info[root] + x;
             return;
         }
         int mid = (l + r) / 2;
         if (pos < mid) {
-            modify(root << 1, l, mid, pos, x);
+            _modify(root << 1, l, mid, pos, x);
         } else {
-            modify(root << 1 | 1, mid, r, pos, x);
+            _modify(root << 1 | 1, mid, r, pos, x);
         }
-        pull(root);
+        _pull(root);
     }
     void modify(int pos, const Info &x) {
-        modify(1, 0, n, pos, x);
+        _modify(1, 0, n, pos, x);
     }
-    Info rangeQuery(int root, int l, int r, int x, int y) {
+    Info _rangeQuery(int root, int l, int r, int x, int y) {
         if (l >= y || r <= x) return Info();
         if (l >= x && r <= y) return info[root];
         int mid = (l + r) / 2;
-        return merge(rangeQuery(root << 1, l, mid, x, y), rangeQuery(root << 1 | 1, mid, r, x, y));
+        return merge(_rangeQuery(root << 1, l, mid, x, y), _rangeQuery(root << 1 | 1, mid, r, x, y));
     }
     Info rangeQuery(int l, int r) {
-        return rangeQuery(1, 0, n, l, r);
+        return _rangeQuery(1, 0, n, l, r);
     }
 };
 
