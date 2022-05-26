@@ -1,10 +1,8 @@
-constexpr int mod = 1e9 + 7;
-// assume -mod <= x < 2mod
-int norm(int x) {
-    if (x < 0) x += mod;
-    if (x >= mod) x -= mod;
-    return x;
-}
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
 template<class T>
 T power(T a, int b) {
     T res = 1;
@@ -12,12 +10,19 @@ T power(T a, int b) {
         if (b % 2) res *= a;
     return res;
 }
+template <int mod = 1'000'000'007>
 struct Z {
     int x;
     Z(int x = 0) : x(norm(x)) {}
     Z(ll x) : x(x % mod) {}
     
     int val() const {
+        return x;
+    }
+    // assume -mod <= x < 2mod
+    int norm(int x) {
+        if (x < 0) x += mod;
+        if (x >= mod) x -= mod;
         return x;
     }
     Z operator-() const {
@@ -35,7 +40,7 @@ struct Z {
         x = norm(x + rhs.x);
         return *this;
     }
-    Z &operatr-=(const Z &rhs) {
+    Z &operator-=(const Z &rhs) {
         x = norm(x - rhs.x);
         return *this;
     }
