@@ -7,15 +7,15 @@ template<class Info, class Merge = plus<Info>>
 struct SegmentTree {
     SegmentTree(int n) : n(n), merge(Merge()), info(4 << (32 - __builtin_clz(n))) {}
     SegmentTree(vector<Info> init) : SegmentTree(init.size()) {
-        function<void(int, int, int)> _build = [&](int root, int l, int r) {
+        function<void(int, int, int)> _build = [&](int p, int l, int r) {
             if (r - l == 1) {
-                info[root] = init[l];
+                info[p] = init[l];
                 return;
             }
             int mid = (l + r) / 2;
-            _build(root << 1, l, mid);
-            _build(root << 1 | 1, mid, r);
-            _pull(root);
+            _build(p << 1, l, mid);
+            _build(p << 1 | 1, mid, r);
+            _pull(p);
         };
         _build(1, 0, n);
     }
@@ -30,27 +30,27 @@ private:
     const int n;
     const Merge merge;
     vector<Info> info;
-    void _pull(int root) {
-        info[root] = merge(info[root << 1], info[root << 1 | 1]);
+    void _pull(int p) {
+        info[p] = merge(info[p << 1], info[p << 1 | 1]);
     }
-    void _modify(int root, int l, int r, int pos, const Info &x) {
+    void _modify(int p, int l, int r, int pos, const Info &x) {
         if (r - l == 1) {
-            info[root] = info[root] + x;
+            info[p] = info[p] + x;
             return;
         }
         int mid = (l + r) / 2;
         if (pos < mid) {
-            _modify(root << 1, l, mid, pos, x);
+            _modify(p << 1, l, mid, pos, x);
         } else {
-            _modify(root << 1 | 1, mid, r, pos, x);
+            _modify(p << 1 | 1, mid, r, pos, x);
         }
-        _pull(root);
+        _pull(p);
     }
-    Info _rangeQuery(int root, int l, int r, int x, int y) {
+    Info _rangeQuery(int p, int l, int r, int x, int y) {
         if (l >= y || r <= x) return Info();
-        if (l >= x && r <= y) return info[root];
+        if (l >= x && r <= y) return info[p];
         int mid = (l + r) / 2;
-        return merge(_rangeQuery(root << 1, l, mid, x, y), _rangeQuery(root << 1 | 1, mid, r, x, y));
+        return merge(_rangeQuery(p << 1, l, mid, x, y), _rangeQuery(p << 1 | 1, mid, r, x, y));
     }
 };
 
