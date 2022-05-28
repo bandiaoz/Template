@@ -3,13 +3,30 @@
 using namespace std;
 using ll = long long;
 
+struct Info {
+    ll c;
+    Info(ll c = 0) : c(c) {}
+    friend Info operator+(const Info &A, const Info &B) {
+        return Info(A.c + B.c);
+    }
+};
+
+void apply(Info &a, ll b, int l, int r) {
+    a.c += b * (r - l);
+}
+
+void apply(ll &a, ll b, int l, int r) {
+    a += b;
+}
+
+template<class Info, class Tag, class Merge = plus<Info>>
 struct LazySegmentTree {
     LazySegmentTree(int n) : n(n) {
         info.resize(4 * n, 0);
         tag.resize(4 * n, 0);
     }
 
-    LazySegmentTree(vector<ll> &init) : LazySegmentTree(init.size()) {
+    LazySegmentTree(vector<Info> &init) : LazySegmentTree(init.size()) {
         function<void(int, int, int)> innerBuild = [&](int p, int l, int r) {
             if (r - l == 1) {
                 info[p] = init[l];
@@ -24,12 +41,12 @@ struct LazySegmentTree {
     }
 
     /* Add val to each element in range of [x, y) */
-    void update(int x, int y, ll val) {
-        innerUpdate(1, x, y, val, 0, n);
+    void update(int x, int y, Tag v) {
+        innerUpdate(1, x, y, v, 0, n);
     }
 
     /* Query the sum-up value of range [x, y) */
-    ll query(int x, int y) {
+    Info query(int x, int y) {
         return innerQuery(1, x, y, 0, n); 
     }
 
@@ -39,47 +56,46 @@ private:
      * [l, r): The range of p.
      */
     void innerPull(int p) {
-        info[p] = info[p * 2] + info[p * 2 + 1];
+        info[p] = merge(info[2 * p], info[2 * p + 1]);
     }
-    void innerUpdate(int p, int x, int y, ll val, int l, int r) {
+    void innerApply(int p, const Tag &v, int l, int r) {
+        ::apply(info[p], v, l, r);
+        ::apply(tag[p], v, l, r);
+    }
+    void push(int p, int l, int r) {
+        int m = (l + r) / 2;
+        innerApply(2 * p, tag[p], l, m);
+        innerApply(2 * p + 1, tag[p], m, r);
+        tag[p] = Tag();
+    }
+    void innerUpdate(int p, int x, int y, const Tag &v, int l, int r) {
         if (x <= l && r <= y) {
-            info[p] += (r - l) * val;
-            tag[p] += val;
+            innerApply(p, v, l, r);
             return;
         }
         int m = (l + r) / 2;
         int lchild = 2 * p, rchild = 2 * p + 1;
 
-        if (tag[p]) {
-            info[lchild] += tag[p] * (m - l), tag[lchild] += tag[p];
-            info[rchild] += tag[p] * (r - m), tag[rchild] += tag[p];
-            tag[p] = 0;
-        }
-        if (x < m) innerUpdate(lchild, x, y, val, l, m);
-        if (y > m) innerUpdate(rchild, x, y, val, m, r);
+        push(p, l, r);
+        if (x < m) innerUpdate(lchild, x, y, v, l, m);
+        if (y > m) innerUpdate(rchild, x, y, v, m, r);
         innerPull(p);
     }
     /* Query the sum-up value of range [x, y). */
-    ll innerQuery(int p, int x, int y, int l, int r) {
+    Info innerQuery(int p, int x, int y, int l, int r) {
         if (x <= l && r <= y) return info[p];
-        if (x >= r || y <= l) return 0;
-
+        if (x >= r || y <= l) return Info();
         int m = (l + r) / 2;
-        int lchild = 2 * p, rchild = 2 * p + 1;
-
-        if (tag[p]) {
-            info[lchild] += (m - l) * tag[p], tag[lchild] += tag[p];
-            info[rchild] += (r - m) * tag[p], tag[rchild] += tag[p];
-            tag[p] = 0;
-        }
-
+        
+        push(p, l, r);
         return innerQuery(2 * p, x, y, l, m) + innerQuery(2 * p + 1, x, y, m, r);
     }
 
    public:
-    int n;
-    vector<ll> info;  // data of segment tree, 0-index
-    vector<ll> tag;  // lazy tag of segment tree
+    const int n;
+    const Merge merge{};
+    vector<Info> info;  // data of segment tree, 0-index
+    vector<Tag> tag;  // lazy tag of segment tree
 };
 
 int main() {
@@ -89,12 +105,12 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<ll> a(n);
+    vector<Info> a(n);
     for (int i = 0; i < n; ++i) {
-        cin >> a[i];
+        cin >> a[i].c;
     }
 
-    LazySegmentTree seg(a);
+    LazySegmentTree<Info, ll> seg(a);
     for (int i = 0; i < m; ++i) {
         ll op, x, y, k;
         cin >> op >> x >> y;
@@ -103,7 +119,7 @@ int main() {
             cin >> k;
             seg.update(x, y, k);
         } else if (op == 2) {
-            cout << seg.query(x, y) << "\n";
+            cout << seg.query(x, y).c << "\n";
         }
     }
 
