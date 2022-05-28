@@ -20,37 +20,13 @@ void apply(ll &a, ll b, int l, int r) {
 }
 
 template<class Info, class Tag, class Merge = plus<Info>>
-struct LazySegmentTree {
-    LazySegmentTree(int n) : n(n) {
-        info.resize(4 << (32 - __builtin_clz(n)), 0);
-        tag.resize(4 << (32 - __builtin_clz(n)), 0);
-    }
-
-    LazySegmentTree(vector<Info> &init) : LazySegmentTree(init.size()) {
-        function<void(int, int, int)> innerBuild = [&](int p, int l, int r) {
-            if (r - l == 1) {
-                info[p] = init[l];
-                return;
-            }
-            int m = (l + r) / 2, lchild = 2 * p, rchild = 2 * p + 1;
-            innerBuild(lchild, l, m);
-            innerBuild(rchild, m, r);
-            info[p] = info[lchild] + info[rchild];
-        };
-        innerBuild(1, 0, n);
-    }
-
-    /* Add val to each element in range of [x, y) */
-    void update(int x, int y, Tag v) {
-        innerUpdate(1, x, y, v, 0, n);
-    }
-
-    /* Query the sum-up value of range [x, y) */
-    Info query(int x, int y) {
-        return innerQuery(1, x, y, 0, n); 
-    }
-
+class LazySegmentTree {
 private:
+    const int n;
+    const Merge merge{};
+    vector<Info> info;  // data of segment tree, 0-index
+    vector<Tag> tag;  // lazy tag of segment tree
+
     /* [x, y) and val: Add val to each element in range of [x, y)
      * p: The id of subtree, which is an index of vector 'info'.
      * [l, r): The range of p.
@@ -91,11 +67,32 @@ private:
         return innerQuery(2 * p, x, y, l, m) + innerQuery(2 * p + 1, x, y, m, r);
     }
 
-   public:
-    const int n;
-    const Merge merge{};
-    vector<Info> info;  // data of segment tree, 0-index
-    vector<Tag> tag;  // lazy tag of segment tree
+public:
+    LazySegmentTree(int n) : n(n) {
+        info.resize(4 << (32 - __builtin_clz(n)), 0);
+        tag.resize(4 << (32 - __builtin_clz(n)), 0);
+    }
+    LazySegmentTree(vector<Info> &init) : LazySegmentTree(init.size()) {
+        function<void(int, int, int)> innerBuild = [&](int p, int l, int r) {
+            if (r - l == 1) {
+                info[p] = init[l];
+                return;
+            }
+            int m = (l + r) / 2, lchild = 2 * p, rchild = 2 * p + 1;
+            innerBuild(lchild, l, m);
+            innerBuild(rchild, m, r);
+            info[p] = info[lchild] + info[rchild];
+        };
+        innerBuild(1, 0, n);
+    }
+    /* Add val to each element in range of [x, y) */
+    void update(int x, int y, Tag v) {
+        innerUpdate(1, x, y, v, 0, n);
+    }
+    /* Query the sum-up value of range [x, y) */
+    Info query(int x, int y) {
+        return innerQuery(1, x, y, 0, n); 
+    }
 };
 
 int main() {
