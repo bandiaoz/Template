@@ -54,11 +54,11 @@ private:
     }
 };
 
-struct info {
+struct Info {
     int val;
-    info(int val = 0) : val(val) {}
-    friend info operator+(const info &A, const info &B) {
-        return info(A.val + B.val);
+    Info(int val = 0) : val(val) {}
+    friend Info operator+(const Info &A, const Info &B) {
+        return Info(A.val + B.val);
     }
 };
 
@@ -68,7 +68,7 @@ int main() {
     
     int n, m;
     cin >> n >> m;
-    SegmentTree<info> seg(n);
+    SegmentTree<Info> seg(n);
     for (int i = 0; i < n; ++i) {
         int x;
         cin >> x;
