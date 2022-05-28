@@ -7,50 +7,50 @@ template<class Info, class Merge = plus<Info>>
 struct SegmentTree {
     SegmentTree(int n) : n(n), merge(Merge()), info(4 << (32 - __builtin_clz(n))) {}
     SegmentTree(vector<Info> init) : SegmentTree(init.size()) {
-        function<void(int, int, int)> _build = [&](int p, int l, int r) {
+        function<void(int, int, int)> build = [&](int p, int l, int r) {
             if (r - l == 1) {
                 info[p] = init[l];
                 return;
             }
             int mid = (l + r) / 2;
-            _build(p << 1, l, mid);
-            _build(p << 1 | 1, mid, r);
-            _pull(p);
+            build(p << 1, l, mid);
+            build(p << 1 | 1, mid, r);
+            innerPull(p);
         };
-        _build(1, 0, n);
+        build(1, 0, n);
     }
     void modify(int pos, const Info &x) {
-        _modify(1, 0, n, pos, x);
+        innerModify(1, 0, n, pos, x);
     }
     Info rangeQuery(int l, int r) {
-        return _rangeQuery(1, 0, n, l, r);
+        return innerRangeQuery(1, 0, n, l, r);
     }
 
 private:
     const int n;
     const Merge merge;
     vector<Info> info;
-    void _pull(int p) {
+    void innerPull(int p) {
         info[p] = merge(info[p << 1], info[p << 1 | 1]);
     }
-    void _modify(int p, int l, int r, int pos, const Info &x) {
+    void innerModify(int p, int l, int r, int pos, const Info &x) {
         if (r - l == 1) {
             info[p] = info[p] + x;
             return;
         }
         int mid = (l + r) / 2;
         if (pos < mid) {
-            _modify(p << 1, l, mid, pos, x);
+            innerModify(p << 1, l, mid, pos, x);
         } else {
-            _modify(p << 1 | 1, mid, r, pos, x);
+            innerModify(p << 1 | 1, mid, r, pos, x);
         }
-        _pull(p);
+        innerPull(p);
     }
-    Info _rangeQuery(int p, int l, int r, int x, int y) {
+    Info innerRangeQuery(int p, int l, int r, int x, int y) {
         if (l >= y || r <= x) return Info();
         if (l >= x && r <= y) return info[p];
         int mid = (l + r) / 2;
-        return merge(_rangeQuery(p << 1, l, mid, x, y), _rangeQuery(p << 1 | 1, mid, r, x, y));
+        return merge(innerRangeQuery(p << 1, l, mid, x, y), innerRangeQuery(p << 1 | 1, mid, r, x, y));
     }
 };
 
