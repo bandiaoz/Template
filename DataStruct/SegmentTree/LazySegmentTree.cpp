@@ -22,8 +22,8 @@ void apply(ll &a, ll b, int l, int r) {
 template<class Info, class Tag, class Merge = plus<Info>>
 struct LazySegmentTree {
     LazySegmentTree(int n) : n(n) {
-        info.resize(4 * n, 0);
-        tag.resize(4 * n, 0);
+        info.resize(4 << (32 - __builtin_clz(n)), 0);
+        tag.resize(4 << (32 - __builtin_clz(n)), 0);
     }
 
     LazySegmentTree(vector<Info> &init) : LazySegmentTree(init.size()) {
