@@ -14,7 +14,7 @@ template <int mod = 1'000'000'007>
 struct Z {
     int x;
     Z(int x = 0) : x(norm(x)) {}
-    Z(ll x) : x(x % mod) {}
+    Z(ll x) : x(norm(int(x % mod))) {}
     
     int val() const {
         return x;
@@ -66,5 +66,14 @@ struct Z {
         Z res = lhs;
         res /= rhs;
         return res;
+    }
+    friend istream &operator>>(istream &is, Z &a) {
+        ll v;
+        is >> v;
+        a = Z(v);
+        return is;
+    }
+    friend ostream &operator<<(ostream &os, const Z &a) {
+        return os << a.val();
     }
 };
