@@ -21,7 +21,7 @@ T power(T a, ll b) {
 struct Z {
     int x;
     Z(int x = 0) : x(norm(x)) {}
-    Z(int64_t x) : x(norm(x % mod)) {}
+    Z(int64_t x) : x(x % mod) {}
     int val() const {
         return x;
     }
