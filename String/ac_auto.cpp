@@ -1,85 +1,95 @@
-#include <cstring>
-#include <iostream>
-#include <queue>
+#include <bits/stdc++.h>
+
 using namespace std;
-const int N = 5e5 + 10;
-struct Trie {
-    static const char stdc = 'a';
-    static const int M = 26;
-    int ch[N][M];
-    int val[N];
-    // int num[N];
-    int root;
-    int fail[N];
-    int sz;
-    int idx(char c) {
-        return c - stdc;
-    }
-    void init() {
-        root = 0;
-        sz = 1;
-        memset(val, 0, sizeof val);
-        // memset(num, 0, sizeof num);
-        memset(ch[0], 0, sizeof ch[0]);
+using ll = long long;
+
+class Automaton {
+    static inline constexpr int CHAR = 26;
+    using Node = array<int, CHAR>;
+    vector<Node> nxt_;
+    vector<int> cnt_, fail_, last_;
+    int charToInt(char x) { return x - 'a'; }
+    void addNode(int fa, int c) {
+        nxt_[fa][c] = nxt_.size();
+        nxt_.emplace_back(Node());
+        cnt_.emplace_back(0);
+        fail_.emplace_back(0);
+        last_.emplace_back(0);
     }
 
-    void insert(string &str) {
-        int len = str.size();
-        int s = 0;
-        for (int i = 0; i < len; ++i) {
-            int u = idx(str[i]);
-            if (!ch[s][u]) {
-                memset(ch[sz], 0, sizeof ch[sz]);
-                ch[s][u] = sz++;
-            }
-            s = ch[s][u];
+   public:
+    Automaton() : nxt_(1), cnt_(1), fail_(1), last_(1) {}
+    void insert(string s) {
+        int p = 0;
+        for (auto x : s) {
+            int c = charToInt(x);
+            if (nxt_[p][c] == 0) addNode(p, c);
+            p = nxt_[p][c];
         }
-        val[s]++;
+        ++cnt_[p];
     }
     void build() {
         queue<int> Q;
-        fail[0] = 0;
-        for (int i = 0; i < M; ++i) {
-            int u = ch[0][i];
-            if (u) {
-                fail[u] = 0;
-                Q.push(u);
-            }
+        for (int c = 0; c < CHAR; ++c) {
+            if (nxt_[0][c]) Q.push(nxt_[0][c]);
         }
         while (!Q.empty()) {
-            int u = Q.front();
+            int p = Q.front();
             Q.pop();
-            for (int i = 0; i < M; ++i) {
-                int r = ch[u][i];
-                if (!r) {
-                    continue;
+            for (int c = 0; c < CHAR; ++c) {
+                if (int& q = nxt_[p][c]; q != 0) {
+                    fail_[q] = nxt_[fail_[p]][c];
+                    Q.push(q);
+                    // match count optim
+                    last_[q] = cnt_[fail_[q]] ? fail_[q] : last_[fail_[q]];
+                } else {
+                    q = nxt_[fail_[p]][c];
                 }
-                Q.push(r);
-                int v = fail[u];
-                while (v && !ch[v][i])
-                    v = fail[v];
-                fail[r] = ch[v][i];
             }
         }
     }
-    int query(string &str) {
-        int s = root, ans = 0;
-        int len = str.size();
-        for (int i = 0; i < len; ++i) {
-            int id = idx(str[i]);
-            while (s && ch[s][id] == 0) {
-                s = fail[s];
-            }
-            s = ch[s][id];
-            int u = s;
-            while (u && val[u] != -1) {
-                ans += val[u];
-                val[u] = -1;
-                u = fail[u];
+    // case-by-case analysis
+    int query(string s) {
+        int p = 0, r = 0;
+        auto add = [&](int& x) {
+            r += x;
+            x = 0;
+        };
+        for (auto x : s) {
+            int c = charToInt(x);
+            p = nxt_[p][c];
+            if (cnt_[p]) add(cnt_[p]);
+            int q = p;
+            while (last_[q]) {
+                q = last_[q];
+                if (cnt_[q]) add(cnt_[q]);
             }
         }
-        return ans;
+        return r;
     }
-    void debug() {}
-} ac;
-int main() {}
+};
+// https://www.luogu.com.cn/problem/P3808
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n;
+    cin >> n;
+
+    Automaton ac;
+    for (int i = 0; i < n; ++i) {
+        string s;
+        cin >> s;
+        ac.insert(s);
+    }
+
+    ac.build();
+
+    string s;
+    cin >> s;
+
+    cout << ac.query(s) << "\n";
+
+    return 0;
+}
