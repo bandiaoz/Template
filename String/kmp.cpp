@@ -34,17 +34,19 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    string s, t;
-    cin >> s >> t;
+    string t, s;
+    cin >> t >> s;
 
-    auto ans = kmp(t, s);
-    for (int i = 0; i < ans.size(); ++i) {
-        cout << ans[i] + 1 << "\n";
+    string st = s + '#' + t;
+    auto ans = prefixFunction(st);
+    for (int i = s.length() + 1; i < st.length(); ++i) {
+        if (ans[i] == s.length()) {
+            cout << i - 2 * s.length() + 1 << "\n";
+        }
     }
 
-    auto p = prefixFunction(t);
-    for (int i = 0; i < p.size(); ++i) {
-        cout << p[i] << " \n"[i == p.size() - 1];
+    for (int i = 0; i < s.length(); ++i) {
+        cout << ans[i] << " \n"[i == s.length() - 1];
     }
 
     return 0;
