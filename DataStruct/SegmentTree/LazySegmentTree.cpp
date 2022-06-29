@@ -24,7 +24,7 @@ class LazySegmentTree {
 private:
     const int n;
     const Merge merge{};
-    vector<Info> info;  // data of segment tree, 0-index
+    vector<Info> info;  // data of segment tree, 1-index
     vector<Tag> tag;  // lazy tag of segment tree
 
     /* [x, y) and val: Add val to each element in range of [x, y)
@@ -32,17 +32,19 @@ private:
      * [l, r): The range of p.
      */
     void innerPull(int p) {
-        info[p] = merge(info[2 * p], info[2 * p + 1]);
+        info[p] = merge(info[p << 1], info[p << 1 | 1]);
     }
     void innerApply(int p, const Tag &v, int l, int r) {
         ::apply(info[p], v, l, r);
         ::apply(tag[p], v, l, r);
     }
     void push(int p, int l, int r) {
-        int m = (l + r) / 2;
-        innerApply(2 * p, tag[p], l, m);
-        innerApply(2 * p + 1, tag[p], m, r);
-        tag[p] = Tag();
+        if (tag[p] != Tag()) {
+            int m = (l + r) / 2;
+            innerApply(p << 1, tag[p], l, m);
+            innerApply(p << 1 | 1, tag[p], m, r);
+            tag[p] = Tag();
+        }
     }
     void innerUpdate(int p, int x, int y, const Tag &v, int l, int r) {
         if (x <= l && r <= y) {
@@ -50,7 +52,7 @@ private:
             return;
         }
         int m = (l + r) / 2;
-        int lchild = 2 * p, rchild = 2 * p + 1;
+        int lchild = p << 1, rchild = p << 1 | 1;
 
         push(p, l, r);
         if (x < m) innerUpdate(lchild, x, y, v, l, m);
@@ -64,7 +66,7 @@ private:
         int m = (l + r) / 2;
         
         push(p, l, r);
-        return innerQuery(2 * p, x, y, l, m) + innerQuery(2 * p + 1, x, y, m, r);
+        return innerQuery(p << 1, x, y, l, m) + innerQuery(p << 1 | 1, x, y, m, r);
     }
 
 public:
@@ -78,7 +80,7 @@ public:
                 info[p] = init[l];
                 return;
             }
-            int m = (l + r) / 2, lchild = 2 * p, rchild = 2 * p + 1;
+            int m = (l + r) / 2, lchild = p << 1, rchild = p << 1 | 1;
             innerBuild(lchild, l, m);
             innerBuild(rchild, m, r);
             info[p] = info[lchild] + info[rchild];
