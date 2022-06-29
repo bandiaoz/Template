@@ -70,10 +70,7 @@ private:
     }
 
 public:
-    LazySegmentTree(int n) : n(n) {
-        info.resize(4 << (32 - __builtin_clz(n)), 0);
-        tag.resize(4 << (32 - __builtin_clz(n)), 0);
-    }
+    LazySegmentTree(int n) : n(n), info(4 << (32 - __builtin_clz(n))), tag(4 << (32 - __builtin_clz(n))) {}
     LazySegmentTree(vector<Info> &init) : LazySegmentTree(init.size()) {
         function<void(int, int, int)> innerBuild = [&](int p, int l, int r) {
             if (r - l == 1) {
