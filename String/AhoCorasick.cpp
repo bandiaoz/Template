@@ -27,12 +27,6 @@ struct AhoCorasick {
         assert(!s.empty());
         int p = 0;
         for (char c : s) {
-            // int &m = N[p].ch[c - first];
-            // if (m == -1) {
-            //     m = N.size();
-            //     N.emplace_back();
-            // }
-            // p = m;
             if (N[p].ch[c - first] == -1) {
                 N[p].ch[c - first] = N.size();
                 N.emplace_back();
