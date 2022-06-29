@@ -4,15 +4,15 @@ using namespace std;
 using ll = long long;
 
 struct Info {
-    ll c;
-    Info(ll c = 0) : c(c) {}
+    ll val;
+    Info(ll val = 0) : val(val) {}
     friend Info operator+(const Info &A, const Info &B) {
-        return Info(A.c + B.c);
+        return Info(A.val + B.val);
     }
 };
 
 void apply(Info &a, ll b, int l, int r) {
-    a.c += b * (r - l);
+    a.val += b * (r - l);
 }
 
 void apply(ll &a, ll b, int l, int r) {
@@ -104,7 +104,7 @@ int main() {
 
     vector<Info> a(n);
     for (int i = 0; i < n; ++i) {
-        cin >> a[i].c;
+        cin >> a[i].val;
     }
 
     LazySegmentTree<Info, ll> seg(a);
@@ -116,7 +116,7 @@ int main() {
             cin >> k;
             seg.update(x, y, k);
         } else if (op == 2) {
-            cout << seg.query(x, y).c << "\n";
+            cout << seg.query(x, y).val << "\n";
         }
     }
 
