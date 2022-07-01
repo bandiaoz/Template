@@ -29,7 +29,6 @@ int euler_phi(int n) {
 vector<int> phi;
 void phi_table(int n) {
     phi.resize(n + 1);
-    for (int i = 2; i <= n; i++) phi[i] = 0;
     phi[1] = 1;
     for (int i = 2; i <= n; i++) {
         if (phi[i]) continue;
