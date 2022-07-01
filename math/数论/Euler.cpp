@@ -15,6 +15,7 @@ typedef long long ll;
 using namespace std;
 #pragma endregion
 
+// 表示的是小于等于n和n互质的数的个数。
 int euler_phi(int n) {
     int ans = n;
     for (int i = 2; i * i <= n; i++)
@@ -26,9 +27,8 @@ int euler_phi(int n) {
     return ans;
 }
 
-vector<int> phi;
-void phi_table(int n) {
-    phi.resize(n + 1);
+vector<int> phi_table(int n) {
+    vector<int> phi(n + 1);
     phi[1] = 1;
     for (int i = 2; i <= n; i++) {
         if (phi[i]) continue;
@@ -37,4 +37,5 @@ void phi_table(int n) {
             phi[j] = phi[j] / i * (i - 1);
         }
     }
+    return phi;
 }
