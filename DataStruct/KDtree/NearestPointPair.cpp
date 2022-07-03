@@ -36,7 +36,7 @@ struct KDTree {
         
         innerBuild(0, n);
     };
-    void query(int p, double &ans) {
+    void query(int p, T &ans) {
         innerQuery(0, n, p, ans);
     }
 private:

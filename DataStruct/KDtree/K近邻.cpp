@@ -1,21 +1,10 @@
-#pragma region
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <set>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-#define tr t[root]
-#define lson t[root << 1]
-#define rson t[root << 1 | 1]
+
 #define rep(i, a, n) for (int i = a; i <= n; ++i)
 #define per(i, a, n) for (int i = n; i >= a; --i)
-#pragma endregion
+
 const int maxn = 5e4 + 5;
 inline double sq(double x) { return x * x; }
 namespace KDTree {
