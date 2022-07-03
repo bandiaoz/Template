@@ -19,20 +19,15 @@ typedef long long ll;
 const int maxn = 2e5 + 5;
 int n, lc[maxn], rc[maxn];
 double L[maxn], R[maxn], U[maxn], D[maxn];
-double ans = 2e18;
 struct node {
     double x, y;
 } a[maxn];
-double sq(double x) {
-    return x * x;
-}
-double dis(int i, int j) {
-    return sq(a[i].x - a[j].x) + sq(a[i].y - a[j].y);
-}
 int cmpx;
+double sq(double x) { return x * x; }
+double dis(int i, int j) { return sq(a[i].x - a[j].x) + sq(a[i].y - a[j].y); }
 void maintain(int id) {
     L[id] = R[id] = a[id].x;
-    D[id] = U[id] = a[id].y;
+    U[id] = D[id] = a[id].y;
     if (lc[id])
         L[id] = min(L[id], L[lc[id]]), R[id] = max(R[id], R[lc[id]]),
         D[id] = min(D[id], D[lc[id]]), U[id] = max(U[id], U[lc[id]]);
@@ -41,12 +36,12 @@ void maintain(int id) {
         D[id] = min(D[id], D[rc[id]]), U[id] = max(U[id], U[rc[id]]);
 }
 int build(int l, int r) {
-    if (l >= r) return 0;
+    if (l > r) return 0;
     int mid = (l + r) >> 1;
     double avx = 0, avy = 0, vax = 0, vay = 0;
     rep(i, l, r) avx += a[i].x, avy += a[i].y;
     avx /= r - l + 1, avy /= r - l + 1;
-    rep(i, l, r) vax += sq(a[i].x - avx), vay += sq(a[i].y - vay);
+    rep(i, l, r) vax += sq(a[i].x - avx), vay += sq(a[i].y - avy);
     cmpx = (vax > vay);
     nth_element(a + l, a + mid, a + r + 1, [](const node& A, const node& B) { return cmpx ? A.x < B.x : A.y < B.y; });
     lc[mid] = build(l, mid - 1), rc[mid] = build(mid + 1, r);
@@ -61,7 +56,7 @@ double f(int p, int id) {
     if (a[p].y > U[id]) ans += sq(a[p].y - U[id]);
     return ans;
 }
-void query(int l, int r, int p) {
+void query(int l, int r, int p, double &ans) {
     if (l > r) return;
     int mid = (l + r) >> 1;
     if (p != mid) ans = min(ans, dis(p, mid));
@@ -69,21 +64,22 @@ void query(int l, int r, int p) {
     double dl = f(p, lc[mid]), dr = f(p, rc[mid]);
     if (dl < ans && dr < ans) {
         if (dl < dr) {
-            query(l, mid - 1, p);
-            if (dr < ans) query(mid + 1, r, p);
+            query(l, mid - 1, p, ans);
+            if (dr < ans) query(mid + 1, r, p, ans);
         } else {
-            query(mid + 1, r, p);
-            if (dl < ans) query(l, mid - 1, p);
+            query(mid + 1, r, p, ans);
+            if (dl < ans) query(l, mid - 1, p, ans);
         }
     } else {
-        if (dl < ans) query(l, mid - 1, p);
-        if (dr < ans) query(mid + 1, r, p);
+        if (dl < ans) query(l, mid - 1, p, ans);
+        if (dr < ans) query(mid + 1, r, p, ans);
     }
 }
 int main() {
     scanf("%d", &n);
     rep(i, 1, n) scanf("%lf%lf", &a[i].x, &a[i].y);
     build(1, n);
-    rep(i, 1, n) query(1, n, i);
-    printf("%.4lf\n", ans);
+    double ans = 2e18;
+    rep(i, 1, n) query(1, n, i, ans);
+    printf("%.4lf\n", sqrt(ans));
 }

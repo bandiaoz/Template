@@ -1,22 +1,17 @@
-#include <algorithm>
-#include <cmath>
-#include <deque>
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-const int inf = 0x3f3f3f3f;
-const double PI = 3.14159265358979323846264338;
+const int inf = 1e9;
+const double PI = acos(-1);
 const double eps = 1e-8;
 
 int sgn(double x) { return abs(x) < eps ? 0 : (x > 0 ? 1 : -1); }
-long long gcd(long long a, long long b) { return b == 0 ? a : gcd(b, a % b); }
 
-//
-struct Point  // Point & Vector
-{
+struct Point {  // Point & Vector
     double x, y;
     Point(const double &x = 0, const double &y = 0) : x(x), y(y) {}
+    
     friend Point operator+(const Point &a, const Point &b) {
         return Point(a.x + b.x, a.y + b.y);
     }
@@ -33,7 +28,8 @@ struct Point  // Point & Vector
         return Point(a.x / c, a.y / c);
     }
     friend Point rotate(const Point &v, double theta) {  // 向量逆时针旋转theta弧度
-        return Point(v.x * cos(theta) - v.y * sin(theta), v.x * sin(theta) + v.y * cos(theta));
+        return Point(v.x * cos(theta) - v.y * sin(theta),
+                     v.x * sin(theta) + v.y * cos(theta));
     }
     friend Point rotateAroundPoint(Point &v, Point &p, double theta) {
         return rotate(v - p, theta) + p;
@@ -72,29 +68,27 @@ struct Line {
     int id;
     Point s, t;
     Line(const Point &s = Point(), const Point &t = Point()) : s(s), t(t) {}
+
     Point vec() const { return t - s; }           // 化成矢量
     double norm() const { return vec().norm(); }  // 线段长度
-    bool pointOnLine(const Point &p) {
+    bool pointOnLine(const Point &p) {            // 点是否在直线上
         return sgn(det(p - s, t - s)) == 0;
-    }  // 点是否在直线上
-    bool pointOnSeg(const Point &p) {
+    }
+    bool pointOnSeg(const Point &p) {  // 点是否在线段上，含线段端点
         return pointOnLine(p) && sgn(dot(p - s, p - t)) <= 0;
-    }  // 点是否在线段上，含线段端点
-    bool pointOnSegInterval(const Point &p) {
+    }
+    bool pointOnSegInterval(const Point &p) {  // 点是否在线段上，不含线段端点
         return pointOnLine(p) && sgn(dot(p - s, p - t) < 0);
-    }  // 点是否在线段上，不含线段端点
-    Point pedalPointLine(const Point &p) {
+    }
+    Point pedalPointLine(const Point &p) {  // 点到直线的垂足
         return s + vec() * ((dot(p - s, vec()) / norm()) / norm());
-    }  // 点到直线的垂足
-    double disPointLine(const Point &p) {
+    }
+    double disPointLine(const Point &p) {  // 点到直线的距离
         return fabs(det(p - s, vec()) / norm());
-    }  // 点到直线的距离
-    // 点到线段的距离
-    double disPointSeg(const Point &p) {
-        if (sgn(dot(p - s, t - s)) < 0)
-            return (p - s).norm();
-        if (sgn(dot(p - t, s - t)) < 0)
-            return (p - t).norm();
+    }
+    double disPointSeg(const Point &p) {  // 点到线段的距离
+        if (sgn(dot(p - s, t - s)) < 0) return (p - s).norm();
+        if (sgn(dot(p - t, s - t)) < 0) return (p - t).norm();
         return disPointLine(p);
     }
     // 计算点 p 与直线的关系， 返回ONLINE、LEFT、RIGHT 上0 左-1 右1
@@ -105,9 +99,7 @@ struct Line {
     }
     // 二维平面上点 p 关于直线的对称点
     Point symPoint(const Point &p) {
-        return 2.0 * s - p +
-               2.0 * (t - s) * dot(p - s, t - s) /
-                   ((t.x - s.x) * (t.x - s.x) + (t.y - s.y) * (t.y - s.y));
+        return 2.0 * s - p + 2.0 * (t - s) * dot(p - s, t - s) / ((t.x - s.x) * (t.x - s.x) + (t.y - s.y) * (t.y - s.y));
     }
     // 判断两直线是否平行
     friend bool isParallel(const Line &l1, const Line &l2) {
@@ -121,12 +113,13 @@ struct Line {
     }
     // 求两直线交点的另一种方法
     friend Point getLineIntersection(const Line &u, const Line &v) {
-        return u.s +
-               (u.t - u.s) * det(u.s - v.s, v.s - v.t) / det(u.s - u.t, v.s - v.t);
+        return u.s + (u.t - u.s) * det(u.s - v.s, v.s - v.t) /
+                         det(u.s - u.t, v.s - v.t);
     }
     // 判断线段交, 返回是否有交点
     friend bool isSegIntersection(Line l1, Line l2) {
-        if (!sgn(det(l2.s - l1.s, l1.vec())) && !sgn(det(l2.t - l1.t, l1.vec()))) {
+        if (!sgn(det(l2.s - l1.s, l1.vec())) &&
+            !sgn(det(l2.t - l1.t, l1.vec()))) {
             return l1.pointOnSeg(l2.s) || l1.pointOnSeg(l2.t) ||
                    l2.pointOnSeg(l1.s) || l2.pointOnSeg(l1.t);
         }
@@ -198,7 +191,8 @@ struct Line {
 };
 
 struct Triangle {
-    Triangle(const Point &a, const Point &b, const Point &c) : a(a), b(b), c(c){};
+    Triangle(const Point &a, const Point &b, const Point &c)
+        : a(a), b(b), c(c){};
     Point a, b, c;
     double getArea() { return det(b - a, c - a) * sin(arg_2(b - c, c - a)); }
     // 外心
@@ -249,12 +243,9 @@ struct Triangle {
 
     // 费马点 到三角形三顶点距离之和最小的点
     Point fermentPoint() {
-        if (arg_3(a, b, c) >= 2 * PI / 3)
-            return b;
-        if (arg_3(b, a, c) >= 2 * PI / 3)
-            return a;
-        if (arg_3(a, c, b) >= 2 * PI / 3)
-            return c;
+        if (arg_3(a, b, c) >= 2 * PI / 3) return b;
+        if (arg_3(b, a, c) >= 2 * PI / 3) return a;
+        if (arg_3(a, c, b) >= 2 * PI / 3) return c;
         Point ab = (a + b) / 2, ac = (a + c) / 2;
         Point z1 = sqrt(3.0) * (a - ab), z2 = sqrt(3.0) * (a - ac);
         z1 = rotate(z1, PI / 2);
@@ -272,19 +263,19 @@ struct Triangle {
     // 模拟退火求费马点
     Point FermatPoint() {
         Point u, v;
-        double step =
-            fabs(a.x) + fabs(a.y) + fabs(b.x) + fabs(b.y) + fabs(c.x) + fabs(c.y);
+        double step = fabs(a.x) + fabs(a.y) + fabs(b.x) + fabs(b.y) + fabs(c.x) + fabs(c.y);
         u = (a + b + c) / 3;
         while (step > 1e-10)
             for (int k = 0; k < 10; step /= 2, ++k)
-                for (int i = -1; i <= 1; ++i)
+                for (int i = -1; i <= 1; ++i) {
                     for (int j = -1; j <= 1; ++j) {
                         v.x = u.x + step * i;
                         v.y = u.y + step * j;
-                        if (dis(u, a) + dis(u, b) + dis(u, c) >
-                            dis(v, a) + dis(v, b) + dis(v, c))
+                        if (dis(u, a) + dis(u, b) + dis(u, c) > dis(v, a) + dis(v, b) + dis(v, c)) {
                             u = v;
+                        }
                     }
+                }
         return u;
     }
 };
@@ -298,38 +289,32 @@ struct Polygon {
     // 多边形周长
     double perimeter() {
         double sum = 0;
-        for (int i = 0; i < n; ++i)
-            sum += (p[_next(i)] - p[i]).norm();
+        for (int i = 0; i < n; ++i) sum += (p[_next(i)] - p[i]).norm();
         return sum;
     }
     // 多边形面积
     double area() {
         double sum = 0;
-        for (int i = 0; i < n; ++i)
-            sum += det(p[i], p[_next(i)]);
+        for (int i = 0; i < n; ++i) sum += det(p[i], p[_next(i)]);
         return fabs(sum) / 2;
     }  // eps
     // 判断点与多边形的位置关系 0外, 1内, 2边上
     int pointIn(const Point &t) {
         int num = 0;
         for (int i = 0; i < n; i++) {
-            if (Line(p[i], p[_next(i)]).pointOnSeg(t))
-                return 2;
+            if (Line(p[i], p[_next(i)]).pointOnSeg(t)) return 2;
             int k = sgn(det(p[_next(i)] - p[i], t - p[i]));
             int d1 = sgn(p[i].y - t.y);
             int d2 = sgn(p[_next(i)].y - t.y);
-            if (k > 0 && d1 <= 0 && d2 > 0)
-                num++;
-            if (k < 0 && d2 <= 0 && d1 > 0)
-                num--;
+            if (k > 0 && d1 <= 0 && d2 > 0) num++;
+            if (k < 0 && d2 <= 0 && d1 > 0) num--;
         }
         return num % 2;
     }
     // 多边形重心
     Point baryCenter() {
         Point ans;
-        if (sgn(area()) == 0)
-            return ans;
+        if (sgn(area()) == 0) return ans;
         for (int i = 0; i < n; ++i)
             ans = ans + (p[i] + p[_next(i)]) * det(p[i], p[_next(i)]);
         return ans / area() / 6 + eps;  // 要加eps吗？
@@ -371,10 +356,10 @@ struct Polygon {
     int insidePolygon(Line l) {
         vector<Point> t;
         Point tt, l1 = l.s, l2 = l.t;
-        if (!pointIn(l.s) || !pointIn(l.t))
-            return 0;
+        if (!pointIn(l.s) || !pointIn(l.t)) return 0;
         for (int i = 0; i < n; ++i) {
-            if (l.sameSide(p[i], p[(i + 1) % n]) && l.sameSide(p[i], p[(i + 1) % n]))
+            if (l.sameSide(p[i], p[(i + 1) % n]) &&
+                l.sameSide(p[i], p[(i + 1) % n]))
                 return 0;
             else if (dotOnlineIn(l1, p[i], p[(i + 1) % n]))
                 t.push_back(l1);
@@ -385,8 +370,7 @@ struct Polygon {
         }
         for (int i = 0; i < t.size(); ++i) {
             for (int j = i + 1; j < t.size(); ++j) {
-                if (!pointIn((t[i] + t[j]) / 2))
-                    return 0;
+                if (!pointIn((t[i] + t[j]) / 2)) return 0;
             }
         }
         return 1;
@@ -395,12 +379,33 @@ struct Polygon {
 
 struct Convex : public Polygon {
     Convex(int n = 0) : Polygon(n) {}
-    // Convex(vector<point> &v) : Polygon(v) { n = v.size(); }
+    Convex(vector<Point> &a) { // 传入n个点构造凸包
+        Convex res(a.size() * 2 + 7);  // 为何？经测试好像只需要a.size()？
+        sort(a.begin(), a.end());
+        a.erase(unique(a.begin(), a.end()), a.end());  // 去重点
+        int m = 0;
+        for (int i = 0; i < a.size(); ++i) {
+            // <=0 则允许3点共线，<0 则不允许
+            while (m > 1 && sgn(det(res.p[m - 1] - res.p[m - 2], a[i] - res.p[m - 2])) <= 0)
+                m--;
+            res.p[m++] = a[i];
+        }
+        int k = m;
+        for (int i = a.size() - 2; i >= 0; --i) {
+            while (m > k && sgn(det(res.p[m - 1] - res.p[m - 2], a[i] - res.p[m - 2])) <= 0) {
+                m--;
+            }
+            res.p[m++] = a[i];
+        }
+        if (m > 1) m--;
+        res.p.resize(m);
+        res.n = m;
+        *this = res;
+    }
 
     // 需要先求凸包，若凸包每条边除端点外都有点，则可唯一确定凸包
     bool isUnique(vector<Point> &v) {
-        if (sgn(area()) == 0)
-            return 0;
+        if (sgn(area()) == 0) return 0;
         for (int i = 0; i < n; ++i) {
             Line l(p[i], p[_next(i)]);
             bool flag = 0;
@@ -410,8 +415,7 @@ struct Convex : public Polygon {
                     break;
                 }
             }
-            if (!flag)
-                return 0;
+            if (!flag) return 0;
         }
         return 1;
     }
@@ -419,8 +423,7 @@ struct Convex : public Polygon {
     bool containon(const Point &a) {
         for (int sign = 0, i = 0; i < n; ++i) {
             int x = sgn(det(p[i] - a, p[_next(i)] - a));
-            if (x == 0)
-                continue;  // return 0; // 改成不包含边
+            if (x == 0) continue;  // return 0; // 改成不包含边
             if (!sign)
                 sign = x;
             else if (sign != x)
@@ -435,12 +438,14 @@ struct Convex : public Polygon {
         while (l + 1 < r) {
             int m = (l + r) >> 1;
             if (sgn(det(p[l] - g, p[m] - g)) > 0) {
-                if (sgn(det(p[l] - g, a - g)) >= 0 && sgn(det(p[m] - g, a - g)) < 0)
+                if (sgn(det(p[l] - g, a - g)) >= 0 &&
+                    sgn(det(p[m] - g, a - g)) < 0)
                     r = m;
                 else
                     l = m;
             } else {
-                if (sgn(det(p[l] - g, a - g)) < 0 && sgn(det(p[m] - g, a - g)) >= 0)
+                if (sgn(det(p[l] - g, a - g)) < 0 &&
+                    sgn(det(p[m] - g, a - g)) >= 0)
                     l = m;
                 else
                     r = m;
@@ -486,8 +491,7 @@ struct Convex : public Polygon {
     double getAngle(const Point &p) {  // 获取向量角度[0, 2PI]
         double res = atan2(p.y, p.x);  // （-PI, PI】
         //      if (res < 0) res += 2 * pi; //为何不可以
-        if (res < -PI / 2 + eps)
-            res += 2 * PI;  // eps修正精度
+        if (res < -PI / 2 + eps) res += 2 * PI;  // eps修正精度
         return res;
     }
     void initAngle() {
@@ -497,8 +501,7 @@ struct Convex : public Polygon {
         isinitangle = 1;
     }
     bool isxLine(const Line &l) {
-        if (!isinitangle)
-            initAngle();
+        if (!isinitangle) initAngle();
         int i = finda(getAngle(l.t - l.s));
         int j = finda(getAngle(l.s - l.t));
         if (sgn(det(l.t - l.s, p[i] - l.s) * det(l.t - l.s, p[j] - l.s) >= 0))
@@ -506,31 +509,6 @@ struct Convex : public Polygon {
         return 1;
     }
 };
-
-Convex ConvexHull(vector<Point> &a)  // 从一个vector获取凸包
-{
-    Convex res(2 * a.size() + 7);  // 为何？经测试好像只需要a.size()？
-    sort(a.begin(), a.end());
-    a.erase(unique(a.begin(), a.end()), a.end());  // 去重点
-    int m = 0;
-    for (int i = 0; i < a.size(); ++i) {
-        // <=0 则允许3点共线，<0 则不允许
-        while (m > 1 && sgn(det(res.p[m - 1] - res.p[m - 2], a[i] - res.p[m - 2])) <= 0)
-            m--;
-        res.p[m++] = a[i];
-    }
-    int k = m;
-    for (int i = a.size() - 2; i >= 0; --i) {
-        while (m > k && sgn(det(res.p[m - 1] - res.p[m - 2], a[i] - res.p[m - 2])) <= 0)
-            m--;
-        res.p[m++] = a[i];
-    }
-    if (m > 1)
-        m--;
-    res.p.resize(m);
-    res.n = m;
-    return res;
-}
 
 struct HalfPlane : public Line {  // 半平面
     // ax + by + c <= 0
@@ -566,13 +544,11 @@ struct HalfPlane : public Line {  // 半平面
                 res.p.push_back(c.p[i]);
             else {
                 int j = i - 1;
-                if (j < 0)
-                    j = c.n - 1;
+                if (j < 0) j = c.n - 1;
                 if (h.calc(c.p[j]) < -eps)
                     res.p.push_back(halfxLine(h, Line(c.p[j], c.p[i])));
                 j = i + 1;
-                if (j == c.n)
-                    j = 0;
+                if (j == c.n) j = 0;
                 if (h.calc(c.p[j]) < -eps) {
                     res.p.push_back(halfxLine(h, Line(c.p[i], c.p[j])));
                 }
@@ -596,8 +572,7 @@ struct HalfPlane : public Line {  // 半平面
         deque<Point> ans;
         q.push_back(v[0]);
         for (int i = 1; i < v.size(); ++i) {
-            if (sgn(v[i].vec().arg() - v[i - 1].vec().arg()) == 0)
-                continue;
+            if (sgn(v[i].vec().arg() - v[i - 1].vec().arg()) == 0) continue;
             while (ans.size() > 0 && !satisfy(ans.back(), v[i])) {
                 ans.pop_back();
                 q.pop_back();
@@ -620,7 +595,8 @@ struct HalfPlane : public Line {  // 半平面
         ans.push_back(lineIntersection(q.back(), q.front()));
         Convex c(ans.size());
         int i = 0;
-        for (deque<Point>::iterator it = ans.begin(); it != ans.end(); ++it, ++i) {
+        for (deque<Point>::iterator it = ans.begin(); it != ans.end();
+             ++it, ++i) {
             c.p[i] = *it;
         }
         return c;
@@ -671,8 +647,7 @@ struct Circle {
     friend int isSegCircleIntersection(Line L, Circle c) {
         double t1 = dis(c.o, L.s) - c.r, t2 = dis(c.o, L.t) - c.r;
         Point t = c.o;
-        if (t1 < eps || t2 < eps)
-            return t1 > -eps || t2 > -eps;
+        if (t1 < eps || t2 < eps) return t1 > -eps || t2 > -eps;
         t.x += L.s.y - L.t.y;
         t.y += L.t.x - L.s.x;
         return det(L.s - t, c.o - t) * det(L.t - t, c.o - t) < eps &&
@@ -686,8 +661,7 @@ struct Circle {
     // 计算圆上到点p最近点,如p与圆心重合,返回p本身
     friend Point dotPointCircle(Point p, Circle C) {
         Point u, v, c = C.o;
-        if (dis(p, c) < eps)
-            return p;
+        if (dis(p, c) < eps) return p;
         u.x = c.x + C.r * fabs(c.x - p.x) / dis(c, p);
         u.y = c.y + C.r * fabs(c.y - p.y) / dis(c, p) *
                         ((c.x - p.x) * (c.y - p.y) < 0 ? -1 : 1);
@@ -704,8 +678,7 @@ struct Circle {
         double C = sqr(l.s.x - c.o.x) + sqr(l.s.y - c.o.y) - sqr(c.r);
         double delta = B * B - 4 * A * C;
         vector<Point> res;
-        if (A < eps)
-            return res;
+        if (A < eps) return res;
         if (sgn(delta) >= 0) {  // or delta > -eps ?
             // 可能需要注意delta接近-eps的情况，所以使用mysqrt
             double w1 = (-B - mysqrt(delta)) / (2 * A);
@@ -720,21 +693,20 @@ struct Circle {
         return res;
     }
     // 圆与直线交
-    friend vector<Point> lineCircleIntersection(const Line &l, const Circle &c) {
+    friend vector<Point> lineCircleIntersection(const Line &l,
+                                                const Circle &c) {
         double dx = l.t.x - l.s.x, dy = l.t.y - l.s.y;
         double A = dx * dx + dy * dy;
         double B = 2 * dx * (l.s.x - c.o.x) + 2 * dy * (l.s.y - c.o.y);
         double C = sqr(l.s.x - c.o.x) + sqr(l.s.y - c.o.y) - sqr(c.r);
         double delta = B * B - 4 * A * C;
         vector<Point> res;
-        if (A < eps)
-            return res;
+        if (A < eps) return res;
         if (sgn(delta) >= 0) {  // or delta > -eps ?
             double w1 = (-B - mysqrt(delta)) / (2 * A);
             double w2 = (-B + mysqrt(delta)) / (2 * A);
             res.push_back(l.s + w1 * (l.t - l.s));
-            if (fabs(w1 - w2) > eps)
-                res.push_back(l.s + w2 * (l.t - l.s));
+            if (fabs(w1 - w2) > eps) res.push_back(l.s + w2 * (l.t - l.s));
         }
         return res;
     }
@@ -759,8 +731,7 @@ struct Circle {
         double r = C.r;
         vector<Point> vec;
         double dist = (poi - o).norm();
-        if (dist < r - eps)
-            return vec;
+        if (dist < r - eps) return vec;
         if (fabs(dist - r) < eps) {
             vec.push_back(poi);
             return vec;
@@ -783,10 +754,8 @@ struct Circle {
     // 扇形面积 a->b
     double sectorArea(const Point &a, const Point &b) const {
         double theta = atan2(a.y, a.x) - atan2(b.y, b.x);
-        while (theta < 0)
-            theta += 2 * PI;
-        while (theta > 2.0 * PI)
-            theta -= 2 * PI;
+        while (theta < 0) theta += 2 * PI;
+        while (theta > 2.0 * PI) theta -= 2 * PI;
         theta = min(theta, 2.0 * PI - theta);
         return sgn(det(a, b)) * theta * r * r / 2.0;
     }
@@ -806,7 +775,8 @@ struct Circle {
                 return det(p[0] - o, b - o) / 2 + sectorArea(a - o, p[0] - o);
             else {
                 if (p.size() == 2)
-                    return sectorArea(a - o, p[0] - o) + sectorArea(p[1] - o, b - o) +
+                    return sectorArea(a - o, p[0] - o) +
+                           sectorArea(p[1] - o, b - o) +
                            det(p[0] - o, p[1] - o) / 2;
                 else
                     return sectorArea(a - o, b - o);
@@ -883,16 +853,12 @@ struct Circle {
     }
     // 线段在圆内的长度
     friend double lengthSegInCircle(Line a, Circle c) {
-        if (c.pointIn(a.s) && c.pointIn(a.t))
-            return a.norm();
+        if (c.pointIn(a.s) && c.pointIn(a.t)) return a.norm();
         vector<Point> vec = segCircleIntersection(a, c);
-        if (vec.size() == 0)
-            return 0;
+        if (vec.size() == 0) return 0;
         if (vec.size() == 1) {
-            if (c.pointIn(a.s))
-                return dis(vec[0], a.s);
-            if (c.pointIn(a.t))
-                return dis(vec[0], a.t);
+            if (c.pointIn(a.s)) return dis(vec[0], a.s);
+            if (c.pointIn(a.t)) return dis(vec[0], a.t);
             return 0;
         }
         return dis(vec[0], vec[1]);
