@@ -1,84 +1,121 @@
-#pragma region
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <set>
-#include <vector>
+#include <bits/stdc++.h>
+
 using namespace std;
-typedef long long ll;
-#define tr t[root]
-#define lson t[root << 1]
-#define rson t[root << 1 | 1]
-#define rep(i, a, n) for (int i = a; i <= n; ++i)
-#define per(i, a, n) for (int i = n; i >= a; --i)
-#pragma endregion
-const int maxn = 1e5 + 5;
-int n, k;
-ll lc[maxn], rc[maxn];
-ll L[maxn], R[maxn], U[maxn], D[maxn];
-priority_queue<ll, vector<ll>, greater<ll> > q;
-struct node {
-    ll x, y;
-} a[maxn];
-ll sq(ll x) { return x * x; }
-ll dis(int i, int j) { return sq(a[i].x - a[j].x) + sq(a[i].y - a[j].y); }
-int cmpx;
-void maintain(int id) {
-    L[id] = R[id] = a[id].x;
-    D[id] = U[id] = a[id].y;
-    if (lc[id])
-        L[id] = min(L[id], L[lc[id]]), R[id] = max(R[id], R[lc[id]]),
-        D[id] = min(D[id], D[lc[id]]), U[id] = max(U[id], U[lc[id]]);
-    if (rc[id])
-        L[id] = min(L[id], L[rc[id]]), R[id] = max(R[id], R[rc[id]]),
-        D[id] = min(D[id], D[rc[id]]), U[id] = max(U[id], U[rc[id]]);
-}
-int build(int l, int r) {
-    if (l > r) return 0;
-    int mid = (l + r) >> 1;
-    double avx = 0, avy = 0, vax = 0, vay = 0;
-    rep(i, l, r) avx += a[i].x, avy += a[i].y;
-    avx /= r - l + 1, avy /= r - l + 1;
-    rep(i, l, r) vax += sq(avx - a[i].x), vay += sq(avy - a[i].y);
-    cmpx = (vax > vay);
-    nth_element(a + l, a + mid, a + r + 1, [](const node &A, const node &B) { return cmpx ? A.x < B.x : A.y < B.y; });
-    lc[mid] = build(l, mid - 1), rc[mid] = build(mid + 1, r);
-    maintain(mid);
-    return mid;
-}
-ll f(ll p, ll id) {
-    return max(sq(a[p].x - L[id]), sq(a[p].x - R[id])) +
-           max(sq(a[p].y - D[id]), sq(a[p].y - U[id]));
-}
-void query(int l, int r, int x) {
-    if (l > r) return;
-    int mid = (l + r) >> 1;
-    ll tmp = dis(x, mid);
-    if (tmp > q.top()) q.pop(), q.push(tmp);
-    ll dl = f(x, lc[mid]), dr = f(x, rc[mid]);
-    if (dl > q.top() && dr > q.top()) {
-        if (dl > dr) {
-            query(l, mid - 1, x);
-            if (dr > q.top()) query(mid + 1, r, x);
-        } else {
-            query(mid + 1, r, x);
-            if (dl > q.top()) query(l, mid - 1, x);
+using ll = long long;
+
+template<typename T>
+struct KDTree {
+    KDTree(int n) : n(n), lc(n, -1), rc(n, -1), L(n), R(n), U(n), D(n) {}
+    KDTree(vector<array<T, 2>> &st) : KDTree(st.size()) {
+        a = st;
+        function<int(int, int)> innerBuild = [&](int l, int r) {
+            if (l >= r) {
+                return -1;
+            }
+            int mid = (l + r) >> 1;
+            array<double, 2> average, weight;
+            for (int i = l; i < r; ++i) {
+                average[0] += a[i][0];
+                average[1] += a[i][1];
+            }
+            average[0] /= r - l;
+            average[1] /= r - l;
+            for (int i = l; i < r; ++i) {
+                weight[0] += sqr(a[i][0] - average[0]);
+                weight[1] += sqr(a[i][1] - average[1]);
+            }
+            nth_element(a.begin() + l, a.begin() + mid, a.begin() + r, 
+                [&](const auto &A, const auto &B) {
+                return weight[0] > weight[1] ? A[0] < B[0] : A[1] < B[1];
+            });
+            lc[mid] = innerBuild(l, mid);
+            rc[mid] = innerBuild(mid + 1, r);
+            maintain(mid);
+            return mid;
+        };
+        
+        innerBuild(0, n);
+    };
+    T query(int k) {
+        priority_queue<T, vector<T>, greater<T>> q;
+        for (int i = 0; i < k; ++i) q.push(0);
+        for (int i = 0; i < n; ++i) {
+            innerQuery(0, n, i, q);
         }
-    } else {
-        if (dl > q.top()) query(l, mid - 1, x);
-        if (dr > q.top()) query(mid + 1, r, x);
+        return q.top();
     }
-}
+private:
+    const int n;
+    vector<int> lc, rc;
+    vector<T> L, R, U, D;
+    vector<array<T, 2>> a;
+    
+    template<typename U> U sqr(U x) { return x * x; }
+    T dis(int i, int j) {
+        return sqr(a[i][0] - a[j][0]) + sqr(a[i][1] - a[j][1]);
+    }
+    void maintain(int i) {
+        L[i] = R[i] = a[i][0];
+        U[i] = D[i] = a[i][1];
+        if (lc[i] != -1) {
+            L[i] = min(L[i], L[lc[i]]), R[i] = max(R[i], R[lc[i]]);
+            D[i] = min(D[i], D[lc[i]]), U[i] = max(U[i], U[lc[i]]);
+        }
+        if (rc[i] != -1) {
+            L[i] = min(L[i], L[rc[i]]), R[i] = max(R[i], R[rc[i]]);
+            D[i] = min(D[i], D[rc[i]]), U[i] = max(U[i], U[rc[i]]);
+        }
+    }
+    T fmax(int p, int i) { // 到这一个区域最大的距离
+        return max(sqr(a[p][0] - L[i]), sqr(a[p][0] - R[i])) + 
+               max(sqr(a[p][1] - D[i]), sqr(a[p][1] - U[i]));
+    }
+    void innerQuery(int l, int r, int p, priority_queue<T, vector<T>, greater<T>> &q) {
+        if (l >= r) return;
+        int mid = (l + r) >> 1;
+        T tmp = dis(p, mid);
+        if (tmp > q.top()) {
+            q.pop();
+            q.push(tmp);
+        }
+        T dl = fmax(p, lc[mid]), dr = fmax(p, rc[mid]);
+        if (dl > q.top() && dr > q.top()) {
+            if (dl > dr) {
+                innerQuery(l, mid, p, q);
+                if (dr > q.top()) {
+                    innerQuery(mid + 1, r, p, q);
+                }
+            } else {
+                innerQuery(mid + 1, r, p, q);
+                if (dl > q.top()) {
+                    innerQuery(l, mid, p, q);
+                }
+            }
+        } else if (dl > q.top()) {
+            innerQuery(l, mid, p, q);
+        } else if (dr > q.top()) {
+            innerQuery(mid + 1, r, p, q);
+        }
+    }
+};
+
 int main() {
-    scanf("%d%d", &n, &k);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, k;
+    cin >> n >> k;
+
     k *= 2;
-    rep(i, 1, k) q.push(0);
-    rep(i, 1, n) scanf("%lld%lld", &a[i].x, &a[i].y);
-    build(1, n);
-    rep(i, 1, n) query(1, n, i);
-    printf("%lld\n", q.top());
+
+    vector<array<ll, 2>> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i][0] >> a[i][1];
+    }
+
+    KDTree<ll> kdt(a);
+
+    cout << kdt.query(k) << "\n";
+
+    return 0;
 }
