@@ -25,24 +25,25 @@ struct Circle {
         if (t1 < eps || t2 < eps) return t1 > -eps || t2 > -eps;
         t.x += L.s.y - L.t.y;
         t.y += L.t.x - L.s.x;
-        return det(L.s - t, c.o - t) * det(L.t - t, c.o - t) < eps &&
-               L.disPointLine(c.o) < c.r + eps;
+        return det(L.s - t, c.o - t) * det(L.t - t, c.o - t) < eps && L.disPointLine(c.o) < c.r + eps;
     }
     // 判圆和圆相交,包括相切
     friend int isCirCirIntersection(Circle c1, Circle c2) {
         return dis(c1.o, c2.o) < c1.r + c2.r + eps &&
                dis(c1.o, c2.o) > fabs(c1.r - c2.r) - eps;
     }
+    // 判圆和圆内含
+    friend int isCirCirContain(Circle c1, Circle c2) {
+        return sgn(dis(c1.o, c2.o) + min(c1.r, c2.r) - max(c1.r, c2.r)) <= 0;
+    }
     // 计算圆上到点p最近点,如p与圆心重合,返回p本身
     friend Point dotPointCircle(Point p, Circle C) {
         Point u, v, c = C.o;
         if (dis(p, c) < eps) return p;
         u.x = c.x + C.r * fabs(c.x - p.x) / dis(c, p);
-        u.y = c.y + C.r * fabs(c.y - p.y) / dis(c, p) *
-                        ((c.x - p.x) * (c.y - p.y) < 0 ? -1 : 1);
+        u.y = c.y + C.r * fabs(c.y - p.y) / dis(c, p) * ((c.x - p.x) * (c.y - p.y) < 0 ? -1 : 1);
         v.x = c.x - C.r * fabs(c.x - p.x) / dis(c, p);
-        v.y = c.y - C.r * fabs(c.y - p.y) / dis(c, p) *
-                        ((c.x - p.x) * (c.y - p.y) < 0 ? -1 : 1);
+        v.y = c.y - C.r * fabs(c.y - p.y) / dis(c, p) * ((c.x - p.x) * (c.y - p.y) < 0 ? -1 : 1);
         return dis(u, p) < dis(v, p) ? u : v;
     }
     // 圆与线段交 用参数方程表示直线：P=A+t*(B-A)，带入圆的方程求解t

@@ -8,22 +8,28 @@ struct Line {
 
     Point vec() const { return t - s; }           // 化成矢量
     double norm() const { return vec().norm(); }  // 线段长度
-    bool pointOnLine(const Point &p) {            // 点是否在直线上
+    // 点是否在直线上
+    bool pointOnLine(const Point &p) {            
         return sgn(det(p - s, t - s)) == 0;
     }
-    bool pointOnSeg(const Point &p) {  // 点是否在线段上，含线段端点
+    // 点是否在线段上，含线段端点
+    bool pointOnSeg(const Point &p) {  
         return pointOnLine(p) && sgn(dot(p - s, p - t)) <= 0;
     }
-    bool pointOnSegInterval(const Point &p) {  // 点是否在线段上，不含线段端点
+    // 点是否在线段上，不含线段端点
+    bool pointOnSegInterval(const Point &p) {  
         return pointOnLine(p) && sgn(dot(p - s, p - t) < 0);
     }
-    Point pedalPointLine(const Point &p) {  // 点到直线的垂足
+    // 点到直线的垂足
+    Point pedalPointLine(const Point &p) {  
         return s + vec() * ((dot(p - s, vec()) / norm()) / norm());
     }
-    double disPointLine(const Point &p) {  // 点到直线的距离
+    // 点到直线的距离
+    double disPointLine(const Point &p) { 
         return fabs(det(p - s, vec()) / norm());
     }
-    double disPointSeg(const Point &p) {  // 点到线段的距离
+    // 点到线段的距离
+    double disPointSeg(const Point &p) {  
         if (sgn(dot(p - s, t - s)) < 0) return (p - s).norm();
         if (sgn(dot(p - t, s - t)) < 0) return (p - t).norm();
         return disPointLine(p);

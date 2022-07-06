@@ -4,6 +4,7 @@ struct Polygon {
 #define _next(i) ((i + 1) % n)
     int n;
     vector<Point> p;
+
     Polygon(vector<Point> &v) : p(v) { n = p.size(); }
     Polygon(int n = 0) : n(n) { p.resize(n); }
     // 多边形周长
@@ -105,7 +106,7 @@ struct Convex : public Polygon {
         a.erase(unique(a.begin(), a.end()), a.end());  // 去重点
         int m = 0;
         for (int i = 0; i < a.size(); ++i) {
-            // <=0 则允许3点共线，<0 则不允许
+            // <0 则允许3点共线，<=0 则不允许
             while (m > 1 && sgn(det(res.p[m - 1] - res.p[m - 2], a[i] - res.p[m - 2])) <= 0)
                 m--;
             res.p[m++] = a[i];
