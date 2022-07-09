@@ -40,7 +40,7 @@ private:
                     return A[(i + div) % K] < B[(i + div) % K];
                 }
             }
-            return true;
+            return false;
         }
     };
     bool cmp(const array<T, K> &A, const array<T, K> &B, int div) {

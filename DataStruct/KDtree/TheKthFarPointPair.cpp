@@ -6,7 +6,7 @@ using ll = long long;
 template<typename T, int K = 2>
 struct KDTree {
     KDTree(int n) : n(n), lc(n, -1), rc(n, -1), L(n), R(n), U(n), D(n) {}
-    KDTree(vector<array<T, 2>> &st) : KDTree(st.size()) {
+    KDTree(vector<array<T, K>> &st) : KDTree(st.size()) {
         a = st;
         function<int(int, int, int)> innerBuild = [&](int l, int r, int div) {
             if (l >= r) {
@@ -34,7 +34,7 @@ private:
     const int n;
     vector<int> lc, rc;
     vector<T> L, R, U, D;
-    vector<array<T, 2>> a;
+    vector<array<T, K>> a;
     
     struct Cmp {
         int div;
@@ -45,7 +45,7 @@ private:
                     return A[(i + div) % K] < B[(i + div) % K];
                 }
             }
-            return true;
+            return false;
         }
     };
     bool cmp(const array<T, K> &A, const array<T, K> &B, int div) {
