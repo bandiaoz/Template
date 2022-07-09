@@ -3,38 +3,24 @@
 using namespace std;
 using ll = long long;
 
-template<typename T>
+template<typename T, int K = 2>
 struct KDTree {
     KDTree(int n) : n(n), lc(n, -1), rc(n, -1), L(n), R(n), U(n), D(n) {}
     KDTree(vector<array<T, 2>> &st) : KDTree(st.size()) {
         a = st;
-        function<int(int, int)> innerBuild = [&](int l, int r) {
+        function<int(int, int, int)> innerBuild = [&](int l, int r, int div) {
             if (l >= r) {
                 return -1;
             }
             int mid = (l + r) >> 1;
-            array<double, 2> average, weight;
-            for (int i = l; i < r; ++i) {
-                average[0] += a[i][0];
-                average[1] += a[i][1];
-            }
-            average[0] /= r - l;
-            average[1] /= r - l;
-            for (int i = l; i < r; ++i) {
-                weight[0] += sqr(a[i][0] - average[0]);
-                weight[1] += sqr(a[i][1] - average[1]);
-            }
-            nth_element(a.begin() + l, a.begin() + mid, a.begin() + r, 
-                [&](const auto &A, const auto &B) {
-                return weight[0] > weight[1] ? A[0] < B[0] : A[1] < B[1];
-            });
-            lc[mid] = innerBuild(l, mid);
-            rc[mid] = innerBuild(mid + 1, r);
+            nth_element(a.begin() + l, a.begin() + mid, a.begin() + r, Cmp(div));
+            lc[mid] = innerBuild(l, mid, (div + 1) % K);
+            rc[mid] = innerBuild(mid + 1, r, (div + 1) % K);
             maintain(mid);
             return mid;
         };
         
-        innerBuild(0, n);
+        innerBuild(0, n, 0);
     };
     T query(int k) {
         priority_queue<T, vector<T>, greater<T>> q;
@@ -50,9 +36,29 @@ private:
     vector<T> L, R, U, D;
     vector<array<T, 2>> a;
     
+    struct Cmp {
+        int div;
+        Cmp(const int &div) : div(div) {}
+        bool operator()(const array<T, K> &A, const array<T, K> &B) {
+            for (int i = 0; i < K; ++i) {
+                if (A[(i + div) % K] != B[(i + div) % K]) {
+                    return A[(i + div) % K] < B[(i + div) % K];
+                }
+            }
+            return true;
+        }
+    };
+    bool cmp(const array<T, K> &A, const array<T, K> &B, int div) {
+        Cmp cp(div);
+        return cp(A, B);
+    }
     template<typename U> U sqr(U x) { return x * x; }
-    T dis(int i, int j) {
-        return sqr(a[i][0] - a[j][0]) + sqr(a[i][1] - a[j][1]);
+    T dis(const array<T, K> &A, const array<T, K> &B) {
+        T ans = 0;
+        for (int i = 0; i < K; ++i) {
+            ans += sqr(A[i] - B[i]);
+        }
+        return ans;
     }
     void maintain(int i) {
         L[i] = R[i] = a[i][0];
@@ -73,7 +79,7 @@ private:
     void innerQuery(int l, int r, int p, priority_queue<T, vector<T>, greater<T>> &q) {
         if (l >= r) return;
         int mid = (l + r) >> 1;
-        T tmp = dis(p, mid);
+        T tmp = dis(a[p], a[mid]);
         if (tmp > q.top()) {
             q.pop();
             q.push(tmp);
