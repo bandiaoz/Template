@@ -39,14 +39,18 @@ struct Point {  // Point & Vector
     friend bool operator<(const Point &a, const Point &b) {
         return sgn(a.x - b.x) < 0 || (!sgn(a.x - b.x) && sgn(a.y - b.y) < 0);
     }
-    double norm() { return sqrt(x * x + y * y); }        // 向量模
-    friend double det(const Point &a, const Point &b) {  // 向量叉积
+    // 向量模
+    double norm() { return sqrt(x * x + y * y); }        
+    // 向量叉积
+    friend double det(const Point &a, const Point &b) {  
         return a.x * b.y - a.y * b.x;
     }
-    friend double dot(const Point &a, const Point &b) {  // 向量点积
+    // 向量点积
+    friend double dot(const Point &a, const Point &b) {  
         return a.x * b.x + a.y * b.y;
     }
-    friend double dis(const Point &a, const Point &b) {  // 两点间距离
+    // 两点间距离
+    friend double dis(const Point &a, const Point &b) { 
         return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
     friend Point intersection(Point u1, Point u2, Point v1, Point v2) {  // 线段交点, 线段有交点才可用

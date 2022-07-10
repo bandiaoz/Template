@@ -59,6 +59,10 @@ struct Line {
         return u.s + (u.t - u.s) * det(u.s - v.s, v.s - v.t) /
                          det(u.s - u.t, v.s - v.t);
     }
+    // 判断直线l1和线段l2是否相交
+    friend bool isLineSegIntersection(Line l1, Line l2) {
+        return l1.relation(l2.s) * l1.relation(l2.t) <= 0;
+    }
     // 判断线段交, 返回是否有交点
     friend bool isSegIntersection(Line l1, Line l2) {
         if (!sgn(det(l2.s - l1.s, l1.vec())) &&
