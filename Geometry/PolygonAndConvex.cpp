@@ -7,6 +7,11 @@ struct Polygon {
 
     Polygon(vector<Point> &v) : p(v) { n = p.size(); }
     Polygon(int n = 0) : n(n) { p.resize(n); }
+
+    void addPoint(Point &a) {
+        p.push_back(a);
+        n++;
+    }
     // 多边形周长
     double perimeter() {
         double sum = 0;

@@ -131,8 +131,8 @@ struct Line {
     }
     // 两直线的夹角，返回[0, PI] 弧度
     friend double argLineLine(Line l1, Line l2) {
-        Point u = l1.t - l1.s;
-        Point v = l2.t - l2.s;
+        Point u = l1.vec();
+        Point v = l2.vec();
         return acos(dot(u, v) / (u.norm() * v.norm()));
     }
 };
