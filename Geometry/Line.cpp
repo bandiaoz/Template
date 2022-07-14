@@ -83,10 +83,10 @@ struct Line {
         d = l2.t;
         double s1, s2, s3, s4;
         int d1, d2, d3, d4;
-        d1 = sgn(s1 = det(b - a, c - a));
-        d2 = sgn(s2 = det(b - a, d - a));
-        d3 = sgn(s3 = det(d - c, a - c));
-        d4 = sgn(s4 = det(d - c, b - c));
+        d1 = sgn(s1 = det(b - a, c - a)); // l1.relation(l2.s);
+        d2 = sgn(s2 = det(b - a, d - a)); // l1.relation(l2.t);
+        d3 = sgn(s3 = det(d - c, a - c)); // l2.relation(l1.s);
+        d4 = sgn(s4 = det(d - c, b - c)); // l2.relation(l1.t);
 
         // 若规范相交则求交点的代码
         if (d1 * d2 < 0 && d3 * d4 < 0) {
@@ -97,13 +97,13 @@ struct Line {
 
         // 判断非规范相交
         // d1 == 0, 则证明a, b, c三点共线;
-        // 如果sgn(det(a - c, b - c)) < 0, 则说明点c在点a，b的中间；
-        // 如果sgn(det(a - c, b - c)) == 0,则说明点c与线段ab的端点a，或者b重合。
-        // 如果sgn(det(a - c, b - c)) == 0，则说明点c在线段ab的外面。
-        if ((d1 == 0 && sgn(det(a - c, b - c)) <= 0) ||
-            (d2 == 0 && sgn(det(a - d, b - d)) <= 0) ||
-            (d3 == 0 && sgn(det(c - a, d - a)) <= 0) ||
-            (d4 == 0 && sgn(det(c - b, d - b)) <= 0)) {
+        // 如果sgn(dot(a - c, b - c)) < 0, 则说明点c在点a，b的中间；
+        // 如果sgn(dot(a - c, b - c)) == 0,则说明点c与线段ab的端点a，或者b重合。
+        // 如果sgn(dot(a - c, b - c)) > 0，则说明点c在线段ab的外面。
+        if ((d1 == 0 && sgn(dot(a - c, b - c)) <= 0) ||
+            (d2 == 0 && sgn(dot(a - d, b - d)) <= 0) ||
+            (d3 == 0 && sgn(dot(c - a, d - a)) <= 0) ||
+            (d4 == 0 && sgn(dot(c - b, d - b)) <= 0)) {
             return 2;
         }
         return 0;
