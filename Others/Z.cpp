@@ -11,7 +11,7 @@ int norm(int x) {
     return x;
 }
 template<class T>
-T power(T a, ll b) {
+T power(T a, int64_t b) {
     T res = 1;
     for (; b; b /= 2, a *= a) {
         if (b % 2) res *= a;
