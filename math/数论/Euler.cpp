@@ -1,19 +1,7 @@
-#pragma region
-#include <algorithm>
-#include <cmath>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <stack>
-#include <string>
-#include <vector>
-typedef long long ll;
-#define IO ios::sync_with_stdio(false), cin.tie(0), cout.tie(0)
-#define rep(i, a, n) for (ll i = a; i <= n; i++)
+#include <bits/stdc++.h>
+
 using namespace std;
-#pragma endregion
+using ll = long long;
 
 // 表示的是小于等于n和n互质的数的个数。
 int euler_phi(int n) {
