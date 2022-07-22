@@ -52,11 +52,10 @@ private:
             return;
         }
         int m = (l + r) / 2;
-        int lchild = p << 1, rchild = p << 1 | 1;
 
         push(p, l, r);
-        if (x < m) innerUpdate(lchild, x, y, v, l, m);
-        if (y > m) innerUpdate(rchild, x, y, v, m, r);
+        if (x < m) innerUpdate(p << 1, x, y, v, l, m);
+        if (y > m) innerUpdate(p << 1 | 1, x, y, v, m, r);
         innerPull(p);
     }
     /* Query the sum-up value of range [x, y). */
@@ -66,7 +65,7 @@ private:
         int m = (l + r) / 2;
         
         push(p, l, r);
-        return innerQuery(p << 1, x, y, l, m) + innerQuery(p << 1 | 1, x, y, m, r);
+        return merge(innerQuery(p << 1, x, y, l, m), innerQuery(p << 1 | 1, x, y, m, r));
     }
 
 public:
@@ -77,10 +76,10 @@ public:
                 info[p] = init[l];
                 return;
             }
-            int m = (l + r) / 2, lchild = p << 1, rchild = p << 1 | 1;
-            innerBuild(lchild, l, m);
-            innerBuild(rchild, m, r);
-            info[p] = info[lchild] + info[rchild];
+            int m = (l + r) / 2;
+            innerBuild(p << 1, l, m);
+            innerBuild(p << 1 | 1, m, r);
+            innerPull(p);
         };
         innerBuild(1, 0, n);
     }
