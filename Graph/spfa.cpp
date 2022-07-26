@@ -21,7 +21,7 @@ void solve() {
         }
     }
 
-    auto spfa = [&](int s) {
+    auto spfa = [&](int s) { // true: no negative ring
         vector<int> dis(n, inf), cnt(n);
         vector<bool> vis(n);
         dis[s] = 0;
