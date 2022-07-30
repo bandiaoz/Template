@@ -5,7 +5,7 @@ using ll = long long;
 
 template<typename T, int K = 2>
 struct KDTree {
-    KDTree(int n) : n(n), lc(n, -1), rc(n, -1), L(n), R(n), U(n), D(n) {}
+    KDTree(int n) : n(n), lc(n, -1), rc(n, -1), boundary(n, vector<vector<T>>(K, vector<T>(2))){}
     KDTree(vector<array<T, K>> &st) : KDTree(st.size()) {
         a = st;
         function<int(int, int, int)> innerBuild = [&](int l, int r, int div) {
@@ -28,7 +28,7 @@ struct KDTree {
 private:
     const int n;
     vector<int> lc, rc;
-    vector<T> L, R, U, D;
+    vector<vector<vector<T>>> boundary;
     vector<array<T, K>> a;
 
     struct Cmp {
@@ -56,23 +56,28 @@ private:
         return ans;
     }
     void maintain(int i) {
-        L[i] = R[i] = a[i][0];
-        U[i] = D[i] = a[i][1];
-        if (lc[i] != -1) {
-            L[i] = min(L[i], L[lc[i]]), R[i] = max(R[i], R[lc[i]]);
-            D[i] = min(D[i], D[lc[i]]), U[i] = max(U[i], U[lc[i]]);
-        }
-        if (rc[i] != -1) {
-            L[i] = min(L[i], L[rc[i]]), R[i] = max(R[i], R[rc[i]]);
-            D[i] = min(D[i], D[rc[i]]), U[i] = max(U[i], U[rc[i]]);
+        for (int j = 0; j < K; ++j) {
+            boundary[i][j][0] = boundary[i][j][1] = a[i][j];
+            if (lc[i] != -1) {
+                boundary[i][j][0] = min(boundary[i][j][0], boundary[lc[i]][j][0]);
+                boundary[i][j][1] = max(boundary[i][j][1], boundary[lc[i]][j][1]);
+            }
+            if (rc[i] != -1) {
+                boundary[i][j][0] = min(boundary[i][j][0], boundary[rc[i]][j][0]);
+                boundary[i][j][1] = max(boundary[i][j][1], boundary[rc[i]][j][1]);
+            }
         }
     }
     T fmin(int p, int i) { // the minimum distance to this area
+        // if i == -1, ignore this area when calculating the answer.
+        if (i == -1) { 
+            return 1e18; 
+        }
         T ans = 0;
-        if (a[p][0] < L[i]) ans += sqr(L[i] - a[p][0]);
-        if (a[p][0] > R[i]) ans += sqr(a[p][0] - R[i]);
-        if (a[p][1] < D[i]) ans += sqr(D[i] - a[p][1]);
-        if (a[p][1] > U[i]) ans += sqr(a[p][1] - U[i]);
+        for (int j = 0; j < K; ++j) {
+            if (a[p][j] < boundary[i][j][0]) ans += sqr(boundary[i][j][0] - a[p][j]);
+            if (a[p][j] > boundary[i][j][1]) ans += sqr(a[p][j] - boundary[i][j][1]);
+        }
         return ans;
     }
     void innerQuery(int l, int r, int p, T &ans) {
@@ -107,7 +112,7 @@ private:
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+
     int n;
     cin >> n;
 

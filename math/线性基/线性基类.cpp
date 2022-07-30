@@ -1,20 +1,8 @@
-#pragma region
-#include <algorithm>
-#include <cmath>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <stack>
-#include <string>
-#include <vector>
-typedef long long ll;
-#define rep(i, a, n) for (ll i = a; i <= n; ++i)
-#define per(i, a, n) for (ll i = n; i >= a; --i)
-#define IO ios::sync_with_stdio(false), cin.tie(0), cout.tie(0)
+#include <bits/stdc++.h>
+
 using namespace std;
-#pragma endregion
+using ll = long long;
+
 struct L_B {
     ll b[61], p[61];  //线性基，重构线性基
     int cnt, flag;    //重构线性基的大小,是否异或为0
