@@ -1,0 +1,102 @@
+%! TeX program = lualatex
+\documentclass[11pt]{article}
+\usepackage[a4paper, left=0.4in,right=0.4in,top=0.7in,bottom=0.5in]{geometry}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{tocloft}
+\usepackage{pdflscape}
+\usepackage{multicol}
+\usepackage{fontspec}
+\usepackage{titlesec}
+
+\setlength\parindent{0pt} % No indent for all paragraph
+\setlength{\headheight}{13.59999pt}
+\titlespacing*{\section}
+{0pt}{0ex}{0ex}
+\titlespacing*{\subsection}
+{0pt}{0ex}{-1ex}
+
+% change font to your favorites
+% \setmonofont{FiraCode Nerd Font}
+\setmainfont{Source Han Serif SC}
+% \setmonofont{Iosevka}
+
+
+\renewcommand\cftsecfont{\fontsize{8}{9}\bfseries}
+\renewcommand\cftsecpagefont{\fontsize{8}{9}\mdseries}
+\renewcommand\cftsubsecfont{\fontsize{6}{6}\mdseries}
+\renewcommand\cftsubsecpagefont{\fontsize{6}{6}\mdseries}
+\renewcommand\cftsecafterpnum{\vspace{-1ex}} % TOC line spacing
+\renewcommand\cftsubsecafterpnum{\vspace{-1ex}} % TOC line spacing
+
+\lstdefinestyle{shared}{
+    belowcaptionskip=1\baselineskip,
+    breaklines=true,
+    xleftmargin=\parindent,
+    showstringspaces=false,
+    basicstyle=\fontsize{7.3}{8}\ttfamily,
+}
+% black version
+\lstdefinestyle{cpp}{
+    style=shared,
+    language=C++,
+    keywordstyle=\bfseries\color{black},
+    commentstyle=\itshape\color{gray},
+    identifierstyle=\color{black},
+}
+% colored version
+% \lstdefinestyle{cpp}{
+%     style=shared,
+%     language=C++,
+%     keywordstyle=\color{SkyBlue},
+%     commentstyle=\itshape\color{gray},
+%     identifierstyle=\color{ForestGreen},
+%     stringstyle=\color{purple!40!black},
+% }
+\lstdefinestyle{java}{
+    style=shared,
+    language=Java,
+    keywordstyle=\bfseries\color{green!40!black},
+    commentstyle=\itshape\color{purple!40!black},
+    identifierstyle=\color{blue},
+    stringstyle=\color{orange},
+}
+\lstdefinestyle{py}{
+    style=shared,
+    language=Python,
+    keywordstyle=\bfseries\color{green!40!black},
+    commentstyle=\itshape\color{purple!40!black},
+    identifierstyle=\color{blue},
+    stringstyle=\color{orange},
+}
+\lstdefinestyle{txt}{
+    style=shared,
+}
+
+\fancypagestyle{plain}{
+\fancyhead[L]{York University Team 1}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{}
+}
+\pagestyle{plain}
+
+\title{\vspace{-4ex}\Large{York University Team Notebook C++ (2021-2022)}}
+
+\author{York University ACM}
+
+\begin{document}
+\begin{landscape}
+\begin{multicols*}{2}
+
+\maketitle
+\vspace{-13ex}
+\tableofcontents
+\pagestyle{fancy}
+
+\input contents.tex
+
+\end{multicols*}
+\end{landscape}
+\end{document}
