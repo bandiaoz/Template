@@ -1,102 +1,103 @@
-%! TeX program = lualatex
-\documentclass[11pt]{article}
-\usepackage[a4paper, left=0.4in,right=0.4in,top=0.7in,bottom=0.5in]{geometry}
-\usepackage{hyperref}
-\usepackage{fancyhdr}
+\documentclass[a4paper,11pt]{ctexbook} 
+\usepackage[a4paper,scale=0.8,bindingoffset=8mm]{geometry} % A4纸大小，缩放80%，设置奇数页右边留空多一点
+\usepackage{hyperref}      % 超链接
+\usepackage{listings}      % 代码块
+\usepackage{fancyhdr}      % 页眉页脚相关宏包
+\usepackage{lastpage}      % 引用最后一页
+\usepackage{amsmath,amsthm,amsfonts,amssymb,bm} %数学
+\usepackage{graphicx}      % 图片
+\usepackage{subcaption}    % 图片描述
+\usepackage{longtable,booktabs} % 表格
+\usepackage{xeCJK}
+
 \usepackage{listings}
-\usepackage[usenames,dvipsnames]{xcolor}
-\usepackage{tocloft}
-\usepackage{pdflscape}
-\usepackage{multicol}
-\usepackage{fontspec}
-\usepackage{titlesec}
+\usepackage{ctex}
+\usepackage{color,xcolor}
 
-\setlength\parindent{0pt} % No indent for all paragraph
-\setlength{\headheight}{13.59999pt}
-\titlespacing*{\section}
-{0pt}{0ex}{0ex}
-\titlespacing*{\subsection}
-{0pt}{0ex}{-1ex}
-
-% change font to your favorites
-% \setmonofont{FiraCode Nerd Font}
-\setmainfont{Source Han Serif SC}
-% \setmonofont{Iosevka}
+% 用来设置附录中代码的样式
 
 
-\renewcommand\cftsecfont{\fontsize{8}{9}\bfseries}
-\renewcommand\cftsecpagefont{\fontsize{8}{9}\mdseries}
-\renewcommand\cftsubsecfont{\fontsize{6}{6}\mdseries}
-\renewcommand\cftsubsecpagefont{\fontsize{6}{6}\mdseries}
-\renewcommand\cftsecafterpnum{\vspace{-1ex}} % TOC line spacing
-\renewcommand\cftsubsecafterpnum{\vspace{-1ex}} % TOC line spacing
 
-\lstdefinestyle{shared}{
-    belowcaptionskip=1\baselineskip,
-    breaklines=true,
-    xleftmargin=\parindent,
-    showstringspaces=false,
-    basicstyle=\fontsize{7.3}{8}\ttfamily,
+\lstset{
+    basicstyle          =   \sffamily,          % 基本代码风格
+    keywordstyle        =   \bfseries,          % 关键字风格
+    commentstyle        =   \rmfamily\itshape,  % 注释的风格，斜体
+    stringstyle         =   \ttfamily,  % 字符串风格
+    flexiblecolumns,                % 别问为什么，加上这个
+    numbers             =   left,   % 行号的位置在左边
+    showspaces          =   false,  % 是否显示空格，显示了有点乱，所以不现实了
+    numberstyle         =   \zihao{-5}\ttfamily,    % 行号的样式，小五号，tt等宽字体
+    showstringspaces    =   false,
+    captionpos          =   t,      % 这段代码的名字所呈现的位置，t指的是top上面
+    frame               =   l,   % 显示边框
 }
-% black version
+
+\lstdefinestyle{Python}{
+    language        =   Python, % 语言选Python
+    basicstyle      =   \zihao{-5}\ttfamily,
+    numberstyle     =   \zihao{-5}\ttfamily,
+    keywordstyle    =   \color{blue},
+    keywordstyle    =   [2] \color{teal},
+    stringstyle     =   \color{magenta},
+    commentstyle    =   \color{red}\ttfamily,
+    breaklines      =   true,   % 自动换行，建议不要写太长的行
+    columns         =   fixed,  % 如果不加这一句，字间距就不固定，很丑，必须加
+    basewidth       =   0.5em,
+}
 \lstdefinestyle{cpp}{
-    style=shared,
-    language=C++,
-    keywordstyle=\bfseries\color{black},
-    commentstyle=\itshape\color{gray},
-    identifierstyle=\color{black},
-}
-% colored version
-% \lstdefinestyle{cpp}{
-%     style=shared,
-%     language=C++,
-%     keywordstyle=\color{SkyBlue},
-%     commentstyle=\itshape\color{gray},
-%     identifierstyle=\color{ForestGreen},
-%     stringstyle=\color{purple!40!black},
-% }
-\lstdefinestyle{java}{
-    style=shared,
-    language=Java,
-    keywordstyle=\bfseries\color{green!40!black},
-    commentstyle=\itshape\color{purple!40!black},
-    identifierstyle=\color{blue},
-    stringstyle=\color{orange},
-}
-\lstdefinestyle{py}{
-    style=shared,
-    language=Python,
-    keywordstyle=\bfseries\color{green!40!black},
-    commentstyle=\itshape\color{purple!40!black},
-    identifierstyle=\color{blue},
-    stringstyle=\color{orange},
-}
-\lstdefinestyle{txt}{
-    style=shared,
+    language        =   C++, % 语言选C++
+    basicstyle      =   \zihao{-5}\ttfamily,
+    numberstyle     =   \zihao{-5}\ttfamily,
+    keywordstyle    =   \color{blue},
+    keywordstyle    =   [2] \color{teal},
+    stringstyle     =   \color{magenta},
+    commentstyle    =   \color{red}\ttfamily,
+    breaklines      =   true,   % 自动换行，建议不要写太长的行
+    columns         =   fixed,  % 如果不加这一句，字间距就不固定，很丑，必须加
+    basewidth       =   0.5em,
 }
 
-\fancypagestyle{plain}{
-\fancyhead[L]{bandiaoz algorithm C++}
-\fancyhead[R]{\thepage}
-\fancyfoot[C]{}
-}
-\pagestyle{plain}
+%\lstinputlisting[
+%     style       =   Python,
+%     caption     =   {\bf ff.py},
+%     label       =   {ff.py}
+% ]{../src/duke/ff.py}
 
-\title{\vspace{-4ex}\Large{bandiaoz algorithm C++ (2022)}}
 
-\author{bandiaoz}
+\pagestyle{fancy}         % 页眉页脚风格
+\fancyhf{}                % 清空当前设置
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}}%页脚中间显示 当前页 / 总页数，把\label{LastPage}放在最后
+\fancyhead[RO,LE]{\thepage}% 页眉奇数页左边，偶数页右边显示当前页
+\begin{document} 
+  \begin{titlepage}       % 封面
+    \centering
+    \vspace*{\baselineskip}
+    \rule{\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt}
+    \rule{\textwidth}{0.4pt}\\[\baselineskip]
+    {\LARGE Algos @CUGB 2020\\[\baselineskip]\small for CUGBACM}
+    \\[0.2\baselineskip]
+    \rule{\textwidth}{0.4pt}\vspace*{-\baselineskip}\vspace{3.2pt}
+    \rule{\textwidth}{1.6pt}\\[\baselineskip]
+    \scshape
 
-\begin{document}
-\begin{landscape}
-\begin{multicols*}{2}
+    \begin{figure}[!htb]
+        \centering
+        %\includegraphics[width=0.3\textwidth]{icpc}    % 当前tex文件同一目录下名为icpc的任意格式图片
+    \end{figure}
 
-\maketitle
-\vspace{-13ex}
-\tableofcontents
-\pagestyle{fancy}
+    % \vspace*{3\baselineskip}
+    % Edited by \\[\baselineskip] {Byjiang\par}
+    % {Team \Large Byjiang \normalsize{at CUGB}\par }
+    \vfill
+    {\scshape 2020} \\{\large CUGBACM}\par
+  \end{titlepage}
+ \newpage            % 封面背后空白页
+\tableofcontents     % 目录
 
-\input contents.tex
+\setcounter{page}{1}
 
-\end{multicols*}
-\end{landscape}
+%\input{math/math}
+\input{contents.tex}
+
 \end{document}
+\label{LastPage}
