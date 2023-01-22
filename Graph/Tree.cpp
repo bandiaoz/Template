@@ -7,7 +7,7 @@ struct Tree {
     vector<int> sz, top, dep, parent, in, out;
     int cur;
     vector<vector<int>> e;
-    Tree(int n) : sz(n), top(n), dep(n), parent(n, -1), in(n), out(0), cur(0), e(n) {}
+    Tree(int n) : sz(n), top(n), dep(n), parent(n, -1), in(n), out(n), cur(0), e(n) {}
     void addEdge(int u, int v) {
         e[u].push_back(v);
         e[v].push_back(u);
@@ -38,6 +38,9 @@ struct Tree {
             dfsHLD(v);
         }
         out[u] = cur;
+    }
+    bool isAncestor(int u, int v) {
+        return in[v] > in[u] && out[v] <= out[u];
     }
     int lca(int u, int v) {
         while (top[u] != top[v]) {

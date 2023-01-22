@@ -1,101 +1,114 @@
 #include <bits/stdc++.h>
-#define rep(i, a, n) for (int i = a; i <= n; ++i)
-#define per(i, a, n) for (int i = n; i >= a; --i)
-#ifdef LOCAL
-#include "Print.h"
-#define de(...) W('[', #__VA_ARGS__,"] =", __VA_ARGS__)
-#else
-#define de(...)
-#endif
+
 using namespace std;
-typedef long long ll;
-const int maxn = 1e5 + 5;
-namespace fhq {
-#define tr t[root]
-#define lson t[tr.lc]
-#define rson t[tr.rc]
-mt19937 rnd(233);
-struct node {
-    int lc, rc, val, key, sz;
-    bool tag;
-} t[maxn];
-int cnt, Root;
-// 重新计算以 root 为根的子树大小
-inline void update(int root) { tr.sz = lson.sz + rson.sz + 1; }
-// 新建一个权值为val的结点
-int newNode(int val) {
-    t[++cnt] = {0, 0, val, (int)rnd(), 1, 0};
-    return cnt;
-}
-inline void pushdown(int root) {
-    swap(tr.lc, tr.rc);
-    lson.tag ^= 1, rson.tag ^= 1;
-    tr.tag = false;
-}
-// 合并成小根堆，参数保证x树的权值严格小于y树的权值
-int merge(int x, int y) {
-    if (!x || !y) return x + y;
-    if (t[x].key < t[y].key) {
-        if (t[x].tag) pushdown(x);
-        t[x].rc = merge(t[x].rc, y);
-        update(x); return x;
-    } else {
-        if (t[y].tag) pushdown(y);
-        t[y].lc = merge(x, t[y].lc);
-        update(y); return y;
+using ll = long long;
+
+mt19937 rnd(random_device{}());
+class fhqtreap {
+    struct node {
+        int val, siz, tag;
+        mt19937::result_type rnd;
+        node *ch[2];
+    } *root = nullptr;
+    int size(node *rt) {
+        return rt ? rt->siz : 0;
+    };
+    void maintain(node *rt) {
+        rt->siz = size(rt->ch[0]) + size(rt->ch[1]) + 1;
     }
-}
-// 在以 root 为根的子树内树按值分裂，x树的大小等于k
-void split_sz(int root, int k, int &x, int &y) {
-    if (!root) x = y = 0;
-    else {
-        if (tr.tag) pushdown(root);
-        if (k <= lson.sz) y = root, split_sz(tr.lc, k, x, tr.lc); 
-        else x = root, split_sz(tr.rc, k - lson.sz - 1, tr.rc, y);
-        update(root);
+    void spread(node *rt) {
+        if (!rt->tag)
+            return;
+
+        swap(rt->ch[0], rt->ch[1]);
+
+        if (rt->ch[0])
+            rt->ch[0]->tag ^= 1;
+
+        if (rt->ch[1])
+            rt->ch[1]->tag ^= 1;
+
+        rt->tag = 0;
     }
-}
-void reverse(int l, int r) {
-    int x, y, z;
-    split_sz(Root, l - 1, x, y);
-    split_sz(y, r - l + 1, y, z);
-    t[y].tag ^= 1;
-    Root = merge(merge(x, y), z);
-}
-void ldr(int root) {
-    if (!root) return;
-    if (tr.tag) pushdown(root);
-    ldr(tr.lc);
-    printf("%d ", tr.val);
-    ldr(tr.rc);
-}
-#undef tr
-#undef lson
-#undef rson
-} // namespace fhq
-int case_Test() {
-    int n, m;
-    scanf("%d%d", &n, &m);
-    rep(i, 1, n) fhq::Root = fhq::merge(fhq::Root, fhq::newNode(i));
-    while (m--) {
-        int l, r;
-        scanf("%d%d", &l, &r);
-        fhq::reverse(l, r);
+    pair<node *, node *> split(node *rt, int x) {
+        if (!rt)
+            return {};
+
+        spread(rt);
+
+        if (size(rt->ch[0]) >= x) {
+            auto [l, r] = split(rt->ch[0], x);
+            rt->ch[0] = r, maintain(rt);
+            return {l, rt};
+        } else {
+            auto [l, r] = split(rt->ch[1], x - size(rt->ch[0]) - 1);
+            rt->ch[1] = l, maintain(rt);
+            return {rt, r};
+        }
     }
-    fhq::ldr(fhq::Root);
-    return 0;
-}
+    node *merge(node *lt, node *rt) {
+        if (!(lt && rt))
+            return lt ? lt : rt;
+
+        spread(lt), spread(rt);
+
+        if (lt->rnd < rt->rnd) {
+            lt->ch[1] = merge(lt->ch[1], rt), maintain(lt);
+            return lt;
+        } else {
+            rt->ch[0] = merge(lt, rt->ch[0]), maintain(rt);
+            return rt;
+        }
+    }
+    void output(node *rt, ostream &os) {
+        if (!rt)
+            return;
+
+        spread(rt);
+        output(rt->ch[0], os);
+        os << rt->val << ' ';
+        output(rt->ch[1], os);
+    }
+
+public:
+    void insert(int x) {
+        // auto [p, r] = split(root, x);
+        // auto [l, m] = split(p, x - 1);
+        auto m = new node{x, 1, 0, rnd()};
+        root = merge(root, m);
+    }
+    void reverse(int x, int y) {
+        auto [p, r] = split(root, y);
+        auto [l, m] = split(p, x);
+        m->tag ^= 1;
+        root = merge(merge(l, m), r);
+    }
+    friend ostream &operator<<(ostream &os, fhqtreap &rhs) {
+        return rhs.output(rhs.root, os), os;
+    }
+};
+
 int main() {
-#ifdef LOCAL
-    freopen("/Users/chenjinglong/Desktop/cpp_code/in.in", "r", stdin);
-    freopen("/Users/chenjinglong/Desktop/cpp_code/out.out", "w", stdout);
-    clock_t start = clock();
-#endif
-    int _ = 1;
-    // scanf("%d", &_);
-    while (_--) case_Test();
-#ifdef LOCAL
-    printf("Time used: %.3lfs\n", (double)(clock() - start) / CLOCKS_PER_SEC);
-#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    fhqtreap tree;
+    for (int i = 1; i <= n; ++i) {
+        tree.insert(i);
+    }
+
+    for (int i = 0; i < m; ++i) {
+        int x, y;
+        cin >> x >> y;
+        x--;
+        
+        tree.reverse(x, y);
+    }
+
+    cout << tree;
+
     return 0;
 }

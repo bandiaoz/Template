@@ -7,11 +7,11 @@ void solve() {
     ll a, b, c;
     cin >> a >> b >> c;
 
-    // ax + by = gcd(a, b)
+    // ax + by = gcd(a, b) = d
     // return tuple(d, x, y)
     function<tuple<int64_t, int64_t, int64_t>(int64_t, int64_t)> exgcd = [&](int64_t a, int64_t b) {
         if (b == 0) {
-            return tuple(a, (int64_t)1, (int64_t)0);
+            return tuple(a, 1LL, 0LL);
         }
         auto [d, x, y] = exgcd(b, a % b);
         return tuple(d, y, x - a / b * y);

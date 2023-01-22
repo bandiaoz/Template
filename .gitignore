@@ -1,7 +1,14 @@
 *.aux
+*.bcf
 *.log
 *.out
-*.gz
 *.toc
+*.synctex.gz
+*.synctex(busy)
+*.run.xml
+*.DS_Store
+tp.py
+*.zip
 
 generate_contents.py
+tp.py
