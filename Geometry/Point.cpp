@@ -26,7 +26,7 @@ struct Point {  // Point & Vector
     friend Point operator/(const Point &a, const double &c) {
         return Point(a.x / c, a.y / c);
     }
-    friend Point rotate(const Point &v, double theta) {  // 向量逆时针旋转theta弧度
+    friend Point rotate(const Point &v, double theta) {  // 向量逆时针旋转 theta 弧度
         return Point(v.x * cos(theta) - v.y * sin(theta),
                      v.x * sin(theta) + v.y * cos(theta));
     }
@@ -53,7 +53,7 @@ struct Point {  // Point & Vector
     friend double dis(const Point &a, const Point &b) { 
         return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
-    friend Point intersection(Point u1, Point u2, Point v1, Point v2) {  // 线段交点, 线段有交点才可用
+    friend Point intersection(Point u1, Point u2, Point v1, Point v2) {  // 线段交点，线段有交点才可用
         return u1 + (u2 - u1) * det(u1 - v1, v1 - v2) / det(u1 - u2, v1 - v2);
     }
     double arg() { return atan2(y, x); }  // 返回弧度

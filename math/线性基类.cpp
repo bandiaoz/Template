@@ -5,7 +5,7 @@ using ll = long long;
 
 struct L_B {
     ll b[61], p[61];  //线性基，重构线性基
-    int cnt, flag;    //重构线性基的大小,是否异或为0
+    int cnt, flag;    //重构线性基的大小，是否异或为 0
     L_B() {
         memset(b, 0, sizeof(b));
         memset(p, 0, sizeof(p));
@@ -41,7 +41,7 @@ struct L_B {
                 for (int j = i - 1; j >= 0; j--)
                     if (b[i] & (1LL << j)) b[i] ^= b[j];
         }
-        //异或p[i]对名次的贡献为1<<i
+        //异或 p[i] 对名次的贡献为 1<<i
         for (int i = 0; i <= 60; i++)
             if (b[i]) p[cnt++] = b[i];
     }

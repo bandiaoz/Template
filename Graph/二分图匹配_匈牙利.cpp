@@ -4,7 +4,7 @@ using namespace std;
 using ll = long long;
 
 // O(n_1 \cdot m + n_2) 
-// if n1 < n2: swap(n1, n2) 可以提高效率
+// if n2 < n1: swap(n1, n2) 可以提高效率
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -25,7 +25,7 @@ int main() {
     for (int i = 0; i < n1; ++i) {
         vector<int> vis(n2);
         
-         function<bool(int)> find = [&](int u) {
+        function<bool(int)> find = [&](int u) {
             for (auto v : g[u]) {
                 if (vis[v]) continue;
                 vis[v] = true;

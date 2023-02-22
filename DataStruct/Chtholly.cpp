@@ -9,19 +9,14 @@ struct Chtholly {
         mutable ll v;
 
         node(int l, int r, ll v) : l(l), r(r), v(v) {}
-        int size() const {
-            return r - l;
-        }
-        bool operator<(const node &A) const { 
-            return l < A.l; 
-        }
+        int size() const { return r - l; }
+        bool operator<(const node &A) const { return l < A.l; }
     };
 
     set<node> s;
-    auto insert(int l, int r, ll v) {
-        return s.insert(node(l, r, v));
-    }
-    auto split(int pos) {  //拆区间，将区间分为[l,pos), [pos,r)两段
+    auto insert(int l, int r, ll v) { return s.insert(node(l, r, v)); }
+    // 拆区间，将区间分为 [l,pos), [pos,r) 两段
+    auto split(int pos) {
         auto it = s.lower_bound(node(pos, -1, 0));
         if (it != s.end() && it->l == pos) {
             return it;
@@ -31,20 +26,22 @@ struct Chtholly {
         ll V = it->v;
         s.erase(it);
         insert(L, pos, V);
-        //返回第二个区间的地址
+        // 返回第二个区间的地址
         return insert(pos, R, V).first;
     }
-    void add(int l, int r, ll x) {  //区间加
+    void add(int l, int r, ll x) {
         for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
             itl->v += x;
         }
     }
-    void assign_val(int l, int r, ll x) {  //区间推平，全部赋值x
-        auto itr = split(r), itl = split(l);  //划分区间,注意顺序，否则会引起itl迭代器失效
+    // 区间推平，全部赋值 x
+    void assign_val(int l, int r, ll x) {
+        // 划分区间，注意顺序，否则会引起 itl 迭代器失效
+        auto itr = split(r), itl = split(l);
         s.erase(itl, itr);
         insert(l, r, x);
     }
-    ll ranks(int l, int r, int k) {  //区间第k小
+    ll ranks(int l, int r, int k) {  // 区间第 k 小
         vector<pair<ll, int>> vp;
         for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
             vp.push_back({itl->v, itl->size()});
@@ -54,12 +51,13 @@ struct Chtholly {
             k -= it.second;
             if (k <= 0) {
                 return it.first;
-            } 
+            }
         }
         assert(false);
         return -1;
     }
-    ll sum(int l, int r, int ex, int mod) { //区间幂次和
+    // 区间幂次和
+    ll sum(int l, int r, int ex, int mod) {  
         auto powmod = [](ll a, int b, int mod) {
             ll ans = 1;
             for (a %= mod; b; b >>= 1, a = a * a % mod) {
@@ -96,10 +94,10 @@ int main() {
 
     Chtholly cho;
     for (int i = 0; i < n; ++i) {
-        int x = rnd() % vmax + 1; 
+        int x = rnd() % vmax + 1;
         cho.insert(i, i + 1, x);
     }
-    
+
     while (m--) {
         int op = rnd() % 4 + 1;
 

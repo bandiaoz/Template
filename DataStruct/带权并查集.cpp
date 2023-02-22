@@ -10,7 +10,7 @@
 using namespace std;
 typedef long long ll;
 const int maxn = 3e4 + 5;
-int fa[maxn], sz[maxn], d[maxn]; // d表示与父亲结点的关系
+int fa[maxn], sz[maxn], d[maxn]; // d 表示与父亲结点的关系
 int findR(int x) {
     if (x == fa[x]) return x;
     int rt = findR(fa[x]);

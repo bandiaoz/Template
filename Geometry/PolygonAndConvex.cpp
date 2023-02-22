@@ -24,7 +24,7 @@ struct Polygon {
         for (int i = 0; i < n; ++i) sum += det(p[i], p[_next(i)]);
         return fabs(sum) / 2;
     }  // eps
-    // 判断点与多边形的位置关系 0外, 1内, 2边上
+    // 判断点与多边形的位置关系 0 外，1 内，2 边上
     int pointIn(const Point &t) {
         int num = 0;
         for (int i = 0; i < n; i++) {
@@ -43,17 +43,17 @@ struct Polygon {
         if (sgn(area()) == 0) return ans;
         for (int i = 0; i < n; ++i)
             ans = ans + (p[i] + p[_next(i)]) * det(p[i], p[_next(i)]);
-        return ans / area() / 6 + eps;  // 要加eps吗？
+        return ans / area() / 6 + eps;  // 要加 eps 吗？
     }
     // 判断多边形是否为凸多边形 (需要已经排好序)
-    bool isConvex() {  //不允许3点共线
+    bool isConvex() {  //不允许 3 点共线
         int s[3] = {1, 1, 1};
         for (int i = 0; i < n && (s[0] || s[2]) && s[1]; ++i) {
             s[1 + sgn(det(p[_next(i)] - p[i], p[_next(_next(i))] - p[i]))] = 0;
         }
         return (s[0] || s[2]) && s[1];
     }
-    bool isConvex_3() {  // 允许3点共线
+    bool isConvex_3() {  // 允许 3 点共线
         int s[3] = {1, 1, 1};
         for (int i = 0; i < n && (s[0] || s[2]); ++i) {
             s[1 + sgn(det(p[_next(i)] - p[i], p[_next(_next(i))] - p[i]))] = 0;
@@ -78,7 +78,7 @@ struct Polygon {
         return sgn(det(p - l2, l1 - l2)) && (l1.x - p.x) * (l2.x - p.x) < eps &&
                (l1.y - p.y) * (l2.y - p.y) < eps;
     }
-    // 判线段在任意多边形内,顶点按顺时针或逆时针给出,与边界相交返回1
+    // 判线段在任意多边形内，顶点按顺时针或逆时针给出，与边界相交返回 1
     int insidePolygon(Line l) {
         vector<Point> t;
         Point tt, l1 = l.s, l2 = l.t;
@@ -105,13 +105,13 @@ struct Polygon {
 
 struct Convex : public Polygon {
     Convex(int n = 0) : Polygon(n) {}
-    Convex(vector<Point> &a) { // 传入n个点构造凸包
+    Convex(vector<Point> &a) { // 传入 n 个点构造凸包
         Convex res(a.size() * 2 + 7);
         sort(a.begin(), a.end());
         a.erase(unique(a.begin(), a.end()), a.end());  // 去重点
         int m = 0;
         for (int i = 0; i < a.size(); ++i) {
-            // <0 则允许3点共线，<=0 则不允许
+            // <0 则允许 3 点共线，<=0 则不允许
             while (m > 1 && sgn(det(res.p[m - 1] - res.p[m - 2], a[i] - res.p[m - 2])) <= 0)
                 m--;
             res.p[m++] = a[i];
@@ -145,7 +145,7 @@ struct Convex : public Polygon {
         }
         return 1;
     }
-    // O(n)时间内判断点是否在凸包内 包含边
+    // O(n) 时间内判断点是否在凸包内 包含边
     bool containon(const Point &a) {
         for (int sign = 0, i = 0; i < n; ++i) {
             int x = sgn(det(p[i] - a, p[_next(i)] - a));
@@ -157,7 +157,7 @@ struct Convex : public Polygon {
         }
         return 1;
     }
-    // O(logn)时间内判断点是否在凸包内
+    // O(logn) 时间内判断点是否在凸包内
     bool containologn(const Point &a) {
         Point g = (p[0] + p[n / 3] + p[2.0 * n / 3]) / 3.0;
         int l = 0, r = n;
@@ -208,16 +208,16 @@ struct Convex : public Polygon {
         return mx;
     }
 
-    // 凸包是否与直线有交点O(log(n)), 需要On的预处理, 适合判断与直线集是否有交点
+    // 凸包是否与直线有交点 O(log(n)), 需要 On 的预处理，适合判断与直线集是否有交点
     vector<double> ang;  // 角度
     bool isinitangle;
     int finda(const double &x) {
         return upper_bound(ang.begin(), ang.end(), x) - ang.begin();
     }
-    double getAngle(const Point &p) {  // 获取向量角度[0, 2PI]
+    double getAngle(const Point &p) {  // 获取向量角度 [0, 2PI]
         double res = atan2(p.y, p.x);  // （-PI, PI】
         //      if (res < 0) res += 2 * pi; //为何不可以
-        if (res < -PI / 2 + eps) res += 2 * PI;  // eps修正精度
+        if (res < -PI / 2 + eps) res += 2 * PI;  // eps 修正精度
         return res;
     }
     void initAngle() {
