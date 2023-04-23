@@ -1,88 +1,83 @@
 #include <bits/stdc++.h>
-using namespace std;
-#define PI acos(-1.0)
-const int maxn = 5e5 + 5;
-const int INF = 0x3f3f3f3f;
-const int MOD = 1e9 + 7;
-struct Complex {//复数结构体
-    double r, i;
-    Complex(double _r = 0.0, double _i = 0.0) { r = _r, i = _i; }
-    Complex operator+(const Complex &b) { return Complex(r + b.r, i + b.i); }
-    Complex operator-(const Complex &b) { return Complex(r - b.r, i - b.i); }
-    Complex operator*(const Complex &b) { return Complex(r * b.r - i * b.i, r * b.i + i * b.r); }
-};
-/*
- * 进行FFT和IFFT前的反转变换。
- * 位置i和 （i二进制反转后位置）互换
- * len必须去2的幂
- */
-/*
- 做FFT
- len必须为2^k形式，
- on==1时是DFT，on==-1时是IDFT
- */
-int rev[maxn];
-void FFT(Complex y[], int len, int on) {
-    int bit = 0;
-    while ((1 << bit) < len)
-        bit++;
-    for (int i = 0; i <= len - 1; i++) {  //对每一位y处理出递归结束后的位置,然后进行交换
-        rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (bit - 1));
-        if (i < rev[i]) swap(y[i], y[rev[i]]);  //不加这条if会交换两次（就是没交换）
+
+using cd = std::complex<double>;
+constexpr double PI = M_PI;
+
+static void _fft(std::vector<cd> &a, bool invert) {
+    int n = a.size();
+    // permute the array to do in-place calculation
+    for (int i = 1, j = 0; i < n; i++) {
+        int bit = n >> 1;
+        for (; j & bit; bit >>= 1) {
+            j ^= bit;
+        }
+        j ^= bit;
+        if (i < j) swap(a[i], a[j]);
     }
-    for (int h = 2; h <= len; h <<= 1) {                           //h为合并后的区间长度
-        Complex wn(cos(-on * 2 * PI / h), sin(-on * 2 * PI / h));  //单位根
-        for (int j = 0; j < len; j += h) {                         //遍历每个区间的开端
-            Complex w(1, 0);
-            for (int k = j; k < j + h / 2; k++) {  //对小区间进行计算
-                Complex u = y[k];
-                Complex t = w * y[k + h / 2];
-                y[k] = u + t;          //前半区间
-                y[k + h / 2] = u - t;  //后半区间
-                w = w * wn;
+    for (int len = 2; len <= n; len <<= 1) {
+        double ang = 2 * PI / len * (invert ? -1 : 1);
+        cd wlen(cos(ang), sin(ang));
+        for (int i = 0; i < n; i += len) {
+            cd w(1);
+            for (int j = 0; j < len / 2; j++) {
+                cd u = a[i + j], v = a[i + j + len / 2] * w;
+                a[i + j] = u + v;
+                a[i + j + len / 2] = u - v;
+                w *= wlen;
             }
         }
     }
-    if (on == -1)
-        for (int i = 0; i < len; i++)
-            y[i].r /= len;
-}
-
-char s1[maxn], s2[maxn];
-int ans[maxn];
-Complex a[maxn], b[maxn];
-int main() {
-    int i, len1, len2, len;
-    while (~scanf("%s%s", s1, s2)) {
-        len1 = strlen(s1);
-        len2 = strlen(s2);
-        len = 1;
-        while (len < (len1 << 1) || len < (len2 << 1))
-            len <<= 1;
-        for (i = 0; i < len1; i++)
-            a[i] = Complex(s1[len1 - i - 1] - '0', 0);
-        for (; i < len; i++)
-            a[i] = Complex(0, 0);
-        for (i = 0; i < len2; i++)
-            b[i] = Complex(s2[len2 - i - 1] - '0', 0);
-        for (; i < len; i++)
-            b[i] = Complex(0, 0);
-        FFT(a, len, 1);
-        FFT(b, len, 1);
-        for (i = 0; i < len; i++)
-            a[i] = a[i] * b[i];
-        FFT(a, len, -1);
-        for (i = 0; i < len; i++)
-            ans[i] = (int)(a[i].r + 0.5);
-        len = len1 + len2 - 1;
-        for (i = 0; i < len; i++) {
-            ans[i + 1] += ans[i] / 10;
-            ans[i] %= 10;
-        }
-        for (i = len; ans[i] <= 0 && i > 0; i--)
-            ;
-        for (; i >= 0; i--)
-            printf("%d", ans[i]);
-        putchar('\n');
+    if (invert) {
+        for (auto &x : a) x /= n;
     }
 }
+
+// calculates the convolution of a and b
+// represent the coefficients of the polynomial *from low to high*
+static std::vector<int> convolve(const std::vector<int> &a, const std::vector<int> &b) {
+    std::vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    int n = 1 << (std::__lg(size(a) + size(b) - 1) + 1);
+    fa.resize(n);
+    fb.resize(n);
+
+    _fft(fa, false);
+    _fft(fb, false);
+    for (int i = 0; i < n; i++) {
+        fa[i] *= fb[i];
+    }
+    _fft(fa, true);
+
+    std::vector<int> result(n);
+    for (int i = 0; i < n; i++) {
+        result[i] = round(fa[i].real());
+    }
+    return result;
+}
+
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n + 1), b(m + 1);
+    for (int i = 0; i <= n; ++i) {
+        cin >> a[i];
+    }
+    for (int i = 0; i <= m; ++i) {
+        cin >> b[i];
+    }
+
+    auto c = convolve(a, b);
+
+    for (int i = 0; i <= n + m; ++i) {
+        cout << c[i] << " \n"[i == n + m];
+    }
+
+    return 0;
+}
+
+// test problem: https://www.luogu.com.cn/problem/P3803

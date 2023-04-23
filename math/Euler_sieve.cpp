@@ -1,31 +1,27 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
 struct EluerSieve {
     const int N;
-    vector<int> mp, num, d, phi, primes;
+    std::vector<int> minp, num, d, phi, primes;
 
-    // mp[i] is the minimum prime factor of i
+    // minp[i] is the minimum prime factor of i
     // d[i] is the number of factors of i
     // num[i] is the number of minimun prime factors of i
-    EluerSieve(int n) : N(n), mp(n + 1), num(n + 1), d(n + 1), phi(n + 1) {
+    EluerSieve(int n) : N(n), minp(n + 1), num(n + 1), d(n + 1), phi(n + 1) {
         phi[1] = 1;
         d[1] = 1;
         for (int i = 2; i <= N; ++i) {
-            if (!mp[i]) {
-                mp[i] = i;
+            if (!minp[i]) {
+                minp[i] = i;
                 num[i] = 1;
                 d[i] = 2;
                 phi[i] = i - 1;
                 primes.push_back(i);
             }
+            for (auto p : primes) {
+                if (i * p > n) break;
 
-            for (int j = 0; j < primes.size() && i * primes[j] <= N; ++j) {
-                int p = primes[j];
-                mp[i * p] = p;
-
+                minp[i * p] = p;
                 if (i % p == 0) {
                     num[i * p] = num[i] + 1;
                     d[i * p] = d[i] / num[i * p] * (num[i * p] + 1);
@@ -49,4 +45,16 @@ struct EluerSieve {
         if (n > 1) ans = ans / n * (n - 1);
         return ans;
     }
+    std::vector<std::pair<int, int>> factor(int n) {
+        std::vector<std::pair<int, int>> factors;
+        while (n > 1) {
+            int p = minp[n], cnt = 0;
+            while (n % p == 0) {
+                cnt++;
+                n /= p;
+            }
+            factors.emplace_back(p, cnt);
+        }
+        return factors;
+    };
 };

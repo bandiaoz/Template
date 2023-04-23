@@ -1,30 +1,27 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
 struct TwoSat {
     int n;
-    vector<vector<int>> G;
-    vector<bool> ans;
+    std::vector<std::vector<int>> G;
+    std::vector<bool> ans;
     TwoSat(int n) : n(n), G(2 * n), ans(n) {}
     void addClause(int u, bool f, int v, bool g) {
         G[2 * u + !f].push_back(2 * v + g);
         G[2 * v + !g].push_back(2 * u + f);
     }
     bool satisfiable() {
-        vector<int> id(2 * n, -1), dfn(2 * n, -1), low(2 * n, -1);
-        vector<int> stk;
+        std::vector<int> id(2 * n, -1), dfn(2 * n, -1), low(2 * n, -1);
+        std::vector<int> stk;
         int now = 0, cnt = 0;
-        function<void(int)> tarjan = [&](int u) {
+        std::function<void(int)> tarjan = [&](int u) {
             stk.push_back(u);
             dfn[u] = low[u] = now++;
             for (auto v : G[u]) {
                 if (dfn[v] == -1) {
                     tarjan(v);
-                    low[u] = min(low[u], low[v]);
+                    low[u] = std::min(low[u], low[v]);
                 } else if (id[v] == -1) {
-                    low[u] = min(low[u], dfn[v]);
+                    low[u] = std::min(low[u], dfn[v]);
                 }
             }
             if (dfn[u] == low[u]) {
@@ -44,5 +41,5 @@ struct TwoSat {
         }
         return true;
     }
-    vector<bool> answer() { return ans; }
+    std::vector<bool> answer() { return ans; }
 };

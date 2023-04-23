@@ -1,11 +1,9 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 template <typename T>
 struct Fenwick {
     int n;
-    vector<T> a;
+    std::vector<T> a;
     
     Fenwick(int n = 0) {
         init(n);
@@ -33,7 +31,7 @@ struct Fenwick {
     }
     int kth(T k) {
         int x = 0;
-        for (int i = 1 << __lg(n); i; i /= 2) {
+        for (int i = 1 << std::__lg(n); i; i /= 2) {
             if (x + i <= n && k >= a[x + i - 1]) {
                 x += i;
                 k -= a[x - 1];
@@ -48,7 +46,7 @@ constexpr int inf = 1E9;
 struct Min {
     int x = inf;
     Min &operator+=(Min a) {
-        x = min(x, a.x);
+        x = std::min(x, a.x);
         return *this;
     }
 };

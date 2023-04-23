@@ -1,3 +1,5 @@
+// reference: https://atcoder.github.io/ac-library/master/document_en/segtree.html
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -151,4 +153,3 @@ int main() {
 }
 
 // test problem: https://atcoder.jp/contests/practice2/tasks/practice2_j
-// reference: https://atcoder.github.io/ac-library/master/document_en/segtree.html

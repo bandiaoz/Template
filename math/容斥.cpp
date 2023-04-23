@@ -83,16 +83,7 @@ int main() {
             s[i] |= 1 << (c - 'a');
         }
     }
-
-    auto cul = [&](int cur) {
-        int ans = 0;
-        while (cur) {
-            ans += cur & 1;
-            cur >>= 1;
-        }
-        return ans;
-    };
-
+    
     Z ans = 0;
     vector<Z> f(1 << n);
     for (int mask = 1; mask < (1 << n); ++mask) {
@@ -102,8 +93,8 @@ int main() {
                 cur &= s[i];
             }
         }
-        f[mask] = power(Z(cul(cur)), L);
-        ans += (cul(mask) & 1 ? 1 : -1) * f[mask];
+        f[mask] = power(Z(__builtin_popcount(cur)), L);
+        ans += (__builtin_popcount(mask) & 1 ? 1 : -1) * f[mask];
     }
 
     cout << ans.val() << "\n";

@@ -4,34 +4,27 @@ using namespace std;
 using ll = long long;
 
 class Trie {
-    using Node = array<int, 62>;
-    vector<Node> ch_;
+    vector<vector<int>> ch_;
     vector<int> cnt;
     int getnum(char ch) {
         if (ch <= '9') return ch - '0';
         if (ch <= 'Z') return ch - 'A' + 10;
         return ch - 'a' + 36;
     }
-    Node emptyNode() {
-        Node tp;
-        tp.fill(-1);
-        return tp;
-    }
-    void addNode(int fa, int c) {
-        ch_[fa][c] = ch_.size();
-        ch_.push_back(emptyNode());
+    int emptyNode() {
+        ch_.push_back(vector<int>(62, -1));
         cnt.push_back(0);
+        return ch_.size() - 1;
     }
 
    public:
-    Trie() { 
-        ch_.push_back(emptyNode()); 
-        cnt.push_back(0);
-    }
+    Trie() { emptyNode(); }
     void insert(string s) {
         for (int i = 0, p = 0; i < s.size(); ++i) {
             int c = getnum(s[i]);
-            if (ch_[p][c] == -1) addNode(p, c);
+            if (ch_[p][c] == -1) {
+                ch_[p][c] = emptyNode();
+            }
             p = ch_[p][c];
             cnt[p]++;
         }

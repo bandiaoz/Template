@@ -3,7 +3,7 @@
 double sqr(double x) { return x * x; }
 double mysqrt(double n) {
     return sqrt(max(0.0, n));
-}  // 防止出现sqrt(-eps)的情况
+}  // 防止出现 sqrt(-eps) 的情况
 
 struct Circle {
     Point o;
@@ -14,11 +14,11 @@ struct Circle {
     double perimeter() { return r * PI * 2; }
     // 点在圆内，不包含边界
     bool pointIn(const Point &p) { return sgn((p - o).norm() - r) < 0; }
-    // 判直线和圆相交,包括相切
+    // 判直线和圆相交，包括相切
     friend int isLineCircleIntersection(Line L, Circle c) {
         return L.disPointLine(c.o) < c.r + eps;
     }
-    // 判线段和圆相交,包括端点和相切
+    // 判线段和圆相交，包括端点和相切
     friend int isSegCircleIntersection(Line L, Circle c) {
         double t1 = dis(c.o, L.s) - c.r, t2 = dis(c.o, L.t) - c.r;
         Point t = c.o;
@@ -27,7 +27,7 @@ struct Circle {
         t.y += L.t.x - L.s.x;
         return det(L.s - t, c.o - t) * det(L.t - t, c.o - t) < eps && L.disPointLine(c.o) < c.r + eps;
     }
-    // 判圆和圆相交,包括相切
+    // 判圆和圆相交，包括相切
     friend int isCirCirIntersection(Circle c1, Circle c2) {
         return dis(c1.o, c2.o) < c1.r + c2.r + eps &&
                dis(c1.o, c2.o) > fabs(c1.r - c2.r) - eps;
@@ -36,7 +36,7 @@ struct Circle {
     friend int isCirCirContain(Circle c1, Circle c2) {
         return sgn(dis(c1.o, c2.o) + min(c1.r, c2.r) - max(c1.r, c2.r)) <= 0;
     }
-    // 计算圆上到点p最近点,如p与圆心重合,返回p本身
+    // 计算圆上到点 p 最近点，如 p 与圆心重合，返回 p 本身
     friend Point dotPointCircle(Point p, Circle C) {
         Point u, v, c = C.o;
         if (dis(p, c) < eps) return p;
@@ -46,7 +46,7 @@ struct Circle {
         v.y = c.y - C.r * fabs(c.y - p.y) / dis(c, p) * ((c.x - p.x) * (c.y - p.y) < 0 ? -1 : 1);
         return dis(u, p) < dis(v, p) ? u : v;
     }
-    // 圆与线段交 用参数方程表示直线：P=A+t*(B-A)，带入圆的方程求解t
+    // 圆与线段交 用参数方程表示直线：P=A+t*(B-A)，带入圆的方程求解 t
     friend vector<Point> segCircleIntersection(const Line &l, const Circle &c) {
         double dx = l.t.x - l.s.x, dy = l.t.y - l.s.y;
         double A = dx * dx + dy * dy;
@@ -56,7 +56,7 @@ struct Circle {
         vector<Point> res;
         if (A < eps) return res;
         if (sgn(delta) >= 0) {  // or delta > -eps ?
-            // 可能需要注意delta接近-eps的情况，所以使用mysqrt
+            // 可能需要注意 delta 接近-eps 的情况，所以使用 mysqrt
             double w1 = (-B - mysqrt(delta)) / (2 * A);
             double w2 = (-B + mysqrt(delta)) / (2 * A);
             if (sgn(w1 - 1) <= 0 && sgn(w1) >= 0) {
@@ -99,8 +99,8 @@ struct Circle {
         L.t.y = L.s.y - a.o.x + b.o.x;
         return lineCircleIntersection(L, a);
     }
-    // 将向量p逆时针旋转angle角度
-    // 求圆外一点对圆(o,r)的切点
+    // 将向量 p 逆时针旋转 angle 角度
+    // 求圆外一点对圆 (o,r) 的切点
     friend vector<Point> tangentPointCircle(Point poi, Circle C) {
         Point o = C.o;
         double r = C.r;
@@ -134,7 +134,7 @@ struct Circle {
         theta = min(theta, 2.0 * PI - theta);
         return sgn(det(a, b)) * theta * r * r / 2.0;
     }
-    // 与线段AB的交点计算面积 a->b
+    // 与线段 AB 的交点计算面积 a->b
     double areaSegCircle(const Line &L) const {
         Point a = L.s, b = L.t;
         vector<Point> p = segCircleIntersection(Line(a, b), *this);
@@ -202,7 +202,7 @@ struct Circle {
         Point o((p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
         return Circle(o, (o - p0).norm());
     }
-    // 最小圆覆盖 用之前可以随机化random_shuffle
+    // 最小圆覆盖 用之前可以随机化 random_shuffle
     Circle minCirCover(vector<Point> &a) {
         int n = a.size();
         Circle c(a[0], 0);
@@ -247,7 +247,7 @@ struct Circle {
         }
         return ans;
     }
-    // 圆b在圆a内的长度
+    // 圆 b 在圆 a 内的长度
     friend double lengthCircleInCircle(Circle a, Circle b) {
         if (a.r > b.r && a.r - b.r + eps > dis(a.o, b.o)) return b.perimeter();
         vector<Point> vec = cirCirIntersection(a, b);

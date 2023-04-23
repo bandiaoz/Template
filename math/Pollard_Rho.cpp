@@ -79,14 +79,14 @@ private:
     }
     void fac(int64_t x, vector<int64_t> &ans) {
         if (x == 1) return;
-        if (miller_rabin(x)) { // 如果x为质数
+        if (miller_rabin(x)) { // 如果 x 为质数
             ans.push_back(x);
             return;
         }
         int64_t p = x;
         while (p >= x) p = solve(x);  // 使用该算法
         while ((x % p) == 0) x /= p;
-        fac(x, ans), fac(p, ans);  // 继续向下分解x和p
+        fac(x, ans), fac(p, ans);  // 继续向下分解 x 和 p
     }
     
 public:
@@ -128,5 +128,4 @@ int main() {
 
     return 0;
 }
-
 // test problem: https://www.luogu.com.cn/problem/P4718
