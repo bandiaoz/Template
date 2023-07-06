@@ -17,7 +17,6 @@
 */
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
 /** Modified from:
@@ -60,26 +59,26 @@ struct Strongly_Connected_Components {
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     
     int n, m;
-    cin >> n >> m;
-    vector<vector<int>> g(n);
+    std::cin >> n >> m;
+    std::vector<std::vector<int>> g(n);
     for (int i = 0; i < m; ++i) {
         int u, v;
-        cin >> u >> v;
+        std::cin >> u >> v;
         g[u].push_back(v);
     }
 
     Strongly_Connected_Components scc(g);
     auto ans = scc.components;
 
-    cout << ans.size() << "\n";
+    std::cout << ans.size() << "\n";
     for (int i = ans.size() - 1; i >= 0; --i) {
-        cout << ans[i].size() << " ";
+        std::cout << ans[i].size() << " ";
         for (int j = 0; j < ans[i].size(); ++j) {
-            cout << ans[i][j] << " \n"[j == ans[i].size() - 1];
+            std::cout << ans[i][j] << " \n"[j == ans[i].size() - 1];
         }
     }
 
