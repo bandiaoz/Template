@@ -39,4 +39,14 @@ struct DSU {
     int size(int x) {
         return siz[leader(x)];
     }
+
+    // Merge two DSU's into one
+    friend DSU merge(const DSU &a, const DSU &b) {
+        assert(a.f.size() == b.f.size());
+        DSU res = a;
+        for (int i = 0; i < b.f.size(); i++) {
+            res.merge(i, b.f[i]);
+        }
+        return res;
+    }
 };

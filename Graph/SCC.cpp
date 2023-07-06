@@ -30,21 +30,21 @@ using ll = long long;
 */
 struct Strongly_Connected_Components {
     int n;
-    vector<int> color;
-    vector<vector<int>> components;
+    std::vector<int> color;
+    std::vector<std::vector<int>> components;
 
-    Strongly_Connected_Components(const vector<vector<int>>& g) : n(g.size()), color(n, -1) {
+    Strongly_Connected_Components(const std::vector<std::vector<int>>& g) : n(g.size()), color(n, -1) {
         int cur = 0;
-        vector<int> low(n), dfn(n, -1), stk;
-        function<void(int)> tarjan = [&](int u) {
+        std::vector<int> low(n), dfn(n, -1), stk;
+        std::function<void(int)> tarjan = [&](int u) {
             low[u] = dfn[u] = cur++;
             stk.push_back(u);
             for (auto v : g[u]) {
                 if (dfn[v] == -1) tarjan(v);
-                if (color[v] == -1) low[u] = min(low[u], low[v]);
+                if (color[v] == -1) low[u] = std::min(low[u], low[v]);
             }
             if (low[u] == dfn[u]) {
-                vector<int> component;
+                std::vector<int> component;
                 int v;
                 do {
                     v = stk.back();

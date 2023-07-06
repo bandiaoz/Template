@@ -1,8 +1,5 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
 template<class cap_t>
 struct Flow {
     static constexpr cap_t INF = numeric_limits<cap_t>::max();
@@ -12,9 +9,9 @@ struct Flow {
         cap_t cap;
         Edge(int to, cap_t cap) : to(to), cap(cap) {}
     };
-    vector<Edge> e;
-    vector<vector<int>> g;
-    vector<int> cur, h;
+    std::vector<Edge> e;
+    std::vector<std::vector<int>> g;
+    std::vector<int> cur, h;
     Flow(int n) : n(n), g(n) {}
     bool bfs(int s, int t) {
         h.assign(n, -1);
@@ -69,22 +66,24 @@ struct Flow {
     }
 };
 
+using ll = long long;
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     
     int n, m, source, sink;
-    cin >> n >> m >> source >> sink;
+    std::cin >> n >> m >> source >> sink;
     source--, sink--;
     Flow<ll> flow(n);
     for (int i = 0; i < m; ++i) {
         int u, v, c;
-        cin >> u >> v >> c;
+        std::cin >> u >> v >> c;
         u--, v--;
         flow.addEdge(u, v, c);
     }
 
-    cout << flow.maxFlow(source, sink) << "\n";
+    std::cout << flow.maxFlow(source, sink) << "\n";
     
     return 0;
 }

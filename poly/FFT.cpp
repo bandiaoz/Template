@@ -32,8 +32,12 @@ static void _fft(std::vector<cd> &a, bool invert) {
     }
 }
 
-// calculates the convolution of a and b
-// represent the coefficients of the polynomial *from low to high*
+/**
+ * @brief Convolution of two polynomials
+ * @param a: coefficients of the first polynomial *from low to high*
+ * @param b: coefficients of the second polynomial *from low to high*
+ * @return coefficients of the convolution
+ */
 static std::vector<int> convolve(const std::vector<int> &a, const std::vector<int> &b) {
     std::vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
     int n = 1 << (std::__lg(size(a) + size(b) - 1) + 1);

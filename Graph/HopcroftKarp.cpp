@@ -3,7 +3,10 @@
 using namespace std;
 using ll = long long;
 
-// O(sqrt(n)*m)
+/**
+ * @brief Hopcroft-Karp algorithm
+ * @note O(sqrt(V) * E)
+*/
 struct HopcroftKarp {
     vector<int> g, l, r;
     int ans;
