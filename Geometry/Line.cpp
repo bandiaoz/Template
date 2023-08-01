@@ -34,7 +34,7 @@ struct Line {
         if (sgn(dot(p - t, s - t)) < 0) return (p - t).norm();
         return disPointLine(p);
     }
-    // 计算点 p 与直线的关系， 返回ONLINE、LEFT、RIGHT 上0 左-1 右1
+    // 计算点 p 与直线的关系，返回 ONLINE、LEFT、RIGHT 上 0 左 -1 右 1
     int relation(const Point &p) { return sgn(det(t - s, p - s)); }
     // 判断 a, b 是否在直线的同侧或者同时在直线上
     bool sameSide(const Point &a, const Point &b) {
@@ -59,11 +59,11 @@ struct Line {
         return u.s + (u.t - u.s) * det(u.s - v.s, v.s - v.t) /
                          det(u.s - u.t, v.s - v.t);
     }
-    // 判断直线l1和线段l2是否相交
+    // 判断直线 l1 和线段 l2 是否相交
     friend bool isLineSegIntersection(Line l1, Line l2) {
         return l1.relation(l2.s) * l1.relation(l2.t) <= 0;
     }
-    // 判断线段交, 返回是否有交点
+    // 判断线段交，返回是否有交点
     friend bool isSegIntersection(Line l1, Line l2) {
         if (!sgn(det(l2.s - l1.s, l1.vec())) &&
             !sgn(det(l2.t - l1.t, l1.vec()))) {
@@ -73,8 +73,8 @@ struct Line {
         return !l1.sameSide(l2.s, l2.t) && !l2.sameSide(l1.s, l1.t);
     }
 
-    // 规范相交, 两线段仅有一个非端点处的交点
-    // 判断线段相交, 并求线段交点, 1规范相交, 2相交, 0不交
+    // 规范相交，两线段仅有一个非端点处的交点
+    // 判断线段相交，并求线段交点，1 规范相交，2 相交，0 不交
     friend int segSegIntersection(Line l1, Line l2, Point &p) {
         Point a, b, c, d;
         a = l1.s;
@@ -96,10 +96,10 @@ struct Line {
         }
 
         // 判断非规范相交
-        // d1 == 0, 则证明a, b, c三点共线;
-        // 如果sgn(dot(a - c, b - c)) < 0, 则说明点c在点a，b的中间；
-        // 如果sgn(dot(a - c, b - c)) == 0,则说明点c与线段ab的端点a，或者b重合。
-        // 如果sgn(dot(a - c, b - c)) > 0，则说明点c在线段ab的外面。
+        // d1 == 0, 则证明 a, b, c 三点共线;
+        // 如果 sgn(dot(a - c, b - c)) < 0, 则说明点 c 在点 a，b 的中间；
+        // 如果 sgn(dot(a - c, b - c)) == 0，则说明点 c 与线段 ab 的端点 a，或者 b 重合。
+        // 如果 sgn(dot(a - c, b - c)) > 0，则说明点 c 在线段 ab 的外面。
         if ((d1 == 0 && sgn(dot(a - c, b - c)) <= 0) ||
             (d2 == 0 && sgn(dot(a - d, b - d)) <= 0) ||
             (d3 == 0 && sgn(dot(c - a, d - a)) <= 0) ||
@@ -109,7 +109,7 @@ struct Line {
         return 0;
     }
 
-    // 直线沿法向量(指向直线逆时针方向，若需要顺时针则移动 -d) 移动 d 距离
+    // 直线沿法向量 (指向直线逆时针方向，若需要顺时针则移动 -d) 移动 d 距离
     friend Line move(const Line &l, const double &d) {
         Point t = l.vec();
         t = t / t.norm();
@@ -129,7 +129,7 @@ struct Line {
             return min(min(d1, d2), min(d3, d4));
         }
     }
-    // 两直线的夹角，返回[0, PI] 弧度
+    // 两直线的夹角，返回 [0, PI] 弧度
     friend double argLineLine(Line l1, Line l2) {
         Point u = l1.vec();
         Point v = l2.vec();
