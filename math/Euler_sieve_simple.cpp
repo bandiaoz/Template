@@ -1,10 +1,10 @@
 #include <bits/stdc++.h>
 
-struct EluerSieveSimple {
+struct EulerSieveSimple {
     const int N;
     std::vector<int> minp, primes;
 
-    EluerSieveSimple(int n) : N(n), minp(n + 1) {
+    EulerSieveSimple(int n) : N(n), minp(n + 1) {
         for (int i = 2; i <= N; ++i) {
             if (!minp[i]) {
                 minp[i] = i;
@@ -29,5 +29,22 @@ struct EluerSieveSimple {
             factors.emplace_back(p, cnt);
         }
         return factors;
+    };
+    std::vector<int> factors(int n) {
+        std::vector<int> ans{1};
+        while (n != 1) {
+            int p = minp[n], cnt = 0;
+            while (n % p == 0) {
+                cnt++;
+                n /= p;
+            }
+            int l = ans.size();
+            for (int i = 0; i < l; i++) {
+                for (int j = 0, t = p; j < cnt; j++, t *= p) {
+                    ans.push_back(ans[i] * t);
+                }
+            }
+        }
+        return ans;
     };
 };

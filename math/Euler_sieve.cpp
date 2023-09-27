@@ -1,13 +1,13 @@
 #include <bits/stdc++.h>
 
-struct EluerSieve {
+struct EulerSieve {
     const int N;
     std::vector<int> minp, num, d, phi, primes;
 
     // minp[i] is the minimum prime factor of i
     // d[i] is the number of factors of i
-    // num[i] is the number of minimun prime factors of i
-    EluerSieve(int n) : N(n), minp(n + 1), num(n + 1), d(n + 1), phi(n + 1) {
+    // num[i] is the number of smallest prime factors of i
+    EulerSieve(int n) : N(n), minp(n + 1), num(n + 1), d(n + 1), phi(n + 1) {
         phi[1] = 1;
         d[1] = 1;
         for (int i = 2; i <= N; ++i) {

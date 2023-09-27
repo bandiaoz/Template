@@ -22,7 +22,7 @@ using ll = long long;
 /** Modified from:
  * https://github.com/thallium/acm-algorithm-template/blob/master/src/Graph/tarjan_scc.hpp
  * Find strongly connected components of graph g. Components are numbered in *reverse topological order*,
- * starting from 0. It returns the number of components and an array which indicates whichcomponent
+ * starting from 0. It returns the number of components and an array which indicates which component
  * component each vertex belongs to.
  * We no longer need on_stk array, we can replace `if (on_stk[v])` with `color[v] == -1` when update low array, 
  * because if a node have dfn but do not have color, it must on stack.
@@ -35,11 +35,11 @@ struct Strongly_Connected_Components {
     Strongly_Connected_Components(const std::vector<std::vector<int>>& g) : n(g.size()), color(n, -1) {
         int cur = 0;
         std::vector<int> low(n), dfn(n, -1), stk;
-        std::function<void(int)> tarjan = [&](int u) {
+        auto tarjan = [&](auto &&slf, int u) -> void {
             low[u] = dfn[u] = cur++;
             stk.push_back(u);
             for (auto v : g[u]) {
-                if (dfn[v] == -1) tarjan(v);
+                if (dfn[v] == -1) slf(slf, v);
                 if (color[v] == -1) low[u] = std::min(low[u], low[v]);
             }
             if (low[u] == dfn[u]) {
@@ -54,7 +54,7 @@ struct Strongly_Connected_Components {
                 components.push_back(component);
             }
         };
-        for (int i = 0; i < n; i++) if (dfn[i] == -1) tarjan(i);
+        for (int i = 0; i < n; i++) if (dfn[i] == -1) tarjan(tarjan, i);
     }
 };
 

@@ -7,9 +7,9 @@ using ll = long long;
 class BipartiteMatching {
 private:
     int nl, nr;
-    vector<vector<int>> g;
+    std::vector<std::vector<int>> g;
     int time;
-    vector<int> matchx, matchy, vis, levelx, levely;
+    std::vector<int> matchx, matchy, vis, levelx, levely;
     bool find_match(int x) {
         for (auto y : g[x]) {
             if (levely[y] == levelx[x] + 1 && vis[y] != time) {
@@ -24,7 +24,7 @@ private:
         return false;
     }
     bool find_path() {
-        vector<int> q;
+        std::vector<int> q;
         for (int x = 0; x < nl; ++x) {
             if (matchx[x] >= 0) {
                 levelx[x] = 0;
@@ -58,7 +58,7 @@ public:
         assert(0 <= x && x < nl && 0 <= y && y < nr);
         g[x].push_back(y);
     }
-    pair<int, vector<int>> solve() {
+    std::pair<int, std::vector<int>> solve() {
         matchx.resize(nl, -1);
         matchy.resize(nr, -1);
         vis.resize(nr, 0);
@@ -73,7 +73,7 @@ public:
                 if (matchx[x] == -1 && find_match(x)) ans += 1;
             }
         }
-        return pair(ans, matchx);
+        return std::pair(ans, matchx);
     }
 };
 

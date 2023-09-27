@@ -2,7 +2,7 @@
 
 template<class cap_t>
 struct Flow {
-    static constexpr cap_t INF = numeric_limits<cap_t>::max();
+    static constexpr cap_t INF = std::numeric_limits<cap_t>::max();
     int n;
     struct Edge {
         int to;
@@ -15,7 +15,7 @@ struct Flow {
     Flow(int n) : n(n), g(n) {}
     bool bfs(int s, int t) {
         h.assign(n, -1);
-        queue<int> que;
+        std::queue<int> que;
         h[s] = 0;
         que.push(s);
         while (!que.empty()) {
@@ -41,7 +41,7 @@ struct Flow {
             int v = e[j].to;
             cap_t c = e[j].cap;
             if (c > 0 && h[v] == h[u] + 1) {
-                cap_t a = dfs(v, t, min(r, c));
+                cap_t a = dfs(v, t, std::min(r, c));
                 e[j].cap -= a;
                 e[j ^ 1].cap += a;
                 r -= a;

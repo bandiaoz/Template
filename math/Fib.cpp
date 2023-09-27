@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 
+using ll = long long;
+
 template <typename T, auto f = std::multiplies<T>()>
 constexpr static T power(T a, int64_t b) {
     T res;
@@ -50,5 +52,51 @@ struct ModInt {
     constexpr static ModInt identity() { return 1; }
     constexpr ModInt pow(int64_t p) { return power(*this, p); }
 };
-using ModInt1000000007 = ModInt<int, 1'000'000'007>;
-using ModInt998244353 = ModInt<int, 998244353>;
+using Z = ModInt<int, 1'000'000'007>;
+
+struct Matrix {
+    Z a[2][2];
+
+    Matrix() {
+        a[0][0] = a[1][1] = 0;
+        a[0][1] = a[1][0] = 0;
+    }
+
+    Matrix identity() {
+        Matrix res;
+        res.a[0][0] = res.a[1][1] = 1;
+        return res;
+    }
+
+    Matrix operator*(const Matrix &b) const {
+        Matrix res;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 2; k++) {
+                    res.a[i][j] += a[i][k] * b.a[k][j];
+                }
+            }
+        }
+        return res;
+    }
+};
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    ll n;
+    std::cin >> n;
+
+    auto f = [](ll n) {
+        if (n <= 2) return Z(1);
+        
+        Matrix base;
+        base.a[0][0] = base.a[0][1] = base.a[1][0] = 1;
+        return power(base, n - 1).a[0][0];
+    };
+    
+    std::cout << f(n) << "\n";
+
+    return 0;
+}

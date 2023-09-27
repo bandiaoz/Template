@@ -1,14 +1,13 @@
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
 template <typename T>
-vector<int> manacher(int n, const T &s) {
+std::vector<int> manacher(int n, const T &s) {
     if (n == 0) {
-        return vector<int>();
+        return std::vector<int>();
     }
-    vector<int> res(2 * n - 1, 0);
+    std::vector<int> res(2 * n - 1, 0);
     int l = -1, r = -1;
     for (int z = 0; z < 2 * n - 1; z++) {
         int i = (z + 1) >> 1;
@@ -37,16 +36,16 @@ vector<int> manacher(int n, const T &s) {
     // (watch out for i > j and res[z] = 0)
 }
 template <typename T>
-vector<int> manacher(const T &s) {
+std::vector<int> manacher(const T &s) {
     return manacher((int)s.size(), s);
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
-    string s;
-    cin >> s;
+    std::string s;
+    std::cin >> s;
     int n = s.length();
 
     auto ans = manacher(s);
@@ -62,7 +61,7 @@ int main() {
         }
     }
 
-    cout << s.substr(id, len) << "\n";
+    std::cout << s.substr(id, len) << "\n";
 
     return 0;
 }

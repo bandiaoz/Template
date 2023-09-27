@@ -27,7 +27,7 @@ void solve() {
         a /= g, b /= g, c /= g;
         x *= c, y *= c;
 
-        // a(x + bk) + b(y - ak) = c, stasify gcd(a, b) = 1
+        // a(x + bk) + b(y - ak) = c, satisfy gcd(a, b) = 1
         // we get -x / b < k < y / a, so k in [ceil((-x + 1) / b), floor((y - 1) / a]
         int64_t l = ceil(1. * (-x + 1) / b);
         int64_t r = floor(1. * (y - 1) / a);

@@ -1,13 +1,15 @@
 #include <bits/stdc++.h>
 
-// usage:
-//   auto fun = [&](int i, int j) { return min(i, j); };
-//   SparseTable<int, decltype(fun)> st(a, fun);
-// or:
-//   SparseTable<int> st(a, [&](int i, int j) { return min(i, j); });
-// __builtin_clz() : Calculate the number of leading zeros
-// std::countl_zero() : Calculate the number of leading zeros
-
+/**
+ * @brief Sparse Table
+ * @note O(nlogn) for build, O(1) for query
+ * @note std::countl_zero() : Calculate the number of leading zeros
+ * @note __builtin_clz() : Calculate the number of leading zeros
+ * @example auto fun = [&](int i, int j) { return min(i, j); };
+ *          SparseTable<int, decltype(fun)> st(a, fun);
+ *      or:
+ *          SparseTable<int> st(a, [&](int i, int j) { return min(i, j); });
+*/
 template <typename T, class F = std::function<T(const T&, const T&)>>
 struct SparseTable {
     int n;

@@ -40,6 +40,16 @@ struct DSU {
         return siz[leader(x)];
     }
 
+    std::vector<int> leader_set() {
+        std::vector<int> res;
+        for (int i = 0; i < f.size(); i++) {
+            if (f[i] == i) {
+                res.push_back(i);
+            }
+        }
+        return res;
+    }
+
     // Merge two DSU's into one
     friend DSU merge(const DSU &a, const DSU &b) {
         assert(a.f.size() == b.f.size());

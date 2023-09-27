@@ -40,7 +40,7 @@ struct Point {  // Point & Vector
         return sgn(a.x - b.x) < 0 || (!sgn(a.x - b.x) && sgn(a.y - b.y) < 0);
     }
     // 向量模
-    double norm() { return sqrt(x * x + y * y); }        
+    double norm() { return std::hypot(x, y); }
     // 向量叉积
     friend double det(const Point &a, const Point &b) {  
         return a.x * b.y - a.y * b.x;
@@ -51,7 +51,7 @@ struct Point {  // Point & Vector
     }
     // 两点间距离
     friend double dis(const Point &a, const Point &b) { 
-        return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+        return (a - b).norm();
     }
     friend Point intersection(Point u1, Point u2, Point v1, Point v2) {  // 线段交点，线段有交点才可用
         return u1 + (u2 - u1) * det(u1 - v1, v1 - v2) / det(u1 - u2, v1 - v2);

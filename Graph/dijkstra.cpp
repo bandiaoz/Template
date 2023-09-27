@@ -1,45 +1,69 @@
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
+/**
+ * @brief dijkstra algorithm
+ * @tparam T type of distance
+ * @param g 
+ * @param w 
+ * @param start 
+ * @return distance from start to each vertex
+ * @link https://www.luogu.com.cn/problem/P4779
+ * @link https://www.luogu.com.cn/problem/P1144
+ */
+template <typename T>
+auto dijkstra(const std::vector<std::vector<std::pair<int, int>>> &g,
+              const std::vector<T> &w, int start) {
+    std::vector<T> dis(g.size(), -1);
+    std::vector<int> pre(g.size(), -1);
+    constexpr int mod = 100003;
+    std::vector<int> cnt(g.size()); 
+    cnt[start] = 1;
+
+    std::priority_queue<std::tuple<T, int, int>> q;
+    q.emplace(0, start, -1);
+    while (!q.empty()) {
+        auto [d, u, f] = q.top();
+        q.pop();
+
+        if (dis[u] != -1) {
+            if (dis[u] == -d) {
+                cnt[u] = (cnt[u] + cnt[f]) % mod;
+            }
+            continue;
+        }
+        dis[u] = -d;
+        pre[u] = f;
+        cnt[u] = (cnt[u] + cnt[f]) % mod;
+
+        for (auto [v, j] : g[u]) {
+            q.emplace(d - w[j], v, u);
+        }
+    }
+    return dis;
+}
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int n, m, s;
-    cin >> n >> m >> s; s--;
-    vector<vector<pair<int, int>>> g(n);
-    vector<int> w(m);
+    std::cin >> n >> m >> s;
+    s--;
+    std::vector<std::vector<std::pair<int, int>>> g(n);
+    std::vector<int> w(m);
     for (int i = 0; i < m; ++i) {
         int u, v;
-        cin >> u >> v >> w[i]; 
+        std::cin >> u >> v >> w[i];
         u--, v--;
         g[u].emplace_back(v, i);
     }
 
-    auto dijkstra = [&]() {
-        vector<int> dis(n, -1);
-        priority_queue<pair<int, int>> h;
-        h.emplace(0, s);
-        while (!h.empty()) {
-            auto [d, u] = h.top();
-            h.pop();
-            if (dis[u] != -1) continue;
-            dis[u] = -d;
-            for (auto [v, j] : g[u]) {
-                h.emplace(d - w[j], v);
-            }
-        }
-        return dis;
-    };
-    
-    auto dis = dijkstra();
+    auto dis = dijkstra<int>(g, w, s);
     for (int i = 0; i < n; ++i) {
-        cout << dis[i] << " \n"[i == n - 1];
+        std::cout << dis[i] << " \n"[i == n - 1];
     }
 
     return 0;
 }
-
-// test problem: https://www.luogu.com.cn/problem/P4779

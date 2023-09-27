@@ -84,7 +84,7 @@ struct HLD {
         return seq[in[u] - dep[u] + d];
     }
     
-    bool isAncester(int u, int v) {
+    bool isAncestor(int u, int v) {
         return in[u] <= in[v] && in[v] < out[u];
     }
     
@@ -92,7 +92,7 @@ struct HLD {
         if (u == v) {
             return u;
         }
-        if (!isAncester(u, v)) {
+        if (!isAncestor(u, v)) {
             return fa[u];
         }
         auto it = std::upper_bound(g[u].begin(), g[u].end(), v, [&](int x, int y) {
@@ -105,7 +105,7 @@ struct HLD {
         if (u == v) {
             return n;
         }
-        if (!isAncester(v, u)) {
+        if (!isAncestor(v, u)) {
             return sz[v];
         }
         return n - sz[rootedChild(v, u)];
