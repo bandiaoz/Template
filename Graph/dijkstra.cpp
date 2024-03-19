@@ -9,60 +9,68 @@ using ll = long long;
  * @param w 
  * @param start 
  * @return distance from start to each vertex
- * @link https://www.luogu.com.cn/problem/P4779
- * @link https://www.luogu.com.cn/problem/P1144
+ * @link dist: https://www.luogu.com.cn/problem/P4779
+ * @link path: https://judge.yosupo.jp/problem/shortest_path
+ * @link count: https://www.luogu.com.cn/problem/P1144
  */
 template <typename T>
 auto dijkstra(const std::vector<std::vector<std::pair<int, int>>> &g,
-              const std::vector<T> &w, int start) {
-    std::vector<T> dis(g.size(), -1);
+              const std::vector<T> &w, int start) -> std::pair<std::vector<int64_t>, std::vector<int>> {
+    std::vector<int64_t> dis(g.size(), -1);
     std::vector<int> pre(g.size(), -1);
     constexpr int mod = 100003;
     std::vector<int> cnt(g.size()); 
     cnt[start] = 1;
 
-    std::priority_queue<std::tuple<T, int, int>> q;
+    std::priority_queue<std::tuple<int64_t, int, int>> q;
     q.emplace(0, start, -1);
     while (!q.empty()) {
         auto [d, u, f] = q.top();
         q.pop();
 
-        if (dis[u] != -1) {
-            if (dis[u] == -d) {
-                cnt[u] = (cnt[u] + cnt[f]) % mod;
-            }
-            continue;
+        if (f != -1 && (dis[u] == -1 || dis[u] == -d)) {
+            cnt[u] = (cnt[u] + cnt[f]) % mod;
         }
+        if (dis[u] != -1) continue;
         dis[u] = -d;
         pre[u] = f;
-        cnt[u] = (cnt[u] + cnt[f]) % mod;
 
         for (auto [v, j] : g[u]) {
             q.emplace(d - w[j], v, u);
         }
     }
-    return dis;
+    return {dis, pre};
 }
 
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    int n, m, s;
-    std::cin >> n >> m >> s;
-    s--;
+    int n, m, s, t;
+    std::cin >> n >> m >> s >> t;
     std::vector<std::vector<std::pair<int, int>>> g(n);
     std::vector<int> w(m);
-    for (int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; i++) {
         int u, v;
         std::cin >> u >> v >> w[i];
-        u--, v--;
         g[u].emplace_back(v, i);
     }
 
-    auto dis = dijkstra<int>(g, w, s);
-    for (int i = 0; i < n; ++i) {
-        std::cout << dis[i] << " \n"[i == n - 1];
+    auto [dis, pre] = dijkstra(g, w, s);
+
+    if (dis[t] == -1) {
+        std::cout << "-1\n";
+    } else {
+        std::vector<int> path{t};
+        for (int i = t; i != s; i = pre[i]) {
+            path.push_back(pre[i]);
+        }
+        std::reverse(path.begin(), path.end());
+        
+        std::cout << dis[t] << ' ' << path.size() - 1 << '\n';
+        for (int i = 0; i < path.size() - 1; i++) {
+            std::cout << path[i] << ' ' << path[i + 1] << '\n';
+        }
     }
 
     return 0;

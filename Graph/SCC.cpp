@@ -13,14 +13,10 @@
   * update:
   * if (dfn[v] == -1) tarjan(v);
     if (color[v] == -1) low[u] = min(low[u], low[v]);
- * See: https://cs.stackexchange.com/questions/96635/tarjans-scc-example-showing-necessity-of-lowlink-definition-and-calculation-r?rq=1 
 */
 #include <bits/stdc++.h>
 
-using ll = long long;
-
-/** Modified from:
- * https://github.com/thallium/acm-algorithm-template/blob/master/src/Graph/tarjan_scc.hpp
+/**
  * Find strongly connected components of graph g. Components are numbered in *reverse topological order*,
  * starting from 0. It returns the number of components and an array which indicates which component
  * component each vertex belongs to.

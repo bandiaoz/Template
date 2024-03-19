@@ -12,13 +12,12 @@ struct EulerSieveSimple {
             }
             for (auto p : primes) {
                 if (i * p > n) break;
-
                 minp[i * p] = p;
                 if (i % p == 0) break;
             }
         }
     }
-    std::vector<std::pair<int, int>> factor(int n) {
+    std::vector<std::pair<int, int>> prime_factors(int n) {
         std::vector<std::pair<int, int>> factors;
         while (n > 1) {
             int p = minp[n], cnt = 0;

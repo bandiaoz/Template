@@ -1,9 +1,7 @@
 #include <bits/stdc++.h>
 #include <bits/extc++.h>
 
-using namespace std;
 using namespace __gnu_pbds;
-using ll = long long;
 
 // https://codeforces.com/blog/entry/62393
 struct custom_hash {
@@ -16,7 +14,7 @@ struct custom_hash {
     }
 
     size_t operator()(uint64_t x) const {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        static const uint64_t FIXED_RANDOM = std::chrono::steady_clock::now().time_since_epoch().count();
         return splitmix64(x + FIXED_RANDOM);
     }
 };
@@ -31,21 +29,21 @@ struct custom_hash_pair {
 		return x ^ (x >> 31);
 	}
 
-	size_t operator()(pair<uint64_t,uint64_t> x) const {
-		static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+	size_t operator()(std::pair<uint64_t,uint64_t> x) const {
+		static const uint64_t FIXED_RANDOM = std::chrono::steady_clock::now().time_since_epoch().count();
 		return splitmix64(x.first + FIXED_RANDOM) ^ (splitmix64(x.second + FIXED_RANDOM) >> 1);
 	}
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
-    unordered_map<ll, int, custom_hash> safe_map;
-    gp_hash_table<ll, int, custom_hash> safe_hash_table;
+    std::unordered_map<int64_t, int, custom_hash> safe_map;
+    gp_hash_table<int64_t, int, custom_hash> safe_hash_table;
 
-    unordered_map<pair<ll, ll>, int, custom_hash> safe_map_pair;
-    gp_hash_table<pair<ll, ll>, int, custom_hash_pair> safe_hash_table_pair;
+    std::unordered_map<std::pair<int64_t, int64_t>, int, custom_hash> safe_map_pair;
+    gp_hash_table<std::pair<int64_t, int64_t>, int, custom_hash_pair> safe_hash_table_pair;
 
     return 0;
 }

@@ -1,16 +1,16 @@
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
 const double eps = 1e-8;
 
-int sgn(double x) { return abs(x) < eps ? 0 : (x > 0 ? 1 : -1); }
+int sgn(double x) { return std::abs(x) < eps ? 0 : (x > 0 ? 1 : -1); }
 
 struct Point {  // Point & Vector
     double x, y;
     Point(const double &x = 0, const double &y = 0) : x(x), y(y) {}
     
+    friend Point operator-(const Point &a) { return Point(-a.x, -a.y); }
     friend Point operator+(const Point &a, const Point &b) {
         return Point(a.x + b.x, a.y + b.y);
     }
@@ -56,10 +56,10 @@ struct Point {  // Point & Vector
     friend Point intersection(Point u1, Point u2, Point v1, Point v2) {  // 线段交点，线段有交点才可用
         return u1 + (u2 - u1) * det(u1 - v1, v1 - v2) / det(u1 - u2, v1 - v2);
     }
-    double arg() { return atan2(y, x); }  // 返回弧度
+    double arg() { return std::atan2(y, x); }  // 返回弧度
     friend double arg_2(Point u, Point v) {
         return acos(dot(u, v) / (u.norm() * v.norm()));
-    }  // 两向量之间的夹角
+    }  // 两向量之间的夹角，[0, pi]
     friend double arg_3(const Point &a, const Point &b, const Point &c) {
         return arg_2(a - b, c - b);
     }  // ∠abc

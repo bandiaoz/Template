@@ -1,7 +1,12 @@
-#include <bits/stdc++.h>
+#pragma once
+
+#include <cassert>
+#include <functional>
+#include <iostream>
 
 template <typename T, auto f = std::multiplies<T>()>
 constexpr static T power(T a, int64_t b) {
+    assert(b >= 0);
     T res;
     if constexpr (std::is_arithmetic_v<T>) {
         res = 1;
@@ -20,7 +25,7 @@ constexpr static T power(T a, int64_t b) {
 
 template <typename T, T MOD>
 struct ModInt {
-    using prod_type = std::conditional_t<std::is_same_v<T, int>, long long, __int128>;
+    using prod_type = std::conditional_t<std::is_same_v<T, int>, int64_t, __int128>;
     T val;
     constexpr ModInt(const int64_t v = 0) : val(v % MOD) { if (val < 0) val += MOD; }
     constexpr ModInt operator+() const { return ModInt(val); }

@@ -3,9 +3,10 @@
 struct Polygon {
 #define _next(i) ((i + 1) % n)
     int n;
-    vector<Point> p;
+    std::vector<Point> p;
 
-    Polygon(vector<Point> &v) : p(v) { n = p.size(); }
+    Polygon(std::vector<Point> &v) : p(v) { n = p.size(); }
+    Polygon(std::initializer_list<Point> v) : p(v) { n = p.size(); }
     Polygon(int n = 0) : n(n) { p.resize(n); }
 
     void addPoint(Point &a) {
@@ -22,8 +23,8 @@ struct Polygon {
     double area() {
         double sum = 0;
         for (int i = 0; i < n; ++i) sum += det(p[i], p[_next(i)]);
-        return fabs(sum) / 2;
-    }  // eps
+        return std::abs(sum) / 2;
+    }
     // 判断点与多边形的位置关系 0 外，1 内，2 边上
     int pointIn(const Point &t) {
         int num = 0;
@@ -64,7 +65,7 @@ struct Polygon {
     long long borderPointNum() {
         long long num = 0;
         for (int i = 0; i < n; ++i) {
-            num += gcd((long long)fabs(p[_next(i)].x - p[i].x),
+            num += std::gcd((long long)fabs(p[_next(i)].x - p[i].x),
                        (long long)fabs(p[_next(i)].y - p[i].y));
         }
         return num;
@@ -80,7 +81,7 @@ struct Polygon {
     }
     // 判线段在任意多边形内，顶点按顺时针或逆时针给出，与边界相交返回 1
     int insidePolygon(Line l) {
-        vector<Point> t;
+        std::vector<Point> t;
         Point tt, l1 = l.s, l2 = l.t;
         if (!pointIn(l.s) || !pointIn(l.t)) return 0;
         for (int i = 0; i < n; ++i) {
@@ -105,7 +106,7 @@ struct Polygon {
 
 struct Convex : public Polygon {
     Convex(int n = 0) : Polygon(n) {}
-    Convex(vector<Point> &a) { // 传入 n 个点构造凸包
+    Convex(std::vector<Point> &a) { // 传入 n 个点构造凸包
         Convex res(a.size() * 2 + 7);
         sort(a.begin(), a.end());
         a.erase(unique(a.begin(), a.end()), a.end());  // 去重点
@@ -130,7 +131,7 @@ struct Convex : public Polygon {
     }
 
     // 需要先求凸包，若凸包每条边除端点外都有点，则可唯一确定凸包
-    bool isUnique(vector<Point> &v) {
+    bool isUnique(std::vector<Point> &v) {
         if (sgn(area()) == 0) return 0;
         for (int i = 0; i < n; ++i) {
             Line l(p[i], p[_next(i)]);
@@ -146,19 +147,20 @@ struct Convex : public Polygon {
         return 1;
     }
     // O(n) 时间内判断点是否在凸包内 包含边
-    bool containon(const Point &a) {
-        for (int sign = 0, i = 0; i < n; ++i) {
+    bool contain(const Point &a) {
+        for (int sign = 0, i = 0; i < n; i++) {
             int x = sgn(det(p[i] - a, p[_next(i)] - a));
             if (x == 0) continue;  // return 0; // 改成不包含边
-            if (!sign)
+            if (!sign) {
                 sign = x;
-            else if (sign != x)
-                return 0;
+            } else if (sign != x) {
+                return false;
+            }
         }
-        return 1;
+        return true;
     }
     // O(logn) 时间内判断点是否在凸包内
-    bool containologn(const Point &a) {
+    bool contain_fast(const Point &a) {
         Point g = (p[0] + p[n / 3] + p[2.0 * n / 3]) / 3.0;
         int l = 0, r = n;
         while (l + 1 < r) {
@@ -179,59 +181,55 @@ struct Convex : public Polygon {
         }
         return sgn(det(p[r % n] - a, p[l] - a)) - 1;
     }
-    // 最远点对（直径）
-    int fir, sec;  // 最远的两个点对应标号
-    double diameter() {
-        double mx = 0;
+    /**
+     * @brief 最短点对
+     * @return 返回最远距离和两个点的编号
+     */
+    std::tuple<double, int, int> diameter() {
+        std::tuple ans(0, -1, -1);
         if (n == 1) {
-            fir = sec = 0;
-            return mx;
+            return std::tuple(0, 0, 0);
         }
-        for (int i = 0, j = 1; i < n; ++i) {
+        for (int i = 0, j = 1; i < n; i++) {
             while (sgn(det(p[_next(i)] - p[i], p[j] - p[i]) -
                        det(p[_next(i)] - p[i], p[_next(j)] - p[i])) < 0) {
                 j = _next(j);
             }
-            double d = dis(p[i], p[j]);
-            if (d > mx) {
-                mx = d;
-                fir = i;
-                sec = j;
+            if (double d = dis(p[i], p[j]); d > std::get<0>(ans)) {
+                ans = std::tuple(d, i, j);
             }
-            d = dis(p[_next(i)], p[_next(j)]);
-            if (d > mx) {
-                mx = d;
-                fir = _next(i);
-                sec = _next(j);
+            if (double d = dis(p[_next(i)], p[_next(j)]); d > std::get<0>(ans)) {
+                ans = std::tuple(d, _next(i), _next(j));
             }
         }
-        return mx;
+        return ans;
     }
 
     // 凸包是否与直线有交点 O(log(n)), 需要 On 的预处理，适合判断与直线集是否有交点
-    vector<double> ang;  // 角度
-    bool isinitangle;
-    int finda(const double &x) {
+    std::vector<double> ang;  // 角度
+    bool isInitAngle = false;
+    int find_angle(const double &x) {
         return upper_bound(ang.begin(), ang.end(), x) - ang.begin();
     }
     double getAngle(const Point &p) {  // 获取向量角度 [0, 2PI]
         double res = atan2(p.y, p.x);  // （-PI, PI】
         //      if (res < 0) res += 2 * pi; //为何不可以
-        if (res < -PI / 2 + eps) res += 2 * PI;  // eps 修正精度
+        if (res < -M_PI / 2 + eps) res += 2 * M_PI;  // eps 修正精度
         return res;
     }
     void initAngle() {
         for (int i = 0; i < n; ++i) {
             ang.push_back(getAngle(p[_next(i)] - p[i]));
         }
-        isinitangle = 1;
+        isInitAngle = true;
     }
     bool isxLine(const Line &l) {
-        if (!isinitangle) initAngle();
-        int i = finda(getAngle(l.t - l.s));
-        int j = finda(getAngle(l.s - l.t));
-        if (sgn(det(l.t - l.s, p[i] - l.s) * det(l.t - l.s, p[j] - l.s) >= 0))
-            return 0;
-        return 1;
+        if (!isInitAngle) initAngle();
+        int i = find_angle(getAngle(l.vec()));
+        int j = find_angle(getAngle(-l.vec()));
+        if (sgn(det(l.vec(), p[i] - l.s) * det(l.vec(), p[j] - l.s) >= 0)) {
+            return false;
+        }
+        return true;
     }
 };

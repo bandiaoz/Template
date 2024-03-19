@@ -1,160 +1,153 @@
+/**
+ * test: https://www.luogu.com.cn/problem/P3369
+*/
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
+template <typename T>
+class FHQTreap {
+   private:
+    struct node {
+        T val;
+        size_t prio;
+        int left, right;
+        size_t size;
 
-template<typename key_t>
-struct Treap {
-    struct Node {
-        key_t key;
-        int pri;
-        int l, r, sz;
-        Node(key_t a, int b) : key(a), pri(b), l(-1), r(-1), sz(1) {}
+        node() : prio(rand()), left(0), right(0), size(1) {}
+        node(T _val) : val(_val), prio(rand()), left(0), right(0), size(1) {}
+        node(T _val, size_t _size)
+            : val(_val), prio(0), left(0), right(0), size(_size) {}
     };
+    std::vector<node> tr;
+    int root;
 
-    int root = -1;
-    vector<Node> tree;
-
-    // split by key, the key of x treap less than y treap
-    array<int, 2> split(int pos, key_t key) {
-        if (pos == -1) return {-1, -1};
-
-        if (tree[pos].key <= key) {
-            array<int, 2> res = split(tree[pos].r, key);
-            tree[pos].r = res[0];
-            update(pos);
-            return {pos, res[1]};
-        } else {
-            array<int, 2> res = split(tree[pos].l, key);
-            tree[pos].l = res[1];
-            update(pos);
-            return {res[0], pos};
-        }
+    void create(int& k, T val) {
+        tr.push_back(node(val));
+        k = tr.size() - 1;
     }
-    // split by size, the size of x treap equal to sz
-    array<int, 2> split_sz(int pos, int sz) {
-        if (pos == -1) return {-1, -1};
 
-        if (tree[tree[pos].l].sz + 1 <= sz) {
-            array<int, 2> res = split_sz(tree[pos].r, sz - tree[tree[pos].l].sz - 1);
-            tree[pos].r = res[0];
-            update(pos);
-            return {pos, res[1]};
-        } else {
-            array<int, 2> res = split_sz(tree[pos].l, sz);
-            tree[pos].l = res[1];
-            update(pos);
-            return {res[0], pos};
-        }
+    void pushup(int p) {
+        tr[p].size = tr[tr[p].left].size + tr[tr[p].right].size + 1;
     }
-    // small root heap, the key of x treap less than y treap
+
     int merge(int x, int y) {
-        if (x == -1) return y;
-        if (y == -1) return x;
-
-        if (tree[x].pri > tree[y].pri) {
-            swap(x, y);
+        if (!x || !y) return x | y;
+        if (tr[x].prio < tr[y].prio) {
+            tr[x].right = merge(tr[x].right, y);
+            pushup(x);
+            return x;
+        } else {
+            tr[y].left = merge(x, tr[y].left);
+            pushup(y);
+            return y;
         }
+    }
 
-        array<int, 2> res = split(y, tree[x].key);
-        tree[x].l = merge(tree[x].l, res[0]);
-        tree[x].r = merge(tree[x].r, res[1]);
-        update(x);
-        return x;
-    }
-    void update(int pos) {
-        tree[pos].sz = tree[tree[pos].l].sz + tree[tree[pos].r].sz + 1;
-    }
-    int create(key_t key) {
-        mt19937 rng((unsigned int) chrono::steady_clock::now().time_since_epoch().count());
-        int pri = (int)(rng() & ((1ll << 31) - 1));
-        tree.emplace_back(key, pri);
-        return (int)tree.size() - 1;
-    }
-    void insert(int &pos, key_t key) {
-        int o = create(key);
-        array<int, 2> res = split(pos, key);
-        pos = merge(merge(res[0], o), res[1]);
-    }
-    // Return rank with power is key
-    int rank(int &pos, key_t key) {
-        array<int, 2> res = split(pos, key - 1);
-        int rk = (res[0] == -1) ? 1 : tree[res[0]].sz + 1;
-        pos = merge(res[0], res[1]);
-        return rk;
-    }
-    // Return the key of the k largest
-    key_t kth(int &pos, int k) {
-        assert(k <= tree[pos].sz);
-        array<int, 2> res1 = split_sz(pos, k);
-        array<int, 2> res2 = split_sz(res1[0], k - 1);
-        key_t key = tree[res2[1]].key;
-        pos = merge(merge(res2[0], res2[1]), res1[1]);
-        return key;
-    }
-    // Delete one node that equal to key
-    void erase(int &pos, key_t key) {
-        array<int, 2> res1 = split(pos, key);
-        array<int, 2> res2 = split(res1[0], key - 1);
-
-        if (res2[1] != -1) {
-            res2[1] = merge(tree[res2[1]].l, tree[res2[1]].r);
+    void split(int p, T k, int& x, int& y) {
+        if (!p) {
+            x = y = 0;
+            return;
         }
-
-        pos = merge(merge(res2[0], res2[1]), res1[1]);
-    }
-    // Return the precursor of key
-    key_t pre(int &pos, key_t key) {
-        array<int, 2> res = split(pos, key - 1);
-        key_t ans = kth(res[0], tree[res[0]].sz);
-        pos = merge(res[0], res[1]);
-        return ans;
-    }
-    // Return the next of key
-    key_t nxt(int &pos, key_t key) {
-        array<int, 2> res = split(pos, key);
-        int ans = kth(res[1], 1);
-        pos = merge(res[0], res[1]);
-        return ans;
+        if (tr[p].val <= k) {
+            x = p;
+            split(tr[x].right, k, tr[x].right, y);
+            pushup(x);
+        } else {
+            y = p;
+            split(tr[y].left, k, x, tr[y].left);
+            pushup(y);
+        }
     }
 
-    void insert(key_t x) { insert(root, x); }
-    void erase(int x) { erase(root, x); }
-    int rank(key_t x) { return rank(root, x); }
-    key_t kth(int x) { return kth(root, x); }
-    key_t pre(key_t x) { return pre(root, x); }
-    key_t nxt(key_t x) { return nxt(root, x); }
+    void insert(int& rt, T k) {
+        int x = 0, y = 0, z = 0;
+        split(rt, k, x, y);
+        create(z, k);
+        rt = merge(merge(x, z), y);
+    }
+
+    void remove(int& rt, T k) {
+        int x = 0, y = 0, z = 0;
+        split(rt, k, x, z);
+        split(x, k - 1, x, y);
+        y = merge(tr[y].left, tr[y].right);
+        rt = merge(merge(x, y), z);
+    }
+
+    T kth(int p, int rank) {
+        int ls = tr[tr[p].left].size;
+        if (rank == ls + 1) return tr[p].val;
+        if (rank <= ls) return kth(tr[p].left, rank);
+        return kth(tr[p].right, rank - ls - 1);
+    }
+
+    int rank(int& rt, T k) {
+        int x, y;
+        split(rt, k - 1, x, y);
+        int rank = tr[x].size + 1;
+        rt = merge(x, y);
+        return rank;
+    }
+
+    T lower_bound(int& rt, T v) {
+        int x, y, k, pre;
+        split(rt, v - 1, x, y);
+        if (!x) return std::numeric_limits<T>::min();
+        k = tr[x].size;
+        pre = kth(x, k);
+        rt = merge(x, y);
+        return pre;
+    }
+
+    T upper_bound(int& rt, T v) {
+        int x, y, nxt;
+        split(rt, v, x, y);
+        if (!y) return std::numeric_limits<T>::max();
+        nxt = kth(y, 1);
+        rt = merge(x, y);
+        return nxt;
+    }
+
+   public:
+    FHQTreap() : root(0) {
+        srand(19260817);
+        tr.push_back(node(0, 0));
+    }
+
+    void insert(T k) { insert(root, k); }
+    void remove(T k) { remove(root, k); }
+    T kth(int rank) { return kth(root, rank); }
+    int rank(T k) { return rank(root, k); }
+    T lower_bound(T k) { return lower_bound(root, k); }
+    T upper_bound(T k) { return upper_bound(root, k); }
+    size_t size() { return tr[root].size; }
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
     int n;
-    cin >> n;
+    std::cin >> n;
 
-    Treap<int> T;
-
-    for (int i = 1; i <= n; i++) {
+    FHQTreap<int> fhq;
+    while (n--) {
         int op, x;
-        cin >> op >> x;
+        std::cin >> op >> x;
 
         if (op == 1) {
-            T.insert(x);
+            fhq.insert(x);
         } else if (op == 2) {
-            T.erase(x);
+            fhq.remove(x);
         } else if (op == 3) {
-            cout << T.rank(x) << "\n";
+            std::cout << fhq.rank(x) << "\n";
         } else if (op == 4) {
-            cout << T.kth(x) << "\n";
+            std::cout << fhq.kth(x) << "\n";
         } else if (op == 5) {
-            cout << T.pre(x) << "\n";
+            std::cout << fhq.lower_bound(x) << "\n";
         } else if (op == 6) {
-            cout << T.nxt(x) << "\n";
+            std::cout << fhq.upper_bound(x) << "\n";
         }
     }
 
     return 0;
 }
-
-// test problem: https://loj.ac/p/104

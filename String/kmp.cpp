@@ -1,11 +1,10 @@
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
-vector<int> prefixFunction(string s) {
+std::vector<int> prefixFunction(std::string s) {
     int n = (int)s.size();
-    vector<int> p(n);
+    std::vector<int> p(n);
     for (int i = 1; i < n; ++i) {
         int j = p[i - 1];
         while (j > 0 && s[i] != s[j]) j = p[j - 1];
@@ -18,8 +17,8 @@ vector<int> prefixFunction(string s) {
 // KMP based on prefixFunction. return all match postion in t
 // also can create string st = s + '#' + t, and call prefixFunction(st),
 // if p[i] == s.length()，it's a successful match: s in t
-vector<int> kmp(string s, string t) {
-    vector<int> ans;
+std::vector<int> kmp(std::string s, std::string t) {
+    std::vector<int> ans;
     int n = (int)s.size(), m = (int)t.size();
     if (n > m) return ans;
     auto p = prefixFunction(s);
@@ -31,22 +30,22 @@ vector<int> kmp(string s, string t) {
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
-    string t, s;
-    cin >> t >> s;
+    std::string t, s;
+    std::cin >> t >> s;
 
-    string st = s + '#' + t;
+    std::string st = s + '#' + t;
     auto ans = prefixFunction(st);
     for (int i = s.length() + 1; i < st.length(); ++i) {
         if (ans[i] == s.length()) {
-            cout << i - 2 * s.length() + 1 << "\n";
+            std::cout << i - 2 * s.length() + 1 << "\n";
         }
     }
 
     for (int i = 0; i < s.length(); ++i) {
-        cout << ans[i] << " \n"[i == s.length() - 1];
+        std::cout << ans[i] << " \n"[i == s.length() - 1];
     }
 
     return 0;

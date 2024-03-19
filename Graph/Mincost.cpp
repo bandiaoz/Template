@@ -2,7 +2,8 @@
 
 template <typename cap_t, typename cost_t>
 struct Mincost {
-    static constexpr cost_t INF = std::numeric_limits<cost_t>::max();
+    static constexpr cost_t INF_COST = std::numeric_limits<cost_t>::max();
+    static constexpr cap_t INF_CAP = std::numeric_limits<cap_t>::max();
     int n;
     struct Edge {
         int to;
@@ -24,7 +25,7 @@ struct Mincost {
     }
     bool spfa(int s, int t) {
         pre.assign(n, -1);
-        dis.assign(n, INF);
+        dis.assign(n, INF_COST);
         std::queue<int> que;
         que.push(s);
         dis[s] = 0;
@@ -44,7 +45,7 @@ struct Mincost {
                 }
             }
         }
-        return dis[t] != INF;
+        return dis[t] != INF_COST;
     }
     std::pair<cap_t, cost_t> dfs(int u, int t, cap_t f) {
         if (u == t) return {f, 0};
@@ -68,15 +69,15 @@ struct Mincost {
     }
     void augment(int s, int t, std::pair<cap_t, cost_t> &ans) {
         int p = t;
-        cap_t _f = INF;
+        cap_t _f = INF_CAP;
         while (pre[p] != -1) {
-            _f = min(_f, e[pre[p]].cap);
+            _f = std::min(_f, e[pre[p]].cap);
             p = e[pre[p] ^ 1].to;
         }
         ans.first += _f;
         ans.second += _f * dis[t];
         p = t;
-        while(pre[p] != -1) {
+        while (pre[p] != -1) {
             e[pre[p]].cap -= _f;
             e[pre[p] ^ 1].cap += _f;
             p = e[pre[p] ^ 1].to;
@@ -89,7 +90,7 @@ struct Mincost {
         std::pair<cap_t, cost_t> ans = {0, 0};
         while (spfa(s, t)) {
             cur.assign(n, 0);
-            auto res = dfs(s, t, INF);
+            auto res = dfs(s, t, INF_CAP);
             ans.first += res.first;
             ans.second += res.second;
 

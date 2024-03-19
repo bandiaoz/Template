@@ -1,91 +1,129 @@
+/**
+ * @brief DSU on tree
+ * @link: https://codeforces.com/gym/102431/problem/K
+*/
+
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
+struct HLD {
     int n;
-    cin >> n;
-    vector<int> a(n);
-    vector<vector<int>> g(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> a[i];
+    std::vector<int> sz, fa;
+    std::vector<std::vector<int>> g;
+    std::vector<bool> exist;
+    std::vector<int> ans;
+    int res;
+    
+    HLD() {}
+    HLD(int n) {
+        init(n);
     }
-    for (int i = 0; i < n - 1; ++i) {
-        int u, v;
-        cin >> u >> v;
-        u--, v--;
+    void init(int n) {
+        this->n = n;
+        sz.resize(n);
+        fa.resize(n);
+        g.assign(n, {});
+        exist.assign(n, false);
+        ans.resize(n);
+        res = 0;
+    }
+    void addEdge(int u, int v) {
         g[u].push_back(v);
         g[v].push_back(u);
     }
-
-    vector<int> fa(n, -1), sz(n, 1);
-    function<void(int)> dfs_son = [&](int u) {
-        if (u > 0) {
-            g[u].erase(find(g[u].begin(), g[u].end(), fa[u]));
+    void work(int root = 0) {
+        fa[root] = -1;
+        dfs1(root);
+        solve(root, true);
+    }
+    void dfs1(int u) {
+        if (fa[u] != -1) {
+            g[u].erase(std::find(g[u].begin(), g[u].end(), fa[u]));
         }
+        
+        sz[u] = 1;
         for (auto &v : g[u]) {
             fa[v] = u;
-            dfs_son(v);
+            dfs1(v);
             sz[u] += sz[v];
             if (sz[v] > sz[g[u][0]]) {
-                swap(v, g[u][0]);
+                std::swap(v, g[u][0]);
             }
         }
-    };
-    
-    dfs_son(0);
-
-    int flag = -1, maxx = 0;
-    vector<int> cnt(n + 1);
-    vector<ll> ans(n);
-    ll sum = 0;
-    function<void(int, int)> count = [&](int u, int val) {
-        cnt[a[u]] += val;
-        if (cnt[a[u]] > maxx) {
-            maxx = cnt[a[u]];
-            sum = a[u];
-        } else if (cnt[a[u]] == maxx) {
-            sum += a[u];
-        }
-        for (auto v : g[u]) {
-            if (v == flag) continue;
-            count(v, val);
-        }
-    };
-
-    function<void(int, bool)> dfs_dsu = [&](int u, bool keep) {
-        // 搞轻儿子及其子树算答案删贡献
-        for (auto v : g[u]) {
-            if (v == g[u][0]) continue;
-            dfs_dsu(v, 0);
-        }
-        // 搞重儿子及其子树算答案不删贡献
-        if (g[u].size()) {
-            dfs_dsu(g[u][0], true);
-            flag = g[u][0];
-        }
-        // 暴力统计 u 及其所有轻儿子的贡献合并到刚算出的重儿子信息里
-        count(u, 1);
-        flag = -1;
-        ans[u] = sum;
-        // 把需要删除的贡献删一删
-        if (!keep) {
-            count(u, -1);
-            sum = maxx = 0;
-        }
-    };
-
-    dfs_dsu(0, false);
-
-    for (int i = 0; i < n; ++i) {
-        cout << ans[i] << " \n"[i == n - 1];
     }
-    
-    return 0;
+    void add_subtree(int u, int ignore = -1) {
+        exist[u] = true;
+        res++;
+        if (u - 1 >= 0 && exist[u - 1]) {
+            res--;
+        }
+        if (u + 1 < n && exist[u + 1]) {
+            res--;
+        }
+        for (auto v : g[u]) {
+            if (v == ignore) continue;
+            add_subtree(v);
+        }
+    }
+    void delete_subtree(int u) {
+        exist[u] = false;
+        res--;
+        if (u - 1 >= 0 && exist[u - 1]) {
+            res++;
+        }
+        if (u + 1 < n && exist[u + 1]) {
+            res++;
+        }
+        for (auto v : g[u]) {
+            delete_subtree(v);
+        }
+    }
+    void solve(int u, bool keep) {
+        for (auto v : g[u]) {
+            if (v == g[u].front()) continue;
+            solve(v, false);
+        }
+        if (g[u].size()) {
+            solve(g[u].front(), true);
+        }
+
+        add_subtree(u, g[u].size() ? g[u].front() : -1);
+        ans[u] = res;
+
+        if (!keep) {
+            delete_subtree(u);
+        }
+    }
+};
+
+void solve() {
+    int n;
+    std::cin >> n;
+    HLD hld(n);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        std::cin >> u >> v;
+        u--, v--;
+        hld.addEdge(u, v);
+    }
+
+    hld.work();
+
+    for (int i = 0; i < n; i++) {
+        std::cout << hld.ans[i] << " \n"[i == n - 1];
+    }
 }
 
-// https://codeforces.com/problemset/problem/600/E
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int t;
+    std::cin >> t;
+
+    for (int i = 0; i < t; i++) {
+        std::cout << "Case #" << i + 1 << ": ";
+        solve();
+    }
+
+    return 0;
+}

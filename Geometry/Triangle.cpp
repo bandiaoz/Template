@@ -53,18 +53,18 @@ struct Triangle {
 
     // 费马点 到三角形三顶点距离之和最小的点
     Point fermentPoint() {
-        if (arg_3(a, b, c) >= 2 * PI / 3) return b;
-        if (arg_3(b, a, c) >= 2 * PI / 3) return a;
-        if (arg_3(a, c, b) >= 2 * PI / 3) return c;
+        if (arg_3(a, b, c) >= 2 * M_PI / 3) return b;
+        if (arg_3(b, a, c) >= 2 * M_PI / 3) return a;
+        if (arg_3(a, c, b) >= 2 * M_PI / 3) return c;
         Point ab = (a + b) / 2, ac = (a + c) / 2;
         Point z1 = sqrt(3.0) * (a - ab), z2 = sqrt(3.0) * (a - ac);
-        z1 = rotate(z1, PI / 2);
-        z2 = rotate(z2, PI / 2);
-        if (arg_2(z1, c - ab) < PI / 2) {
+        z1 = rotate(z1, M_PI / 2);
+        z2 = rotate(z2, M_PI / 2);
+        if (arg_2(z1, c - ab) < M_PI / 2) {
             z1.x = -z1.x;
             z1.y = -z1.y;
         }
-        if (arg_2(z2, b - ac) < PI / 2) {
+        if (arg_2(z2, b - ac) < M_PI / 2) {
             z2.x = -z2.x;
             z2.y = -z2.y;
         }
@@ -73,10 +73,10 @@ struct Triangle {
     // 模拟退火求费马点
     Point FermatPoint() {
         Point u, v;
-        double step = fabs(a.x) + fabs(a.y) + fabs(b.x) + fabs(b.y) + fabs(c.x) + fabs(c.y);
+        double step = std::abs(a.x) + std::abs(a.y) + std::abs(b.x) + std::abs(b.y) + std::abs(c.x) + std::abs(c.y);
         u = (a + b + c) / 3;
-        while (step > 1e-10)
-            for (int k = 0; k < 10; step /= 2, ++k)
+        while (step > 1e-10) {
+            for (int k = 0; k < 10; step /= 2, ++k) {
                 for (int i = -1; i <= 1; ++i) {
                     for (int j = -1; j <= 1; ++j) {
                         v.x = u.x + step * i;
@@ -86,6 +86,8 @@ struct Triangle {
                         }
                     }
                 }
+            }
+        }
         return u;
     }
 };

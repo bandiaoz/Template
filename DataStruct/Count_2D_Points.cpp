@@ -1,8 +1,5 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
 template <typename T>
 struct Fenwick {
     int n;
@@ -34,6 +31,12 @@ struct Fenwick {
     }
 };
 
+/**
+ * @brief Count the number of points in a rectangle
+ * @link https://www.luogu.com.cn/problem/P2163
+ * @note 把所有的点按照 x 坐标排序，询问的时候双指针维护一个区间，用 Fenwick 维护 [y1, y2] 范围内有多少点 y 坐标
+ * @param T the type of x, y
+*/
 template <typename T>
 struct Count_2D_Points {
     std::vector<std::pair<T, T>> a;
@@ -47,6 +50,9 @@ struct Count_2D_Points {
         bx.push_back(x);
         by.push_back(y);
     }
+    /**
+     * 询问矩形 (x1, y1) 到 (x2, y2) 内的点的个数，包含边界
+    */
     void addQuery(T x1, T y1, T x2, T y2, int id) {
         bx.push_back(x1 - 1);
         bx.push_back(x2);
@@ -62,11 +68,11 @@ struct Count_2D_Points {
         sort(by.begin(), by.end());
         bx.erase(unique(bx.begin(), bx.end()), bx.end());
         by.erase(unique(by.begin(), by.end()), by.end());
-        for (int i = 0; i < a.size(); ++i) {
+        for (int i = 0; i < a.size(); i++) {
             a[i].first = lower_bound(bx.begin(), bx.end(), a[i].first) - bx.begin();
             a[i].second = lower_bound(by.begin(), by.end(), a[i].second) - by.begin();
         }
-        for (int i = 0; i < q.size(); ++i) {
+        for (int i = 0; i < q.size(); i++) {
             q[i][0] = lower_bound(bx.begin(), bx.end(), q[i][0]) - bx.begin();
             q[i][1] = lower_bound(by.begin(), by.end(), q[i][1]) - by.begin();
         }
@@ -75,7 +81,7 @@ struct Count_2D_Points {
         sort(q.begin(), q.end());
         Fenwick<int> fen(by.size());
         ans.resize(q.size());
-        for (int i = 0, j = 0; i < q.size(); ++i) {
+        for (int i = 0, j = 0; i < q.size(); i++) {
             while (j < a.size() && a[j].first <= q[i][0]) {
                 fen.add(a[j].second, 1);
                 j++;
@@ -87,29 +93,28 @@ struct Count_2D_Points {
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
     int n, m;
-    cin >> n >> m;
+    std::cin >> n >> m;
     Count_2D_Points<int> count;
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; i++) {
         int x, y;
-        cin >> x >> y;
+        std::cin >> x >> y;
         count.addPoint(x, y);
     }
 
-    for (int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; i++) {
         int x1, y1, x2, y2;
-        cin >> x1 >> y1 >> x2 >> y2;
+        std::cin >> x1 >> y1 >> x2 >> y2;
         count.addQuery(x1, y1, x2, y2, i);
     }
 
     auto ans = count.work();
-    for (int i = 0; i < m; ++i) {
-        cout << ans[i] << '\n';
+    for (int i = 0; i < m; i++) {
+        std::cout << ans[i] << '\n';
     }
     
     return 0;
 }
-// test problem: https://www.luogu.com.cn/problem/P2163

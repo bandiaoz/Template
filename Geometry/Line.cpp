@@ -1,6 +1,5 @@
 #include "Point.cpp"
 
-const double PI = acos(-1);
 struct Line {
     int id;
     Point s, t;
@@ -26,7 +25,7 @@ struct Line {
     }
     // 点到直线的距离
     double disPointLine(const Point &p) { 
-        return fabs(det(p - s, vec()) / norm());
+        return std::abs(det(p - s, vec()) / norm());
     }
     // 点到线段的距离
     double disPointSeg(const Point &p) {  
@@ -113,7 +112,7 @@ struct Line {
     friend Line move(const Line &l, const double &d) {
         Point t = l.vec();
         t = t / t.norm();
-        t = rotate(t, PI / 2);
+        t = rotate(t, M_PI / 2);
         return Line(l.s + t * d, l.t + t * d);
     }
     // 计算线段 l1 到线段 l2 的最短距离
@@ -126,7 +125,7 @@ struct Line {
             d2 = l2.disPointSeg(l1.t);
             d3 = l1.disPointSeg(l2.s);
             d4 = l1.disPointSeg(l2.t);
-            return min(min(d1, d2), min(d3, d4));
+            return std::min(std::min(d1, d2), std::min(d3, d4));
         }
     }
     // 两直线的夹角，返回 [0, PI] 弧度

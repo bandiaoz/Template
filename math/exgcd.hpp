@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#pragma once
+#include <iostream>
+#include <tuple>
+#include <cmath>
 
 /**
  * @brief Extended Euclid Algorithm

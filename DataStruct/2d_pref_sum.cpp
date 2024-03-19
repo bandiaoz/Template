@@ -1,8 +1,6 @@
 // test problem: https://www.luogu.com.cn/problem/P1387
 #include <bits/stdc++.h>
 
-using ll = long long;
-
 template <typename T>
 struct pref_sum_2d {
     int n, m;

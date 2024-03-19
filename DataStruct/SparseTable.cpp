@@ -3,8 +3,8 @@
 /**
  * @brief Sparse Table
  * @note O(nlogn) for build, O(1) for query
- * @note std::countl_zero() : Calculate the number of leading zeros
- * @note __builtin_clz() : Calculate the number of leading zeros
+ * @note std::countl_zero(unsigned int) : Calculate the number of leading zeros
+ * @note __builtin_clz(int) : Calculate the number of leading zeros
  * @example auto fun = [&](int i, int j) { return min(i, j); };
  *          SparseTable<int, decltype(fun)> st(a, fun);
  *      or:
@@ -18,7 +18,7 @@ struct SparseTable {
 
     SparseTable(const std::vector<T>& a, const F& f) : func(f) {
         n = static_cast<int>(a.size());
-        int max_log = 32 - std::countl_zero(unsigned(n));
+        int max_log = std::__lg(n) + 1;
         mat.resize(max_log);
         mat[0] = a;
         for (int j = 1; j < max_log; j++) {
@@ -32,7 +32,7 @@ struct SparseTable {
     // return the answer [from, to)
     T get(int from, int to) const {
         assert(0 <= from && from <= to && to <= n);
-        int lg = 32 - std::countl_zero(unsigned(to - from)) - 1;
+        int lg = std::__lg(to - from);
         return func(mat[lg][from], mat[lg][to - (1 << lg)]);
     }
 };

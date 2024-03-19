@@ -1,56 +1,102 @@
+/**
+ * @title Segment Tree
+ * @link: https://www.luogu.com.cn/problem/P3374
+*/
+
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
-template<class Info, class Merge = plus<Info>>
+template<class Info, class Merge = std::plus<Info>>
 struct SegmentTree {
-    SegmentTree(int n) : n(n), merge(Merge()), info(4 << (32 - __builtin_clz(n))) {}
-    SegmentTree(vector<Info> init) : SegmentTree(init.size()) {
-        function<void(int, int, int)> build = [&](int p, int l, int r) {
-            if (r - l == 1) {
-                info[p] = init[l];
-                return;
-            }
-            int mid = (l + r) / 2;
-            build(p << 1, l, mid);
-            build(p << 1 | 1, mid, r);
-            innerPull(p);
-        };
-        build(1, 0, n);
+    SegmentTree() : n(0) {}
+    SegmentTree(int n, Info v = Info()) { init(n, v); }
+    template<class T>
+    SegmentTree(std::vector<T> list) { init(list); }
+
+    void init(int n, Info v = Info()) { init(std::vector(n, v)); }
+    template<class T>
+    void init(std::vector<T> list) {
+        n = list.size();
+        merge = Merge();
+        info.assign(4 << std::__lg(n), Info());
+        build(1, 0, n, list);
     }
     void modify(int pos, const Info &x) {
-        innerModify(1, 0, n, pos, x);
+        modify(1, 0, n, pos, x, [](const Info &a, const Info &b) { return b; });
+    }
+    template<class F>
+    void modify(int pos, const Info &x, F func) {
+        modify(1, 0, n, pos, x, func);
     }
     Info rangeQuery(int l, int r) {
-        return innerRangeQuery(1, 0, n, l, r);
+        return rangeQuery(1, 0, n, l, r);
+    }
+    template<class F>
+    int findFirst(int l, int r, F pred) {
+        return findFirst(1, 0, n, l, r, pred);
+    }
+    template<class F>
+    int findLast(int l, int r, F pred) {
+        return findLast(1, 0, n, l, r, pred);
     }
 
 private:
-    const int n;
-    const Merge merge;
-    vector<Info> info;
-    void innerPull(int p) {
+    int n;
+    Merge merge;
+    std::vector<Info> info;
+    void build(int p, int l, int r, const std::vector<Info> &list) {
+        if (r - l == 1) {
+            info[p] = list[l];
+            return;
+        }
+        int mid = (l + r) / 2;
+        build(p << 1, l, mid, list);
+        build(p << 1 | 1, mid, r, list);
+        pull(p);
+    }
+    void pull(int p) {
         info[p] = merge(info[p << 1], info[p << 1 | 1]);
     }
-    void innerModify(int p, int l, int r, int pos, const Info &x) {
+    template<class F>
+    void modify(int p, int l, int r, int pos, const Info &x, F func) {
         if (r - l == 1) {
-            info[p] = info[p] + x;
+            info[p] = func(info[p], x);
             return;
         }
         int mid = (l + r) / 2;
         if (pos < mid) {
-            innerModify(p << 1, l, mid, pos, x);
+            modify(p << 1, l, mid, pos, x, func);
         } else {
-            innerModify(p << 1 | 1, mid, r, pos, x);
+            modify(p << 1 | 1, mid, r, pos, x, func);
         }
-        innerPull(p);
+        pull(p);
     }
-    Info innerRangeQuery(int p, int l, int r, int x, int y) {
+    Info rangeQuery(int p, int l, int r, int x, int y) {
         if (l >= y || r <= x) return Info();
         if (l >= x && r <= y) return info[p];
         int mid = (l + r) / 2;
-        return merge(innerRangeQuery(p << 1, l, mid, x, y), innerRangeQuery(p << 1 | 1, mid, r, x, y));
+        return merge(rangeQuery(p << 1, l, mid, x, y), rangeQuery(p << 1 | 1, mid, r, x, y));
+    }
+    template<class F>
+    int findFirst(int p, int l, int r, int x, int y, F pred) {
+        if (l >= y || r <= x || !pred(info[p])) return -1;
+        if (r - l == 1) return l;
+        int mid = (l + r) / 2;
+        int ans = findFirst(p << 1, l, mid, x, y, pred);
+        if (ans == -1) {
+            ans = findFirst(p << 1 | 1, mid, r, x, y, pred);
+        }
+        return ans;
+    }
+    template<class F>
+    int findLast(int p, int l, int r, int x, int y, F pred) {
+        if (l >= y || r <= x || !pred(info[p])) return -1;
+        if (r - l == 1) return l;
+        int mid = (l + r) / 2;
+        int ans = findLast(p << 1 | 1, mid, r, x, y, pred);
+        if (ans == -1) {
+            ans = findLast(p << 1, l, mid, x, y, pred);
+        }
+        return ans;
     }
 };
 
@@ -63,33 +109,31 @@ struct Info {
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     
     int n, m;
-    cin >> n >> m;
+    std::cin >> n >> m;
     SegmentTree<Info> seg(n);
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; i++) {
         int x;
-        cin >> x;
+        std::cin >> x;
         seg.modify(i, x);
     }
 
     while (m--) {
         int op, x, y;
-        cin >> op;
+        std::cin >> op;
         if (op == 1) {
-            cin >> x >> y;
+            std::cin >> x >> y;
             x--;
-            seg.modify(x, y);
+            seg.modify(x, y, [](const Info &a, const Info &b) { return a + b; });
         } else {
-            cin >> x >> y;
+            std::cin >> x >> y;
             x--;
-            cout << seg.rangeQuery(x, y).val << "\n";
+            std::cout << seg.rangeQuery(x, y).val << "\n";
         }
     }
 
     return 0;
 }
-
-// test problem: https://www.luogu.com.cn/problem/P3374

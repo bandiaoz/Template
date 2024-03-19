@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
 struct Pollard_Rho {
@@ -37,7 +36,7 @@ private:
             if (n % p == 0) return n == p;
         }
         // https://miller-rabin.appspot.com/
-        auto get_miller_rabin_bases = [&]() -> vector<uint64_t> {
+        auto get_miller_rabin_bases = [&]() -> std::vector<uint64_t> {
             if (n < 341531) return {9345883071009581737LLU};
             if (n < 1050535501) return {336781006125, 9639812373923155};
             if (n < 350269456337) return {4230279247111683200, 14694767155120705706LLU, 16641139526367750375LLU};
@@ -69,15 +68,15 @@ private:
                 t = ((__int128)t * t + c) % x;
                 val = (__int128)val * abs(t - s) % x;
                 if ((step % 127) == 0) {
-                    int64_t d = gcd(val, x);
+                    int64_t d = std::gcd(val, x);
                     if (d > 1) return d;
                 }
             }
-            int64_t d = gcd(val, x);
+            int64_t d = std::gcd(val, x);
             if (d > 1) return d;
         }
     }
-    void fac(int64_t x, vector<int64_t> &ans) {
+    void fac(int64_t x, std::vector<int64_t> &ans) {
         if (x == 1) return;
         if (miller_rabin(x)) { // 如果 x 为质数
             ans.push_back(x);
@@ -91,8 +90,8 @@ private:
     
 public:
     Pollard_Rho() { srand((unsigned)time(NULL)); }
-    vector<int64_t> pollard_Rho(int64_t x) {
-        vector<int64_t> ans;
+    std::vector<int64_t> pollard_Rho(int64_t x) {
+        std::vector<int64_t> ans;
         fac(x, ans);
         return ans;
     }
@@ -103,24 +102,24 @@ public:
 
 void solve() {
     ll n;
-    cin >> n;
+    std::cin >> n;
     Pollard_Rho poll;
     auto ans = poll.pollard_Rho(n);
     ll maxx = *max_element(ans.begin(), ans.end());
 
     if (maxx == n) {
-        cout << "Prime\n";
+        std::cout << "Prime\n";
     } else {
-        cout << maxx << "\n";
+        std::cout << maxx << "\n";
     }
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     
     int t;
-    cin >> t;
+    std::cin >> t;
 
     while (t--) {
         solve();

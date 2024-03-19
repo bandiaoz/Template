@@ -1,20 +1,17 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
 struct Chtholly {
     struct node {
         int l, r;
-        mutable ll v;
+        mutable int64_t v;
 
-        node(int l, int r, ll v) : l(l), r(r), v(v) {}
+        node(int l, int r, int64_t v) : l(l), r(r), v(v) {}
         int size() const { return r - l; }
         bool operator<(const node &A) const { return l < A.l; }
     };
 
-    set<node> s;
-    auto insert(int l, int r, ll v) { return s.insert(node(l, r, v)); }
+    std::set<node> s;
+    auto insert(int l, int r, int64_t v) { return s.insert(node(l, r, v)); }
     // 拆区间，将区间分为 [l,pos), [pos,r) 两段
     auto split(int pos) {
         auto it = s.lower_bound(node(pos, -1, 0));
@@ -23,30 +20,30 @@ struct Chtholly {
         }
         --it;
         int L = it->l, R = it->r;
-        ll V = it->v;
+        int64_t V = it->v;
         s.erase(it);
         insert(L, pos, V);
         // 返回第二个区间的地址
         return insert(pos, R, V).first;
     }
-    void add(int l, int r, ll x) {
+    void add(int l, int r, int64_t x) {
         for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
             itl->v += x;
         }
     }
     // 区间推平，全部赋值 x
-    void assign_val(int l, int r, ll x) {
+    void assign_val(int l, int r, int64_t x) {
         // 划分区间，注意顺序，否则会引起 itl 迭代器失效
         auto itr = split(r), itl = split(l);
         s.erase(itl, itr);
         insert(l, r, x);
     }
-    ll ranks(int l, int r, int k) {  // 区间第 k 小
-        vector<pair<ll, int>> vp;
+    int64_t ranks(int l, int r, int k) {  // 区间第 k 小
+        std::vector<std::pair<int64_t, int>> vp;
         for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
             vp.push_back({itl->v, itl->size()});
         }
-        sort(vp.begin(), vp.end());
+        std::sort(vp.begin(), vp.end());
         for (auto it : vp) {
             k -= it.second;
             if (k <= 0) {
@@ -57,9 +54,9 @@ struct Chtholly {
         return -1;
     }
     // 区间幂次和
-    ll sum(int l, int r, int ex, int mod) {  
-        auto powmod = [](ll a, int b, int mod) {
-            ll ans = 1;
+    int64_t sum(int l, int r, int ex, int mod) {  
+        auto powmod = [](int64_t a, int b, int mod) {
+            int64_t ans = 1;
             for (a %= mod; b; b >>= 1, a = a * a % mod) {
                 if (b & 1) {
                     ans = ans * a % mod;
@@ -68,7 +65,7 @@ struct Chtholly {
             return ans;
         };
 
-        ll res = 0;
+        int64_t res = 0;
         for (auto itr = split(r), itl = split(l); itl != itr; ++itl) {
             res = (res + itl->size() * powmod(itl->v, ex, mod)) % mod;
         }
@@ -86,11 +83,11 @@ int rnd() {
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
     int n, m;
-    cin >> n >> m >> seed >> vmax;
+    std::cin >> n >> m >> seed >> vmax;
 
     Chtholly cho;
     for (int i = 0; i < n; ++i) {
@@ -104,11 +101,11 @@ int main() {
         int l = rnd() % n;
         int r = rnd() % n;
         if (l > r) {
-            swap(l, r);
+            std::swap(l, r);
         }
         r++;
 
-        ll x, y;
+        int64_t x, y;
         if (op == 3) {
             x = rnd() % (r - l) + 1;
         } else {
@@ -124,9 +121,9 @@ int main() {
         } else if (op == 2) {
             cho.assign_val(l, r, x);
         } else if (op == 3) {
-            cout << cho.ranks(l, r, x) << "\n";
+            std::cout << cho.ranks(l, r, x) << "\n";
         } else {
-            cout << cho.sum(l, r, x, y) << "\n";
+            std::cout << cho.sum(l, r, x, y) << "\n";
         }
     }
 

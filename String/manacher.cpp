@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 
-using ll = long long;
-
 template <typename T>
 std::vector<int> manacher(int n, const T &s) {
     if (n == 0) {
@@ -50,18 +48,18 @@ int main() {
 
     auto ans = manacher(s);
 
-    int len = 0, id = -1;
-    for (int z = 0; z < 2 * n - 1; ++z) {
+    int len = 0, begin = -1;
+    for (int z = 0; z < 2 * n - 1; z++) {
         if (z % 2 == 0 && 1 + 2 * ans[z] > len) { // odd length of palindrome
             len = 1 + 2 * ans[z];
-            id = z / 2 - ans[z];
+            begin = z / 2 - ans[z];
         } else if (z % 2 == 1 && 2 * ans[z] > len) { // even length of palindrome
             len = 2 * ans[z];
-            id = z / 2 - ans[z] + 1;
+            begin = z / 2 - ans[z] + 1;
         }
     }
 
-    std::cout << s.substr(id, len) << "\n";
+    std::cout << s.substr(begin, len) << "\n";
 
     return 0;
 }

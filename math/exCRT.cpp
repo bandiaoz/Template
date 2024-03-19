@@ -1,25 +1,9 @@
-// CRT test problem: https://www.luogu.com.cn/problem/P1495
-// EXCRT test problem: https://www.luogu.com.cn/problem/P4777
-
 #include <bits/stdc++.h>
-
-/**
- * @brief Extended Euclid Algorithm
- * @param a, b: input
- * @return tuple(g, x, y)
- * @note ax + by = gcd(a, b) = g
- * @note g = gcd(a, b) = gcd(b, a % b)
-*/
-std::tuple<int64_t, int64_t, int64_t> exgcd(int64_t a, int64_t b) {
-    if (b == 0) {
-        return std::tuple(a, 1, 0);
-    }
-    auto [g, x, y] = exgcd(b, a % b);
-    return std::tuple(g, y, x - a / b * y);
-}
+#include "exgcd.hpp"
 
 /**
  * @brief Chinese Remainder Theorem
+ * @brief x = reminder[i] (mod mod[i]), x is smallest positive integer solution
  * @param reminder: x = reminder[i] (mod mod[i])
  * @param mod: mod[i] don't need to be co-prime
  * @return pair(ok, x), x is smallest positive integer solution
@@ -28,6 +12,8 @@ std::tuple<int64_t, int64_t, int64_t> exgcd(int64_t a, int64_t b) {
  * @note m_i = \prod_{j \neq i} mod[j], c_i = m_i \cdot m_i^{-1}, m_i^{-1} is inverse of m_i modulo mod[i]
  * @note x = \sum reminder[i] \cdot c_i  \mod lcm
  * @else EXCRT: mod[i] don't need to be co-prime
+ * @link CRT: https://www.luogu.com.cn/problem/P1495
+ * @link EXCRT: https://www.luogu.com.cn/problem/P4777
  */
 template<typename T>
 static std::pair<bool, int64_t> chinese(const std::vector<T> &reminder, const std::vector<T> &mod) {

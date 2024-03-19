@@ -1,30 +1,23 @@
-#include <bits/stdc++.h>
+#pragma once
+
+#include <cassert>
+#include <iostream>
+#include <numeric>
+#include <vector>
 
 struct DSU {
     std::vector<int> f, siz;
-    
+
     DSU() {}
-    DSU(int n) {
-        init(n);
-    }
-    
+    DSU(int n) { init(n); }
     void init(int n) {
         f.resize(n);
         std::iota(f.begin(), f.end(), 0);
         siz.assign(n, 1);
     }
-    
-    int leader(int x) {
-        while (x != f[x]) {
-            x = f[x] = f[f[x]];
-        }
-        return x;
-    }
-    
-    bool same(int x, int y) {
-        return leader(x) == leader(y);
-    }
-    
+    int leader(int x) { return f[x] == x ? x : f[x] = leader(f[x]); }
+    bool same(int x, int y) { return leader(x) == leader(y); }
+    int size(int x) { return siz[leader(x)]; }
     bool merge(int x, int y) {
         x = leader(x);
         y = leader(y);
@@ -35,11 +28,6 @@ struct DSU {
         f[y] = x;
         return true;
     }
-    
-    int size(int x) {
-        return siz[leader(x)];
-    }
-
     std::vector<int> leader_set() {
         std::vector<int> res;
         for (int i = 0; i < f.size(); i++) {
@@ -49,8 +37,6 @@ struct DSU {
         }
         return res;
     }
-
-    // Merge two DSU's into one
     friend DSU merge(const DSU &a, const DSU &b) {
         assert(a.f.size() == b.f.size());
         DSU res = a;
