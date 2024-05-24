@@ -1,35 +1,5 @@
 #include <bits/stdc++.h>
-
-template <typename T>
-struct Fenwick {
-    int n;
-    std::vector<T> a;
-    
-    Fenwick(int n = 0) {
-        init(n);
-    }
-    void init(int n) {
-        this->n = n;
-        a.assign(n, T());
-    }
-    void add(int x, T v) {
-        for (int i = x + 1; i <= n; i += i & -i) {
-            a[i - 1] += v;
-        }
-    }
-    // return the sum of [0, x)
-    T sum(int x) {
-        auto ans = T();
-        for (int i = x; i > 0; i -= i & -i) {
-            ans += a[i - 1];
-        }
-        return ans;
-    }
-    // return the sum of [l, r)
-    T rangeSum(int l, int r) {
-        return sum(r) - sum(l);
-    }
-};
+#include "DataStruct/Fenwick.hpp"
 
 /**
  * @brief Count the number of points in a rectangle
@@ -63,18 +33,21 @@ struct Count_2D_Points {
         q.push_back({x1 - 1, y2, id, -1});
         q.push_back({x1 - 1, y1 - 1, id, 1});
     }
+    /**
+     * @return 对每次询问，返回矩形内有多少个点
+    */
     std::vector<int> work() {
         sort(bx.begin(), bx.end());
         sort(by.begin(), by.end());
         bx.erase(unique(bx.begin(), bx.end()), bx.end());
         by.erase(unique(by.begin(), by.end()), by.end());
-        for (int i = 0; i < a.size(); i++) {
-            a[i].first = lower_bound(bx.begin(), bx.end(), a[i].first) - bx.begin();
-            a[i].second = lower_bound(by.begin(), by.end(), a[i].second) - by.begin();
+        for (auto &[x, y] : a) {
+            x = lower_bound(bx.begin(), bx.end(), x) - bx.begin();
+            y = lower_bound(by.begin(), by.end(), y) - by.begin();
         }
-        for (int i = 0; i < q.size(); i++) {
-            q[i][0] = lower_bound(bx.begin(), bx.end(), q[i][0]) - bx.begin();
-            q[i][1] = lower_bound(by.begin(), by.end(), q[i][1]) - by.begin();
+        for (auto &[x, y, id, _] : q) {
+            x = lower_bound(bx.begin(), bx.end(), x) - bx.begin();
+            y = lower_bound(by.begin(), by.end(), y) - by.begin();
         }
 
         sort(a.begin(), a.end());
@@ -91,30 +64,3 @@ struct Count_2D_Points {
         return ans;
     }
 };
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    int n, m;
-    std::cin >> n >> m;
-    Count_2D_Points<int> count;
-    for (int i = 0; i < n; i++) {
-        int x, y;
-        std::cin >> x >> y;
-        count.addPoint(x, y);
-    }
-
-    for (int i = 0; i < m; i++) {
-        int x1, y1, x2, y2;
-        std::cin >> x1 >> y1 >> x2 >> y2;
-        count.addQuery(x1, y1, x2, y2, i);
-    }
-
-    auto ans = count.work();
-    for (int i = 0; i < m; i++) {
-        std::cout << ans[i] << '\n';
-    }
-    
-    return 0;
-}

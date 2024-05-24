@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 
 using cd = std::complex<double>;
-constexpr double PI = M_PI;
 
 static void _fft(std::vector<cd> &a, bool invert) {
     int n = a.size();
@@ -15,7 +14,7 @@ static void _fft(std::vector<cd> &a, bool invert) {
         if (i < j) swap(a[i], a[j]);
     }
     for (int len = 2; len <= n; len <<= 1) {
-        double ang = 2 * PI / len * (invert ? -1 : 1);
+        double ang = 2 * M_PI / len * (invert ? -1 : 1);
         cd wlen(cos(ang), sin(ang));
         for (int i = 0; i < n; i += len) {
             cd w(1);
@@ -37,10 +36,12 @@ static void _fft(std::vector<cd> &a, bool invert) {
  * @param a: coefficients of the first polynomial *from low to high*
  * @param b: coefficients of the second polynomial *from low to high*
  * @return coefficients of the convolution
+ * @link https://www.luogu.com.cn/problem/P3803
  */
 static std::vector<int> convolve(const std::vector<int> &a, const std::vector<int> &b) {
-    std::vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
-    int n = 1 << (std::__lg(size(a) + size(b) - 1) + 1);
+    std::vector<cd> fa(a.begin(), a.end());
+    std::vector<cd> fb(b.begin(), b.end());
+    int n = 1 << (std::__lg(a.size() + b.size() - 1) + 1);
     fa.resize(n);
     fb.resize(n);
 
@@ -53,35 +54,7 @@ static std::vector<int> convolve(const std::vector<int> &a, const std::vector<in
 
     std::vector<int> result(n);
     for (int i = 0; i < n; i++) {
-        result[i] = round(fa[i].real());
+        result[i] = std::round(fa[i].real());
     }
     return result;
 }
-
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int n, m;
-    cin >> n >> m;
-    vector<int> a(n + 1), b(m + 1);
-    for (int i = 0; i <= n; ++i) {
-        cin >> a[i];
-    }
-    for (int i = 0; i <= m; ++i) {
-        cin >> b[i];
-    }
-
-    auto c = convolve(a, b);
-
-    for (int i = 0; i <= n + m; ++i) {
-        cout << c[i] << " \n"[i == n + m];
-    }
-
-    return 0;
-}
-
-// test problem: https://www.luogu.com.cn/problem/P3803

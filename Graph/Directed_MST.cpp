@@ -1,11 +1,3 @@
-/**
- * @title Directed_MST
- * @brief 有向图最小树形图
- * @return pair(cost, fa) if no solution, return {0, {}}
- * @link https://judge.yosupo.jp/problem/directedmst
- * @link https://loj.ac/p/140
- */
-
 #pragma once
 
 #include <cassert>
@@ -17,6 +9,14 @@
 #include "../DataStruct/DSU.hpp"
 #include "../DataStruct/RollbackDSU.hpp"
 
+/**
+ * @title Directed_MST
+ * @brief 有向图最小树形图
+ * @return pair(cost, fa) if no solution, return {0, {}}, fa[i] = -1 means i is the root
+ * @link 求最小权值和每个点的父亲节点：https://judge.yosupo.jp/problem/directedmst
+ * @link 求最小权值：https://loj.ac/p/140
+ * @link 求最小权值：https://www.luogu.com.cn/problem/P4716
+ */
 template <class W>
 struct MinCostArborescenceGraph {
    private:
@@ -50,6 +50,9 @@ struct MinCostArborescenceGraph {
     }
 
    public:
+    /**
+     * m != 0，reserve 改变 vector 的容量，但是不改变 vector 的大小(size)
+    */
     explicit MinCostArborescenceGraph(int n, int m = 0) : heap(n, -1) {
         nodes.reserve(m);
     }

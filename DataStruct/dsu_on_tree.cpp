@@ -1,10 +1,9 @@
+#include <bits/stdc++.h>
+
 /**
  * @brief DSU on tree
  * @link: https://codeforces.com/gym/102431/problem/K
 */
-
-#include <bits/stdc++.h>
-
 struct HLD {
     int n;
     std::vector<int> sz, fa;

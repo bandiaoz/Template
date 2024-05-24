@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
 /**
- * @brief find cycle
+ * @brief 找任意一个环
  * @param g SELF_LOOP = false, MULTIPLE_EDGE = true, CONNECTED = false, DIRECTED = false or true
  * @return edge indices of cycle
  * @link directed: https://judge.yosupo.jp/problem/cycle_detection

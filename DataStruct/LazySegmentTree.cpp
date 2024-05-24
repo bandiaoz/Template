@@ -1,68 +1,22 @@
-/**
- * Lazy Segment Tree
- * @link https://www.luogu.com.cn/problem/P3373
-*/
 #include <bits/stdc++.h>
+#include "../Others/Z.hpp"
 
-template <typename T, auto f = std::multiplies<T>()>
-constexpr static T power(T a, int64_t b) {
-    assert(b >= 0);
-    T res;
-    if constexpr (std::is_arithmetic_v<T>) {
-        res = 1;
-    } else {
-        res = a.identity();
-    }
-    while (b) {
-        if (b & 1) {
-            res = f(res, a);
-        }
-        b >>= 1;
-        a = f(a, a);
-    }
-    return res;
-}
-
-template <typename T, T MOD>
-struct ModInt {
-    using prod_type = std::conditional_t<std::is_same_v<T, int>, int64_t, __int128>;
-    T val;
-    constexpr ModInt(const int64_t v = 0) : val(v % MOD) { if (val < 0) val += MOD; }
-    constexpr ModInt operator+() const { return ModInt(val); }
-    constexpr ModInt operator-() const { return ModInt(MOD - val); }
-    constexpr ModInt inv() const { return power(*this, MOD - 2); }
-    constexpr friend ModInt operator+(ModInt lhs, const ModInt rhs) { return lhs += rhs; }
-    constexpr friend ModInt operator-(ModInt lhs, const ModInt rhs) { return lhs -= rhs; }
-    constexpr friend ModInt operator*(ModInt lhs, const ModInt rhs) { return lhs *= rhs; }
-    constexpr friend ModInt operator/(ModInt lhs, const ModInt rhs) { return lhs /= rhs; }
-    constexpr ModInt &operator+=(const ModInt x) {
-        if ((val += x.val) >= MOD) val -= MOD;
-        return *this;
-    }
-    constexpr ModInt &operator-=(const ModInt x) {
-        if ((val -= x.val) < 0) val += MOD;
-        return *this;
-    }
-    constexpr ModInt &operator*=(const ModInt x) {
-        val = prod_type(val) * x.val % MOD;
-        return *this;
-    }
-    constexpr ModInt &operator/=(const ModInt x) { return *this *= x.inv(); }
-    bool operator==(const ModInt b) const { return val == b.val; }
-    bool operator!=(const ModInt b) const { return val != b.val; }
-    friend std::istream &operator>>(std::istream &is, ModInt &x) noexcept { return is >> x.val; }
-    friend std::ostream &operator<<(std::ostream &os, const ModInt x) noexcept { return os << x.val; }
-    constexpr static ModInt identity() { return 1; }
-    constexpr ModInt pow(int64_t p) { return power(*this, p); }
-};
 using Z = ModInt<int, 571373>;
 
+/**
+ * @brief Lazy Segment Tree
+ * @link https://www.luogu.com.cn/problem/P3373
+ * @link https://judge.yosupo.jp/problem/range_affine_range_sum
+ */
 template <class Info, class Tag,
           class FunInfo = std::function<void(Info&, const Tag&, const int, const int)>,
           class FunTag = std::function<void(Tag&, const Tag&, const int, const int)>,
           class Merge = std::plus<Info>>
 struct LazySegmentTree {
     LazySegmentTree() : n(0) {}
+    LazySegmentTree(int n, Info v, const FunInfo f1, const FunTag f2) {
+        init(std::vector(n, v), f1, f2);
+    }
     LazySegmentTree(int n, const FunInfo f1, const FunTag f2) {
         init(std::vector(n, Info()), f1, f2);
     }
@@ -135,7 +89,6 @@ private:
         return merge(query_(p << 1, x, y, l, m), query_(p << 1 | 1, x, y, m, r));
     }
 };
-
 struct Info {
     Z val;
     constexpr Info(Z val = 0) : val(val) {}
@@ -143,7 +96,6 @@ struct Info {
         return Info(A.val + B.val);
     }
 };
-
 struct Tag {
     Z mul, add;
     constexpr Tag(Z mul = 1, Z add = 0) : mul(mul), add(add) {}

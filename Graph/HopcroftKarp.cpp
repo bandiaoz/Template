@@ -4,8 +4,9 @@ using namespace std;
 using ll = long long;
 
 /**
- * @brief Hopcroft-Karp algorithm
+ * @brief 二分图匹配 Hopcroft-Karp algorithm
  * @note O(sqrt(V) * E)
+ * @link https://uoj.ac/problem/78
 */
 struct HopcroftKarp {
     vector<int> g, l, r;
@@ -66,4 +67,3 @@ int main() {
 
     return 0;
 }
-// test problem: https://uoj.ac/problem/78

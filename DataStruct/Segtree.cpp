@@ -1,10 +1,9 @@
-/**
- * @title Segment Tree
- * @link: https://www.luogu.com.cn/problem/P3374
-*/
-
 #include <bits/stdc++.h>
 
+/**
+ * @brief Segment Tree
+ * @link: https://www.luogu.com.cn/problem/P3374
+*/
 template<class Info, class Merge = std::plus<Info>>
 struct SegmentTree {
     SegmentTree() : n(0) {}
@@ -107,33 +106,3 @@ struct Info {
         return Info(A.val + B.val);
     }
 };
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n, m;
-    std::cin >> n >> m;
-    SegmentTree<Info> seg(n);
-    for (int i = 0; i < n; i++) {
-        int x;
-        std::cin >> x;
-        seg.modify(i, x);
-    }
-
-    while (m--) {
-        int op, x, y;
-        std::cin >> op;
-        if (op == 1) {
-            std::cin >> x >> y;
-            x--;
-            seg.modify(x, y, [](const Info &a, const Info &b) { return a + b; });
-        } else {
-            std::cin >> x >> y;
-            x--;
-            std::cout << seg.rangeQuery(x, y).val << "\n";
-        }
-    }
-
-    return 0;
-}

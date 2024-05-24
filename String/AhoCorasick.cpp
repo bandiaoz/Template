@@ -5,7 +5,7 @@ using ll = long long;
 
 /** Modified from:
  * https://github.com/kth-competitive-programming/kactl/blob/master/content/strings/AhoCorasick.h
- * Try to handdle duplicated patterns beforehand, otherwise change 'end' to
+ * Try to handle duplicated patterns beforehand, otherwise change 'end' to
  * vector; empty patterns are not allowed. Time: construction takes $O(26N)$,
  * where $N =$ sum of length of patterns. find(x) is $O(N)$, where N = length of x. 
  * findAll is $O(N+M)$ where M is number of occurrence of all pattern (up to N*sqrt(N)) */

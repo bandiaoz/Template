@@ -14,14 +14,16 @@
   * if (dfn[v] == -1) tarjan(v);
     if (color[v] == -1) low[u] = min(low[u], low[v]);
 */
+#pragma once
 #include <bits/stdc++.h>
 
 /**
- * Find strongly connected components of graph g. Components are numbered in *reverse topological order*,
- * starting from 0. It returns the number of components and an array which indicates which component
- * component each vertex belongs to.
+ * @brief 强连通分量 tarjan
+ * @link https://judge.yosupo.jp/problem/scc
+ * @link 缩点：https://www.luogu.com.cn/problem/P3387
+ * @note Components are numbered in *reverse topological order*, starting from 0. 
  * We no longer need on_stk array, we can replace `if (on_stk[v])` with `color[v] == -1` when update low array, 
- * because if a node have dfn but do not have color, it must on stack.
+ * because **if a node have dfn but do not have color, it must on stack**.
 */
 struct Strongly_Connected_Components {
     int n;
@@ -31,11 +33,11 @@ struct Strongly_Connected_Components {
     Strongly_Connected_Components(const std::vector<std::vector<int>>& g) : n(g.size()), color(n, -1) {
         int cur = 0;
         std::vector<int> low(n), dfn(n, -1), stk;
-        auto tarjan = [&](auto &&slf, int u) -> void {
+        auto tarjan = [&](auto &&self, int u) -> void {
             low[u] = dfn[u] = cur++;
             stk.push_back(u);
             for (auto v : g[u]) {
-                if (dfn[v] == -1) slf(slf, v);
+                if (dfn[v] == -1) self(self, v);
                 if (color[v] == -1) low[u] = std::min(low[u], low[v]);
             }
             if (low[u] == dfn[u]) {
@@ -80,5 +82,3 @@ int main() {
 
     return 0;
 }
-
-// test problem: https://judge.yosupo.jp/problem/scc

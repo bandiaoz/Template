@@ -1,4 +1,11 @@
-// 01 Trie find maximal xor sum
+#include <bits/stdc++.h>
+
+/**
+ * @brief 01 Trie
+ * @brief 维护一个不可重复的集合，支持插入、删除、查询最小异或值、查询最大异或值操作
+ * @tparam T type of the value
+ * @link https://judge.yosupo.jp/problem/set_xor_min
+*/
 template <typename T, int B = 30>
 class Trie01 {
     std::vector<std::array<int, 2>> ch_;
@@ -11,20 +18,36 @@ class Trie01 {
 
    public:
     Trie01() { emptyNode(); }
-    void insert(T x, int add = 1) {
-        for (int i = B, p = 0; i >= 0; --i) {
+    bool exist(T x) {
+        for (int i = B, p = 0; i >= 0; i--) {
+            T c = x >> i & 1;
+            if (int child = ch_[p][c]; child == -1 || cnt[child] == 0) return false;
+            p = ch_[p][c];
+        }
+        return true;
+    }
+    void insert(T x) {
+        if (exist(x)) return;
+        for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
             if (ch_[p][c] == -1) {
                 ch_[p][c] = emptyNode();
             }
             p = ch_[p][c];
-            cnt[p] += add;
+            cnt[p]++;
         }
     }
-    void erase(T x) { insert(x, -1); }
+    void erase(T x) {
+        if (!exist(x)) return;
+        for (int i = B, p = 0; i >= 0; i--) {
+            T c = x >> i & 1;
+            p = ch_[p][c];
+            cnt[p]--;
+        }
+    }
     T getMax(T x) {
         T res = 0;
-        for (int i = B, p = 0; i >= 0; --i) {
+        for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
             if (int child = ch_[p][c ^ 1]; child != -1 && cnt[child] > 0) {
                 p = child;
@@ -37,7 +60,7 @@ class Trie01 {
     }
     T getMin(T x) {
         T res = 0;
-        for (int i = B, p = 0; i >= 0; --i) {
+        for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
             if (int child = ch_[p][c]; child != -1 && cnt[child] > 0) {
                 p = child;

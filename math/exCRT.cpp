@@ -2,7 +2,7 @@
 #include "exgcd.hpp"
 
 /**
- * @brief Chinese Remainder Theorem
+ * @brief 中国剩余定理 Chinese Remainder Theorem
  * @brief x = reminder[i] (mod mod[i]), x is smallest positive integer solution
  * @param reminder: x = reminder[i] (mod mod[i])
  * @param mod: mod[i] don't need to be co-prime

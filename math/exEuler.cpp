@@ -1,5 +1,10 @@
 #include <bits/stdc++.h>
 
+/**
+ * @brief 
+ * @param n 
+ * @return 
+ */
 int euler_phi(int n) {
     int ans = n;
     for (int i = 2; i * i <= n; i++)
@@ -24,7 +29,7 @@ int power(int a, int b, int m) {
 /**
  * @brief Calculate a^b mod m using Extend Euler's theorem
  * @param a int
- * @param b string, b is a string because b may be very large
+ * @param b string, because b may be very large
  * @param m int
  * @return a^b mod m
  * @note a^{b} \equiv \begin{cases}
@@ -32,7 +37,7 @@ int power(int a, int b, int m) {
             a^{b \bmod \varphi(m) + \varphi(m)} & , b \geq \varphi(m)
          \end{cases} (\bmod m)
 */
-int euler(int a, std::string b, int m) {
+int exEuler(int a, std::string b, int m) {
     a %= m;
     int phi = euler_phi(m);
     int num_b = 0;

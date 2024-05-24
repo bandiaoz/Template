@@ -1,55 +1,57 @@
 #include <bits/stdc++.h>
 
+template <typename T>
 class MinMax {
-public:
-    std::multiset<int> min, max;
+    std::multiset<T> min, max;
     int64_t min_sum, max_sum;
     MinMax() : min_sum(0), max_sum(0) {}
 
+    void insert(std::multiset<T>& st, int64_t& sum, T x) {
+        st.insert(x);
+        sum += x;
+    }
+    void erase(std::multiset<T>& st, int64_t& sum, T x) {
+        assert(st.find(x) != st.end());
+        st.erase(st.find(x));
+        sum -= x;
+    }
     void maintain() {
         // min.size = max.size or max.size + 1
         while (min.size() > max.size() + 1) {
-            int d = *min.rbegin();
-            max.insert(d);
-            min.erase(min.find(d));
-            min_sum -= d;
-            max_sum += d;
+            T d = *min.rbegin();
+            insert(max, max_sum, d);
+            erase(min, min_sum, d);
         }
         while (min.size() < max.size()) {
-            int d = *max.begin();
-            min.insert(d);
-            max.erase(max.find(d));
-            max_sum -= d;
-            min_sum += d;
+            T d = *max.begin();
+            insert(min, min_sum, d);
+            erase(max, max_sum, d);
         }
         while (min.size() > 0 && max.size() > 0 && *min.rbegin() > *max.begin()) {
-            int a = *min.rbegin(), b = *max.begin();
-            min.erase(min.find(a));
-            max.erase(max.find(b));
-            min.insert(b);
-            max.insert(a);
-            min_sum += b - a;
-            max_sum += a - b;
+            T a = *min.rbegin(), b = *max.begin();
+            erase(min, min_sum, a);
+            erase(max, max_sum, b);
+            insert(min, min_sum, b);
+            insert(max, max_sum, a);
         }
     }
-    void insert(int x) {
-        min.insert(x);
-        min_sum += x;
+
+public:
+    void insert(T x) {
+        insert(min, min_sum, x);
         maintain();
     }
-    void erase(int x) {
+    void erase(T x) {
         if (min.find(x) != min.end()) {
-            min_sum -= x;
-            min.erase(min.find(x));
+            erase(min, min_sum, x);
         } else if (max.find(x) != max.end()) {
-            max_sum -= x;
-            max.erase(max.find(x));
+            erase(max, max_sum, x);
         } else {
             assert(false);
         }
         maintain();
     }
-    int get_mid() {
+    T get_mid() {
         assert(min.size() > 0);
         return *min.rbegin();
     }

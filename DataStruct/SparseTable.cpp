@@ -5,6 +5,7 @@
  * @note O(nlogn) for build, O(1) for query
  * @note std::countl_zero(unsigned int) : Calculate the number of leading zeros
  * @note __builtin_clz(int) : Calculate the number of leading zeros
+ * @link https://www.luogu.com.cn/problem/P3865
  * @example auto fun = [&](int i, int j) { return min(i, j); };
  *          SparseTable<int, decltype(fun)> st(a, fun);
  *      or:

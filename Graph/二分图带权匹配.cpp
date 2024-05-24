@@ -1,27 +1,31 @@
 #include <bits/stdc++.h>
 
-using namespace std;
 using ll = long long;
 
 constexpr ll inf = 1e12;
 
+/**
+ * @brief 二分图带权匹配
+ * @tparam T the type of weight
+ * @link https://uoj.ac/problem/80
+ */
 template<class T>
 struct KuhnMunkres {
     int n;
-    vector<vector<T>> w;
-    vector<T> hl, hr;
-    vector<int> fl, fr, pre;
-    KuhnMunkres(int n) : n(n), w(n, vector<T>(n)), 
+    std::vector<std::vector<T>> w;
+    std::vector<T> hl, hr;
+    std::vector<int> fl, fr, pre;
+    KuhnMunkres(int n) : n(n), w(n, std::vector<T>(n)), 
         hl(n), hr(n), fl(n, -1), fr(n, -1), pre(n) {}
 
-    vector<int> km() {
+    std::vector<int> km() {
         for (int i = 0; i < n; i++) {
             hl[i] = *max_element(w[i].begin(), w[i].end());
         }
-        for (int s = 0; s < n; s++)
+        for (int s = 0; s < n; s++) {
             [&](int s) {
-                vector<T> slack(n, inf);
-                vector<int> vl(n), vr(n);
+                std::vector<T> slack(n, inf);
+                std::vector<int> vl(n), vr(n);
                 queue<int> q;
                 q.push(s);
                 vr[s] = 1;
@@ -68,32 +72,36 @@ struct KuhnMunkres {
                     }
                 }
             }(s);
+        }
         return fl;
     }
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     
     int n1, n2, m;
-    cin >> n1 >> n2 >> m;
-    int n = max(n1, n2);
+    std::cin >> n1 >> n2 >> m;
+    int n = std::max(n1, n2);
     KuhnMunkres<ll> km(n);
     while (m--) {
         int u, v, c;
-        cin >> u >> v >> c;
+        std::cin >> u >> v >> c;
         u--, v--;
         km.w[u][v] = c;
     }
 
     auto res = km.km();
     ll ans = 0;
-    for (int i = 0; i < n1; i++)
-        if (res[i] != -1) ans += km.w[i][res[i]];
-    cout << ans << "\n";
     for (int i = 0; i < n1; i++) {
-        cout << (km.w[i][res[i]] ? res[i] + 1 : 0) << " \n"[i == n1 - 1];
+        if (res[i] != -1) {
+            ans += km.w[i][res[i]];
+        }
+    }
+    std::cout << ans << "\n";
+    for (int i = 0; i < n1; i++) {
+        std::cout << (km.w[i][res[i]] ? res[i] + 1 : 0) << " \n"[i == n1 - 1];
     }
 
     return 0;

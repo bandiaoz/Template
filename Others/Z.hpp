@@ -4,7 +4,7 @@
 #include <functional>
 #include <iostream>
 
-template <typename T, auto f = std::multiplies<T>()>
+template <typename T>
 constexpr static T power(T a, int64_t b) {
     assert(b >= 0);
     T res;
@@ -15,17 +15,17 @@ constexpr static T power(T a, int64_t b) {
     }
     while (b) {
         if (b & 1) {
-            res = f(res, a);
+            res = res * a;
         }
         b >>= 1;
-        a = f(a, a);
+        a = a * a;
     }
     return res;
 }
 
 template <typename T, T MOD>
 struct ModInt {
-    using prod_type = std::conditional_t<std::is_same_v<T, int>, int64_t, __int128>;
+    using prod_type = std::conditional_t<std::numeric_limits<T>::digits <= 32, uint64_t, __uint128_t>;
     T val;
     constexpr ModInt(const int64_t v = 0) : val(v % MOD) { if (val < 0) val += MOD; }
     constexpr ModInt operator+() const { return ModInt(val); }

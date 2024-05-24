@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
 
-using ll = long long;
-
+/**
+ * @brief Pollard Rho 分解质因数
+ * @link https://www.luogu.com.cn/problem/P4718
+ */
 struct Pollard_Rho {
 private:
     uint64_t mod_mul64(uint64_t a, uint64_t b, uint64_t mod) {
@@ -90,6 +92,9 @@ private:
     
 public:
     Pollard_Rho() { srand((unsigned)time(NULL)); }
+    /**
+     * @return 返回 x 的所有质因数的集合（因子不重复出现）
+    */
     std::vector<int64_t> pollard_Rho(int64_t x) {
         std::vector<int64_t> ans;
         fac(x, ans);
@@ -99,32 +104,3 @@ public:
         return miller_rabin(x);
     }
 };
-
-void solve() {
-    ll n;
-    std::cin >> n;
-    Pollard_Rho poll;
-    auto ans = poll.pollard_Rho(n);
-    ll maxx = *max_element(ans.begin(), ans.end());
-
-    if (maxx == n) {
-        std::cout << "Prime\n";
-    } else {
-        std::cout << maxx << "\n";
-    }
-}
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int t;
-    std::cin >> t;
-
-    while (t--) {
-        solve();
-    }
-
-    return 0;
-}
-// test problem: https://www.luogu.com.cn/problem/P4718

@@ -1,3 +1,4 @@
+#pragma once
 #include <bits/stdc++.h>
 
 template <typename T>
@@ -29,6 +30,7 @@ struct Fenwick {
     T rangeSum(int l, int r) {
         return sum(r) - sum(l);
     }
+    // return the kth element, 0th element is the smallest
     int kth(T k) {
         int x = 0;
         for (int i = 1 << std::__lg(n); i; i /= 2) {

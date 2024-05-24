@@ -1,3 +1,4 @@
+#pragma once
 #include "../Others/Z.hpp"
 
 using Z = ModInt<int, 1'000'000'007>;

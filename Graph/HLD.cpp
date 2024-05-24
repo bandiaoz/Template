@@ -73,6 +73,10 @@ struct HLD {
         return dep[u] + dep[v] - 2 * dep[lca(u, v)];
     }
     
+    /**
+     * @brief 找 u 的 k 级祖先
+     * @link https://judge.yosupo.jp/problem/jump_on_tree
+    */
     int jump(int u, int k) {
         if (dep[u] < k) return -1;
         

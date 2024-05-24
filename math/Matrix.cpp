@@ -1,220 +1,115 @@
-#include <algorithm>
-#include <cassert>
+#pragma once
 #include <iostream>
 #include <vector>
-using namespace std;
+#include <cassert>
 
-// TODO: switch to `double` if `long double` is unnecessary and the time limit is tight.
-// Using `long double` is more accurate, but it can be 50-60% slower than `double`.
-using matrix_float = long double;
-
-// TODO: if using float_column_vector, we can write the float_matrix in the format matrix[x] = a row of coefficients
-// used to build the x-th element of the float_column_vector. So matrix[0][2] is the coefficient that element 2
-// contributes to the next element 0.
-// The other option is to take a single-row 1 * n float_matrix and multiply it by the n * n float_matrix. Then
-// matrix[0][2] is the coefficient that 0 contributes to the next element 2.
-struct float_column_vector {
-    int rows;
-    vector<matrix_float> values;
-
-    float_column_vector(int _rows = 0) {
-        init(_rows);
+template <typename T>
+struct Matrix {
+    std::vector<std::vector<T>> a;
+    
+    Matrix() {}
+    Matrix(int n, int m, T v = T()) { init(n, m, v); }
+    Matrix(std::vector<std::vector<T>> a) { init(a); }
+    void init(int n, int m, T v) {
+        a.assign(n, std::vector<T>(m, v));
+    }
+    void init(std::vector<std::vector<T>> &a) {
+        this->a = a;
     }
 
-    template<typename T>
-    float_column_vector(const vector<T> &v) {
-        init(v);
-    }
-
-    void init(int _rows) {
-        rows = _rows;
-        values.assign(rows, 0);
-    }
-
-    template<typename T>
-    void init(const vector<T> &v) {
-        rows = int(v.size());
-        values = vector<matrix_float>(v.begin(), v.end());
-    }
-
-    matrix_float& operator[](int index) { return values[index]; }
-    const matrix_float& operator[](int index) const { return values[index]; }
-};
-
-// Warning: very inefficient for many small matrices of fixed size. For that, use float_matrix_fixed_size.cc instead.
-struct float_matrix {
-    static float_matrix IDENTITY(int n) {
-        float_matrix identity(n);
-
+    std::vector<T> &operator[](int i) { return a[i]; }
+    const std::vector<T> &operator[](int i) const { return a[i]; }
+    /**
+     * 支持 for (auto row : matrix) 遍历
+    */
+    auto begin() { return a.begin(); }
+    auto end() { return a.end(); }
+    auto begin() const { return a.begin(); }
+    auto end() const { return a.end(); }
+    std::pair<int, int> size() const { return {a.size(), a[0].size()}; }
+    Matrix operator+(const Matrix &rhs) const {
+        auto [n, m] = this->size();
+        Matrix res(n, m);
         for (int i = 0; i < n; i++) {
-            identity[i][i] = 1;
-        }
-
-        return identity;
-    }
-
-    int rows, cols;
-    vector<vector<matrix_float>> values;
-
-    float_matrix(int _rows = 0, int _cols = -1) {
-        init(_rows, _cols);
-    }
-
-    template<typename T>
-    float_matrix(const vector<vector<T>> &v) {
-        init(v);
-    }
-
-    void init(int _rows, int _cols = -1) {
-        rows = _rows;
-        cols = _cols < 0 ? rows : _cols;
-        values.assign(rows, vector<matrix_float>(cols, 0));
-    }
-
-    template<typename T>
-    void init(const vector<vector<T>> &v) {
-        rows = int(v.size());
-        cols = v.empty() ? 0 : int(v[0].size());
-        values.assign(rows, vector<matrix_float>(cols, 0));
-
-        for (int i = 0; i < rows; i++) {
-            assert(int(v[i].size()) == cols);
-            copy(v[i].begin(), v[i].end(), values[i].begin());
-        }
-    }
-
-    vector<matrix_float>& operator[](int index) { return values[index]; }
-    const vector<matrix_float>& operator[](int index) const { return values[index]; }
-
-    bool is_square() const {
-        return rows == cols;
-    }
-
-    float_matrix operator*(const float_matrix &other) const {
-        assert(cols == other.rows);
-        float_matrix product(rows, other.cols);
-
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                if (values[i][j] != 0)
-                    for (int k = 0; k < other.cols; k++)
-                        product[i][k] += values[i][j] * other[j][k];
-
-        return product;
-    }
-
-    float_matrix& operator*=(const float_matrix &other) {
-        return *this = *this * other;
-    }
-
-    float_column_vector operator*(const float_column_vector &column) const {
-        assert(cols == column.rows);
-        float_column_vector product(rows);
-
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                product[i] += values[i][j] * column[j];
-
-        return product;
-    }
-
-    float_matrix& operator*=(matrix_float mult) {
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                values[i][j] *= mult;
-
-        return *this;
-    }
-
-    float_matrix operator*(matrix_float mult) const {
-        return float_matrix(*this) *= mult;
-    }
-
-    float_matrix& operator+=(const float_matrix &other) {
-        assert(rows == other.rows && cols == other.cols);
-
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                values[i][j] += other[i][j];
-
-        return *this;
-    }
-
-    float_matrix operator+(const float_matrix &other) const {
-        return float_matrix(*this) += other;
-    }
-
-    float_matrix& operator-=(const float_matrix &other) {
-        assert(rows == other.rows && cols == other.cols);
-
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                values[i][j] -= other[i][j];
-
-        return *this;
-    }
-
-    float_matrix operator-(const float_matrix &other) const {
-        return float_matrix(*this) -= other;
-    }
-
-    float_matrix pow(int64_t p) const {
-        assert(p >= 0);
-        assert(is_square());
-        float_matrix m = *this, result = IDENTITY(rows);
-
-        while (p > 0) {
-            if (p & 1) {
-                result *= m;
-            }
-            p >>= 1;
-            if (p > 0) {
-                m *= m;
+            for (int j = 0; j < m; j++) {
+                res[i][j] = a[i][j] + rhs[i][j];
             }
         }
-
-        return result;
+        return res;
     }
-
-    void print(ostream &os) const {
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                os << values[i][j] << (j < cols - 1 ? ' ' : '\n');
-
-        os << '\n';
+    Matrix operator-(const Matrix &rhs) const {
+        auto [n, m] = this->size();
+        Matrix res(n, m);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                res[i][j] = a[i][j] - rhs[i][j];
+            }
+        }
+        return res;
+    }
+    Matrix operator*(const Matrix &rhs) const {
+        auto [n, m] = this->size();
+        int k = rhs.size().second;
+        Matrix res(n, k);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < k; j++) {
+                for (int l = 0; l < m; l++) {
+                    res[i][j] += a[i][l] * rhs[l][j];
+                }
+            }
+        }
+        return res;
+    }
+    static Matrix identity(int n) {
+        Matrix res(n, n);
+        for (int i = 0; i < n; i++) {
+            res[i][i] = 1;
+        }
+        return res;
+    }
+    Matrix identity() {
+        auto [n, m] = this->size();
+        assert(n == m);
+        return identity(n);
+    }
+    /**
+     * @brief 方阵行列式 calculate the determinant of the matrix
+     * @link https://judge.yosupo.jp/problem/matrix_det
+     * @return the determinant of the matrix mod prime 
+     */
+    Z det() {
+        auto [n, m] = size();
+        assert(n == m);
+        Z res = 1;
+        for (int i = 0; i < n; i++) {
+            int sel = -1;
+            for (int j = i; j < n && sel == -1; j++) {
+                if (a[j][i] != 0) {
+                    sel = j;
+                }
+            }
+            if (sel == -1) return 0;
+            std::swap(a[i], a[sel]);
+            if (sel != i) res = -res;
+            res *= a[i][i];
+            auto inv = a[i][i].inv();
+            for (int j = i; j < n; j++) {
+                a[i][j] *= inv;
+            }
+            for (int j = i + 1; j < n; j++) {
+                for (int k = i + 1; k < n; k++) {
+                    a[j][k] += -a[i][k] * a[j][i];
+                }
+            }
+        }
+        return res;
+    }
+    void print(std::ostream &os) const {
+        auto [n, m] = size();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                os << a[i][j] << " \n"[j == m - 1];
+            }
+        }
     }
 };
-
-
-#include <iomanip>
-
-void read_matrix(float_matrix &m) {
-    int r, c;
-    cin >> r >> c;
-    m = float_matrix(r, c);
-
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            double x;
-            cin >> x;
-            m[i][j] = x;
-        }
-    }
-}
-
-int main() {
-    cout << setprecision(16);
-
-    float_matrix m1, m2;
-    read_matrix(m1);
-    read_matrix(m2);
-    (m1 + m1).print(cout);
-    (m2 - m2).print(cout);
-    (m1 * m2).print(cout);
-
-    read_matrix(m1);
-    int64_t p;
-    cin >> p;
-    (m1 * p).print(cout);
-    m1.pow(p).print(cout);
-}

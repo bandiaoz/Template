@@ -28,7 +28,7 @@ struct Circle {
     // 判圆和圆相交，包括相切
     friend int isCirCirIntersection(Circle c1, Circle c2) {
         return dis(c1.o, c2.o) < c1.r + c2.r + eps &&
-               dis(c1.o, c2.o) > fabs(c1.r - c2.r) - eps;
+               dis(c1.o, c2.o) > std::abs(c1.r - c2.r) - eps;
     }
     // 判圆和圆内含
     friend int isCirCirContain(Circle c1, Circle c2) {

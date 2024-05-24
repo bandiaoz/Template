@@ -1,9 +1,8 @@
 #include <bits/stdc++.h>
 
-using ll = long long;
-
 /**
- * @brief minimal representation
+ * @brief 最小表示法 minimal representation
+ * @brief 找到所有循环同构的字符串中，最小的那一个
  * @tparam T std::vector<int> or std::string
  * @param s 
  * @return the minimal representation of s
@@ -29,23 +28,4 @@ T min_represent(const T &s) {
         ans.push_back(s[(i + z) % n]);
     }
     return ans;
-}
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    int n;
-    std::cin >> n;
-    std::vector<int> a(n);
-    for (auto &i : a) {
-        std::cin >> i;
-    }
-
-    auto ans = min_represent(a);
-    for (int i = 0; i < n; i++) {
-        std::cout << ans[i] << " \n"[i == n - 1];
-    }
-
-    return 0;
 }

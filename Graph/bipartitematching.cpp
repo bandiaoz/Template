@@ -1,9 +1,11 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-using ll = long long;
-
-// HK O(sqrt(n)m)
+/**
+ * @brief 二分图匹配
+ * @link https://uoj.ac/problem/78
+ * @link https://judge.yosupo.jp/problem/bipartitematching
+ * @note HK O(sqrt(n)m)
+*/
 class BipartiteMatching {
 private:
     int nl, nr;
@@ -58,6 +60,12 @@ public:
         assert(0 <= x && x < nl && 0 <= y && y < nr);
         g[x].push_back(y);
     }
+    /**
+     * @brief 求最大匹配
+     * @return std::pair<int, std::vector<int>> 匹配数和匹配方案
+     *         匹配方案 matchx[i] = j 表示左边第 i 个点匹配右边第 j 个点
+     *         如果 matchx[i] = -1 表示左边第 i 个点没有匹配
+    */
     std::pair<int, std::vector<int>> solve() {
         matchx.resize(nl, -1);
         matchy.resize(nr, -1);
@@ -78,25 +86,24 @@ public:
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     
     int nl, nr, m;
-    cin >> nl >> nr >> m;
+    std::cin >> nl >> nr >> m;
     BipartiteMatching graph(nl, nr);
-    for (int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; i++) {
         int x, y;
-        cin >> x >> y;
+        std::cin >> x >> y;
         x--, y--;
         graph.addEdge(x, y);
     }
 
     auto [res, match] = graph.solve();
-    cout << res << "\n";
-    for (int i = 0; i < nl; ++i) {
-        cout << match[i] + 1 << " \n"[i == nl - 1];
+    std::cout << res << "\n";
+    for (int i = 0; i < nl; i++) {
+        std::cout << match[i] + 1 << " \n"[i == nl - 1];
     }
 
     return 0;
 }
-// test problem: https://uoj.ac/problem/78

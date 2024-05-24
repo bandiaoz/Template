@@ -1,4 +1,8 @@
-// modify from: https://github.com/nealwu/competitive-programming/blob/a68b1646fc8c341a3e3b07728a3e88e2cf772d87/bits/Xor_basis.cc
+/**
+ * @brief 线性基
+ * @cite https://github.com/nealwu/competitive-programming/blob/master/bits/xor_basis.cc
+ * @link https://www.luogu.com.cn/problem/P3812
+ */
 template<typename T, int BITS = 30>
 struct Xor_basis {
     // A list of basis values sorted in decreasing order, where each value has a unique highest bit.
@@ -24,7 +28,7 @@ struct Xor_basis {
         x = min_value(x);
         if (x == 0) return false;
 
-        basis.push_back(x);
+        basis.push_back(x); // not guaranteed that x is a power of 2.
         int k = basis.size() - 1;
 
         // Insertion sort.
@@ -39,7 +43,7 @@ struct Xor_basis {
             basis[i] = std::min(basis[i], basis[i] ^ x);
         }
 
-        return true;
+    return true;
     }
 
     void merge(const Xor_basis<T> &other) {
