@@ -56,6 +56,11 @@ private:
 
 public:
     BipartiteMatching(int nl, int nr) : nl(nl), nr(nr), g(nl), time(0) {}
+    /**
+     * @brief  左部有 nl 个点，右部有 nr 个点，添加一条从 x 到 y 的边
+     * @param x 0 <= x < nl
+     * @param y 0 <= y < nr
+     */
     void addEdge(int x, int y) {
         assert(0 <= x && x < nl && 0 <= y && y < nr);
         g[x].push_back(y);
@@ -84,26 +89,3 @@ public:
         return std::pair(ans, matchx);
     }
 };
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int nl, nr, m;
-    std::cin >> nl >> nr >> m;
-    BipartiteMatching graph(nl, nr);
-    for (int i = 0; i < m; i++) {
-        int x, y;
-        std::cin >> x >> y;
-        x--, y--;
-        graph.addEdge(x, y);
-    }
-
-    auto [res, match] = graph.solve();
-    std::cout << res << "\n";
-    for (int i = 0; i < nl; i++) {
-        std::cout << match[i] + 1 << " \n"[i == nl - 1];
-    }
-
-    return 0;
-}

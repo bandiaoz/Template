@@ -1,5 +1,10 @@
 #include <bits/stdc++.h>
 
+/**
+ * @brief Dinic 算法
+ * @tparam cap_t 
+ * @link https://loj.ac/p/101
+ */
 template<class cap_t>
 struct Flow {
     static constexpr cap_t INF = std::numeric_limits<cap_t>::max();
@@ -65,27 +70,3 @@ struct Flow {
         return ans;
     }
 };
-
-using ll = long long;
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n, m, source, sink;
-    std::cin >> n >> m >> source >> sink;
-    source--, sink--;
-    Flow<ll> flow(n);
-    for (int i = 0; i < m; ++i) {
-        int u, v, c;
-        std::cin >> u >> v >> c;
-        u--, v--;
-        flow.addEdge(u, v, c);
-    }
-
-    std::cout << flow.maxFlow(source, sink) << "\n";
-    
-    return 0;
-}
-
-// test problem: https://loj.ac/p/101

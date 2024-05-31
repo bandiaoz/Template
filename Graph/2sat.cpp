@@ -1,6 +1,5 @@
 #pragma once
 #include "SCC.cpp"
-#include <bits/stdc++.h>
 
 /**
  * @brief 2-SAT
@@ -26,8 +25,7 @@ public:
         G[2 * v + !g].push_back(2 * u + f);
     }
     bool satisfiable() {
-        Strongly_Connected_Components scc(G);
-        auto id = scc.color;
+        auto [_, id] = scc(G);
         for (int i = 0; i < n; ++i) {
             if (id[2 * i] == id[2 * i + 1]) return false;
             ans[i] = id[2 * i] > id[2 * i + 1];

@@ -31,7 +31,7 @@ struct HalfPlane : public Line {  // 半平面
     // 凸多边形与半平面交(cut)
     friend Convex halfxConvex(const HalfPlane &h, const Convex &c) {
         Convex res;
-        for (int i = 0; i < c.n; ++i) {
+        for (int i = 0; i < c.n; i++) {
             if (h.calc(c.p[i]) < -eps)
                 res.p.push_back(c.p[i]);
             else {
@@ -58,12 +58,12 @@ struct HalfPlane : public Line {  // 半平面
         return res == 0 ? satisfy(h1.s, h2) : res < 0;
     }
     // 半平面交出的凸多边形
-    friend Convex halfx(vector<HalfPlane> &v) {
-        sort(v.begin(), v.end());
-        deque<HalfPlane> q;
-        deque<Point> ans;
+    friend Convex halfx(std::vector<HalfPlane> &v) {
+        std::sort(v.begin(), v.end());
+        std::deque<HalfPlane> q;
+        std::deque<Point> ans;
         q.push_back(v[0]);
-        for (int i = 1; i < v.size(); ++i) {
+        for (int i = 1; i < v.size(); i++) {
             if (sgn(v[i].vec().arg() - v[i - 1].vec().arg()) == 0) continue;
             while (ans.size() > 0 && !satisfy(ans.back(), v[i])) {
                 ans.pop_back();
@@ -87,8 +87,7 @@ struct HalfPlane : public Line {  // 半平面
         ans.push_back(lineIntersection(q.back(), q.front()));
         Convex c(ans.size());
         int i = 0;
-        for (deque<Point>::iterator it = ans.begin(); it != ans.end();
-             ++it, ++i) {
+        for (auto it = ans.begin(); it != ans.end(); it++, i++) {
             c.p[i] = *it;
         }
         return c;
@@ -109,8 +108,8 @@ Convex core(const Polygon &a) {
 }
 // 凸多边形交出的凸多边形
 Convex convexxConvex(Convex &c1, Convex &c2) {
-    vector<HalfPlane> h;
-    for (int i = 0; i < c1.p.size(); ++i)
+    std::vector<HalfPlane> h;
+    for (int i = 0; i < c1.p.size(); i++)
         h.push_back(HalfPlane(c1.p[i], c1.p[(i + 1) % c1.p.size()]));
     for (int i = 0; i < c2.p.size(); i++)
         h.push_back(HalfPlane(c2.p[i], c2.p[(i + 1) % c2.p.size()]));

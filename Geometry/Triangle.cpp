@@ -76,9 +76,9 @@ struct Triangle {
         double step = std::abs(a.x) + std::abs(a.y) + std::abs(b.x) + std::abs(b.y) + std::abs(c.x) + std::abs(c.y);
         u = (a + b + c) / 3;
         while (step > 1e-10) {
-            for (int k = 0; k < 10; step /= 2, ++k) {
-                for (int i = -1; i <= 1; ++i) {
-                    for (int j = -1; j <= 1; ++j) {
+            for (int k = 0; k < 10; step /= 2, k++) {
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
                         v.x = u.x + step * i;
                         v.y = u.y + step * j;
                         if (dis(u, a) + dis(u, b) + dis(u, c) > dis(v, a) + dis(v, b) + dis(v, c)) {

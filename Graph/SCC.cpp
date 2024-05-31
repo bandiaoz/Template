@@ -21,64 +21,35 @@
  * @brief 强连通分量 tarjan
  * @link https://judge.yosupo.jp/problem/scc
  * @link 缩点：https://www.luogu.com.cn/problem/P3387
+ * @note low[u] 的定义和原始的不同，不再限制只能通过一条反向边到达，而是可以通过任意数量的反向边到达的最小的 dfn 值
  * @note Components are numbered in *reverse topological order*, starting from 0. 
  * We no longer need on_stk array, we can replace `if (on_stk[v])` with `color[v] == -1` when update low array, 
  * because **if a node have dfn but do not have color, it must on stack**.
 */
-struct Strongly_Connected_Components {
-    int n;
-    std::vector<int> color;
-    std::vector<std::vector<int>> components;
+auto scc(const std::vector<std::vector<int>>& g) {
+    int n = g.size();
+    int cur = 0;
+    std::vector<int> low(n), dfn(n, -1), stk;
+    std::vector<int> color(n, -1);
+    int cnt = 0;
 
-    Strongly_Connected_Components(const std::vector<std::vector<int>>& g) : n(g.size()), color(n, -1) {
-        int cur = 0;
-        std::vector<int> low(n), dfn(n, -1), stk;
-        auto tarjan = [&](auto &&self, int u) -> void {
-            low[u] = dfn[u] = cur++;
-            stk.push_back(u);
-            for (auto v : g[u]) {
-                if (dfn[v] == -1) self(self, v);
-                if (color[v] == -1) low[u] = std::min(low[u], low[v]);
-            }
-            if (low[u] == dfn[u]) {
-                std::vector<int> component;
-                int v;
-                do {
-                    v = stk.back();
-                    stk.pop_back();
-                    color[v] = components.size();
-                    component.push_back(v);
-                } while (u != v);
-                components.push_back(component);
-            }
-        };
-        for (int i = 0; i < n; i++) if (dfn[i] == -1) tarjan(tarjan, i);
-    }
-};
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n, m;
-    std::cin >> n >> m;
-    std::vector<std::vector<int>> g(n);
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        std::cin >> u >> v;
-        g[u].push_back(v);
-    }
-
-    Strongly_Connected_Components scc(g);
-    auto ans = scc.components;
-
-    std::cout << ans.size() << "\n";
-    for (int i = ans.size() - 1; i >= 0; --i) {
-        std::cout << ans[i].size() << " ";
-        for (int j = 0; j < ans[i].size(); ++j) {
-            std::cout << ans[i][j] << " \n"[j == ans[i].size() - 1];
+    auto tarjan = [&](auto &&self, int u) -> void {
+        low[u] = dfn[u] = cur++;
+        stk.push_back(u);
+        for (auto v : g[u]) {
+            if (dfn[v] == -1) self(self, v);
+            if (color[v] == -1) low[u] = std::min(low[u], low[v]);
         }
-    }
-
-    return 0;
+        if (low[u] == dfn[u]) {
+            int v;
+            do {
+                v = stk.back();
+                stk.pop_back();
+                color[v] = cnt;
+            } while (u != v);
+            cnt++;
+        }
+    };
+    for (int i = 0; i < n; i++) if (dfn[i] == -1) tarjan(tarjan, i);
+    return std::pair(cnt, color);
 }

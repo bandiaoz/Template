@@ -9,10 +9,9 @@
 namespace Hashing {
 constexpr uint64_t mod = 1'000'000'000'000'000'003ULL;
 using hash_t = ModInt<int64_t, mod>;
-
 const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % mod;
-static std::vector<hash_t> pow{1};
 
+static std::vector<hash_t> pow{1};
 static void expand_pow(size_t index) {
     if (index < pow.size()) {
         return;
@@ -33,6 +32,7 @@ struct HashResult {
         }
     }
     HashResult& operator+=(const HashResult &rhs) {
+        expand_pow(rhs.len);
         h = h * pow[rhs.len] + rhs.h;
         len += rhs.len;
         return *this;
@@ -46,6 +46,17 @@ struct HashResult {
     bool operator==(HashResult rhs) const { return len == rhs.len && h == rhs.h; }
     size_t size() const { return len; }
     uint64_t hash() const { return h.val; }
+    hash_t index_value(size_t index) const {
+        assert(index < len);
+        expand_pow(len - index - 1);
+        return pow[len - index - 1];
+    }
+    /**
+     * @brief 修改字符串中的某个字符，返回新的哈希值
+     */
+    hash_t update(size_t index, char old_ch, char new_ch) const {
+        return h - old_ch * index_value(index) + new_ch * index_value(index);
+    }
 
 private:
     hash_t h = 0;
