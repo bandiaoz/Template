@@ -8,8 +8,10 @@ using ll = long long;
  *         ans = {(i, dir)} 表示第 i 条边 [u, v] = edges[i]
  *         dir = 1 表示从 u 到 v，dir = 0 表示从 v 到 u
  * @link https://judge.yosupo.jp/problem/eulerian_trail_undirected
+ * @link https://www.luogu.com.cn/problem/P2731
  * @note 无向图是欧拉图当且仅当：非零度顶点是连通的；顶点的度数都是偶数。此时从任意一个非零度顶点开始。
  * @note 无向图是半欧拉图当且仅当：非零度顶点是连通的；恰有 2 个奇度顶点。此时从其中一个奇度顶点开始。
+ * @note 也可以使用邻接矩阵方法：https://www.luogu.com.cn/record/160912440
  */
 auto eulerian_trails_undirected(int n, const std::vector<std::pair<int, int>> &edges)
         -> std::pair<bool, std::vector<std::pair<int, bool>>> {
@@ -48,7 +50,7 @@ auto eulerian_trails_undirected(int n, const std::vector<std::pair<int, int>> &e
     };
     dfs(dfs, start);
 
-    if (res.size() != edges.size()) {
+    if (res.size() != edges.size()) { // 判断非零度顶点是否连通
         return {false, {}};
     }
 

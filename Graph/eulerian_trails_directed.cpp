@@ -42,7 +42,7 @@ auto eulerian_trails_directed(int n, const std::vector<std::pair<int, int>>& edg
     };
     dfs(dfs, start);
 
-    if (res.size() != edges.size()) {
+    if (res.size() != edges.size()) { // 判断非零度顶点是否连通
         return {false, {}};
     }
 
