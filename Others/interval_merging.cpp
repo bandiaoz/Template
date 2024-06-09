@@ -4,7 +4,7 @@ using ll = long long;
 
 /**
  * @brief merge intervals
- * @param a
+ * @note 注意检查区间合并的条件
  * @param sorted(whether a is sorted, if not then sort it)
  * @return merged intervals
  */

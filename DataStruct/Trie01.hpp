@@ -2,7 +2,7 @@
 
 /**
  * @brief 01 Trie
- * @brief 维护一个不可重复的集合，支持插入、删除、查询最小异或值、查询最大异或值操作
+ * @brief 维护一个不可重复的非负整数集合，支持插入、删除、查询最小异或值、查询最大异或值操作
  * @tparam T type of the value
  * @link https://judge.yosupo.jp/problem/set_xor_min
 */
@@ -19,6 +19,7 @@ class Trie01 {
    public:
     Trie01() { emptyNode(); }
     bool exist(T x) {
+        if (empty()) return false;
         for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
             if (int child = ch_[p][c]; child == -1 || cnt[child] == 0) return false;
@@ -28,6 +29,7 @@ class Trie01 {
     }
     void insert(T x) {
         if (exist(x)) return;
+        cnt[0]++;
         for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
             if (ch_[p][c] == -1) {
@@ -39,13 +41,21 @@ class Trie01 {
     }
     void erase(T x) {
         if (!exist(x)) return;
+        cnt[0]--;
         for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
             p = ch_[p][c];
             cnt[p]--;
         }
     }
+    bool empty() {
+        return cnt[0] == 0;
+    }
+    /**
+     * @brief 查询最大异或值，需要保证集合非空
+    */
     T getMax(T x) {
+        assert(!empty());
         T res = 0;
         for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;
@@ -58,7 +68,11 @@ class Trie01 {
         }
         return res;
     }
+    /**
+     * @brief 查询最小异或值，需要保证集合非空
+    */
     T getMin(T x) {
+        assert(!empty());
         T res = 0;
         for (int i = B, p = 0; i >= 0; i--) {
             T c = x >> i & 1;

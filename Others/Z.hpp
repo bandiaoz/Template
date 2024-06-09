@@ -23,28 +23,30 @@ constexpr static T power(T a, int64_t b) {
     return res;
 }
 
-template <typename T, T MOD>
+template <typename MOD>
 struct ModInt {
+    using T = typename std::decay<decltype(MOD::value)>::type;
     using prod_type = std::conditional_t<std::numeric_limits<T>::digits <= 32, uint64_t, __uint128_t>;
     T val;
-    constexpr ModInt(const int64_t v = 0) : val(v % MOD) { if (val < 0) val += MOD; }
+    constexpr static T mod() { return MOD::value; }
+    constexpr ModInt(const int64_t v = 0) : val(v % mod()) { if (val < 0) val += mod(); }
     constexpr ModInt operator+() const { return ModInt(val); }
-    constexpr ModInt operator-() const { return ModInt(MOD - val); }
-    constexpr ModInt inv() const { return power(*this, MOD - 2); }
+    constexpr ModInt operator-() const { return ModInt(mod() - val); }
+    constexpr ModInt inv() const { return power(*this, mod() - 2); }
     constexpr friend ModInt operator+(ModInt lhs, const ModInt rhs) { return lhs += rhs; }
     constexpr friend ModInt operator-(ModInt lhs, const ModInt rhs) { return lhs -= rhs; }
     constexpr friend ModInt operator*(ModInt lhs, const ModInt rhs) { return lhs *= rhs; }
     constexpr friend ModInt operator/(ModInt lhs, const ModInt rhs) { return lhs /= rhs; }
     constexpr ModInt &operator+=(const ModInt x) {
-        if ((val += x.val) >= MOD) val -= MOD;
+        if ((val += x.val) >= mod()) val -= mod();
         return *this;
     }
     constexpr ModInt &operator-=(const ModInt x) {
-        if ((val -= x.val) < 0) val += MOD;
+        if ((val -= x.val) < 0) val += mod();
         return *this;
     }
     constexpr ModInt &operator*=(const ModInt x) {
-        val = prod_type(val) * x.val % MOD;
+        val = prod_type(val) * x.val % mod();
         return *this;
     }
     constexpr ModInt &operator/=(const ModInt x) { return *this *= x.inv(); }
@@ -55,5 +57,7 @@ struct ModInt {
     constexpr static ModInt identity() { return 1; }
     constexpr ModInt pow(int64_t p) { return power(*this, p); }
 };
-using ModInt1000000007 = ModInt<int, 1'000'000'007>;
-using ModInt998244353 = ModInt<int, 998244353>;
+struct MOD { static int value; };
+int MOD::value = 1'000'000'007;
+int MOD::value = 998'244'353;
+using Z = ModInt<MOD>;

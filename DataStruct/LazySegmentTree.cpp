@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 #include "../Others/Z.hpp"
 
-using Z = ModInt<int, 571373>;
+int MOD::value = 571373;
+using Z = ModInt<MOD>;
 
 /**
  * @brief Lazy Segment Tree
