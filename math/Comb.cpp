@@ -1,11 +1,14 @@
 #pragma once
-#include "../Others/Z.hpp"
+#include <vector>
 
-using Z = ModInt<int, 1'000'000'007>;
-
+/**
+ * @brief 组合数
+ * @example Comb<Z> comb;
+ */
+template <typename T>
 struct Comb {
     int n;
-    std::vector<Z> _fac, _invfac, _inv;
+    std::vector<T> _fac, _invfac, _inv;
     
     Comb() : n{0}, _fac{1}, _invfac{1}, _inv{0} {}
     Comb(int n) : Comb() {
@@ -29,20 +32,20 @@ struct Comb {
         n = m;
     }
     
-    Z fac(int m) {
+    T fac(int m) {
         if (m > n) init(2 * m);
         return _fac[m];
     }
-    Z invfac(int m) {
+    T invfac(int m) {
         if (m > n) init(2 * m);
         return _invfac[m];
     }
-    Z inv(int m) {
+    T inv(int m) {
         if (m > n) init(2 * m);
         return _inv[m];
     }
-    Z binom(int n, int m) {
+    T binom(int n, int m) {
         if (n < m || m < 0) return 0;
         return fac(n) * invfac(m) * invfac(n - m);
     }
-} comb;
+};

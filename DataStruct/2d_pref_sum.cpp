@@ -1,4 +1,3 @@
-// test problem: https://www.luogu.com.cn/problem/P1387
 #include <bits/stdc++.h>
 
 /**
