@@ -7,9 +7,10 @@
 #include <vector>
 
 namespace Hashing {
-constexpr uint64_t mod = 1'000'000'000'000'000'003ULL;
-using hash_t = ModInt<int64_t, mod>;
-const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % mod;
+struct MOD { static uint64_t value; };
+uint64_t MOD::value = 1'000'000'000'000'000'003;
+using hash_t = ModInt<MOD>;
+const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % MOD::value;
 
 static std::vector<hash_t> pow{1};
 static void expand_pow(size_t index) {

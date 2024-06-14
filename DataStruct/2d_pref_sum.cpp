@@ -1,6 +1,9 @@
 // test problem: https://www.luogu.com.cn/problem/P1387
 #include <bits/stdc++.h>
 
+/**
+ * @brief 二维前缀和
+ */
 template <typename T>
 struct pref_sum_2d {
     int n, m;
@@ -19,39 +22,3 @@ struct pref_sum_2d {
         return sum[x2][y2] - sum[x2][y1] - sum[x1][y2] + sum[x1][y1];
     }
 };
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    int n, m;
-    std::cin >> n >> m;
-    std::vector a(n, std::vector<int>(m));
-    for (auto& row : a) {
-        for (auto& x : row) {
-            std::cin >> x;
-        }
-    }
-
-    pref_sum_2d<int> pre(a);
-    int ans = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            int l = 0;
-            int r = std::min(n - i, m - j);
-            while (l < r) {
-                int mid = (l + r + 1) >> 1;
-                if (pre.query(i, j, i + mid, j + mid) == mid * mid) {
-                    l = mid;
-                } else {
-                    r = mid - 1;
-                }
-            }
-            ans = std::max(ans, l);
-        }
-    }
-
-    std::cout << ans << "\n";
-
-    return 0;
-}

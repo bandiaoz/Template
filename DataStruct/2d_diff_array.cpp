@@ -10,6 +10,9 @@ struct diff_2d {
     int n, m;
     std::vector<std::vector<T>> dif;
     diff_2d(int n_, int m_) : n(n_), m(m_), dif(n + 2, std::vector<T>(m + 2)) {}
+    /**
+     * @brief 将 [x1, x2) * [y1, y2) 的矩形内的所有数加上 c，不包括右边界和上边界
+     */
     void add(int x1, int y1, int x2, int y2, T c) {
         x1++, y1++, x2++, y2++;
         dif[x1][y1] += c;

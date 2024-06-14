@@ -57,7 +57,7 @@ struct ModInt {
     constexpr static ModInt identity() { return 1; }
     constexpr ModInt pow(int64_t p) { return power(*this, p); }
 };
-struct MOD { static int value; };
-int MOD::value = 1'000'000'007;
-int MOD::value = 998'244'353;
-using Z = ModInt<MOD>;
+// struct MOD { static int value; };
+// int MOD::value = 1'000'000'007;
+// int MOD::value = 998'244'353;
+// using Z = ModInt<MOD>;

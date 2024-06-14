@@ -6,6 +6,7 @@ using ll = long long;
  * @brief 线段树优化建图
  * @link https://codeforces.com/contest/786/problem/B
  * @link https://codeforces.com/contest/1158/problem/C
+ * @note 实际有 n 个点，编号为 0 ~ n - 1，虚拟节点编号为 n ~ node - 1
  */
 struct graph_segment {
     int node, n, sz;
