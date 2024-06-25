@@ -7,8 +7,8 @@
 #include <vector>
 
 namespace Hashing {
-struct MOD { static uint64_t value; };
-uint64_t MOD::value = 1'000'000'000'000'000'003;
+struct MOD { static int64_t value; };
+int64_t MOD::value = 1'000'000'000'000'000'003;
 using hash_t = ModInt<MOD>;
 const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % MOD::value;
 

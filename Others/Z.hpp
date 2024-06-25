@@ -25,7 +25,7 @@ constexpr static T power(T a, int64_t b) {
 
 template <typename MOD>
 struct ModInt {
-    using T = typename std::decay<decltype(MOD::value)>::type;
+    using T = std::conditional_t<std::numeric_limits<decltype(MOD::value)>::digits <= 32, int, int64_t>;
     using prod_type = std::conditional_t<std::numeric_limits<T>::digits <= 32, uint64_t, __uint128_t>;
     T val;
     constexpr static T mod() { return MOD::value; }
@@ -57,6 +57,7 @@ struct ModInt {
     constexpr static ModInt identity() { return 1; }
     constexpr ModInt pow(int64_t p) { return power(*this, p); }
 };
+// value should be signed integer
 // struct MOD { static int value; };
 // int MOD::value = 1'000'000'007;
 // int MOD::value = 998'244'353;
