@@ -43,7 +43,7 @@ struct Xor_basis {
             basis[i] = std::min(basis[i], basis[i] ^ x);
         }
 
-    return true;
+        return true;
     }
 
     void merge(const Xor_basis<T> &other) {
