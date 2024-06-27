@@ -28,6 +28,7 @@ auto get_cut(const std::vector<std::vector<int>>& g) {
                 child++;
                 self(self, v, u);
                 low[u] = std::min(low[u], low[v]);
+                // 如果 u 不是根节点，不能回到祖先
                 if (f != -1 && low[v] >= dfn[u]) {
                     cut[u] = true;
                 }
@@ -38,7 +39,7 @@ auto get_cut(const std::vector<std::vector<int>>& g) {
                 low[u] = std::min(low[u], dfn[v]);
             }
         }
-        // u == f means u is root node
+        // 如果 u 是根节点，有两个或以上的孩子节点
         if (f == -1 && child >= 2) {
             cut[u] = true;
         }
