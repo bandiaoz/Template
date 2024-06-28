@@ -30,9 +30,9 @@ struct SparseTable {
         }
     }
 
-    // return the answer [from, to)
+    // return the answer [from, to)，需要保证询问区间不为空 from < to
     T get(int from, int to) const {
-        assert(0 <= from && from <= to && to <= n);
+        assert(0 <= from && from < to && to <= n);
         int lg = std::__lg(to - from);
         return func(mat[lg][from], mat[lg][to - (1 << lg)]);
     }
