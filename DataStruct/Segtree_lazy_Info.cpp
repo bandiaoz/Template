@@ -61,7 +61,8 @@ struct InfoMaxSubarray {
             lhs.sum + rhs.sum, 
             std::max(lhs.left, lhs.sum + rhs.left),
             std::max(rhs.right, rhs.sum + lhs.right), 
-            std::max({lhs.ans, rhs.ans, lhs.right + rhs.left})
+            std::max({lhs.ans, rhs.ans, lhs.right + rhs.left}),
+            lhs.len + rhs.len
         );
     }
 };
