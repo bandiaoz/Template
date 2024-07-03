@@ -36,14 +36,14 @@ struct InfoSum {
 
 /**
  * @brief 维护区间最大子段和(区间非空)
- * @link: https://www.luogu.com.cn/problem/SP1716
+ * @link: https://www.luogu.com.cn/problem/P4513
  */
 template<class T>
 struct InfoMaxSubarray {
     static const T inf = std::numeric_limits<T>::max() / 2;
     T sum, left, right, ans;
     
-    InfoMaxSubarray() : sum(0), left(-inf), right(-inf), ans(-inf) {}
+    InfoMaxSubarray() {}
     InfoMaxSubarray(T x) : sum(x), left(x), right(x), ans(x) {}
     InfoMaxSubarray(T sum, T left, T right, T ans) : sum(sum), left(left), right(right), ans(ans) {}
     
