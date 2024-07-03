@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "../Others/Z.hpp"
 
+struct MOD { static int value; };
 int MOD::value = 571373;
 using Z = ModInt<MOD>;
 
