@@ -1,5 +1,5 @@
 #pragma once
-#include "SCC.cpp"
+#include "scc.cpp"
 
 /**
  * @brief 2-SAT
