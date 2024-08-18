@@ -9,9 +9,8 @@
 #include <iostream>
 
 namespace Hashing {
-struct MOD { static int64_t value; };
 using hash_t = OY::mint1000000000000000003;
-const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % MOD::value;
+const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % hash_t::mod();
 
 static std::vector<hash_t> pow{1};
 static void expand_pow(size_t index) {
@@ -113,7 +112,7 @@ struct HashStr {
     HashResult hash_result() const {
         return sub_hash(0, pref.size() - 1);
     }
-    uint64_t hash() const { return pref.back().val; }
+    uint64_t hash() const { return pref.back().val(); }
     size_t size() const { return pref.size() - 1; }
 
 private:

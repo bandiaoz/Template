@@ -14,10 +14,6 @@ msvc14.2,C++14
 #include <limits>
 #include <numeric>
 
-#ifdef _MSC_VER
-#include <immintrin.h>
-#endif
-
 namespace OY {
     template <uint64_t P, bool IsPrime, typename = typename std::enable_if<(P > 1 && P < uint64_t(1) << 63)>::type>
     struct StaticModInt64 {
@@ -25,19 +21,12 @@ namespace OY {
         using mod_type = uint64_t;
         mod_type m_val;
         static mod_type _mul(mod_type a, mod_type b) {
-#ifdef _MSC_VER
-            mod_type high, low, res;
-            low = _umul128(a, b, &high);
-            _udiv128(high, low, mod(), &res);
-            return res;
-#else
             int64_t res = a * b - mod_type((long double)(a)*b / mod()) * mod();
             if (res < 0)
                 res += mod();
             else if (res >= mod())
                 res -= mod();
             return res;
-#endif
         }
         StaticModInt64() = default;
         template <typename Tp, typename std::enable_if<std::is_signed<Tp>::value>::type * = nullptr>
