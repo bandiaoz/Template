@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
-#include "../DataStruct/Fenwick.hpp"
-#include "../Others/Z.hpp"
+#include "DataStruct/Fenwick.hpp"
+#include "Math/ModInt/StaticModInt32.h"
 
-using Z = ModInt<int, 998244353>;
+using Z = OY::StaticModInt32<998244353, true>;
 
 /**
  * @brief 康托展开 cantor

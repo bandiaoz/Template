@@ -1,15 +1,16 @@
 #pragma once
 
-#include "../Others/Z.hpp"
+#include "Math/ModInt/StaticModInt64.h"
 #include <chrono>
 #include <random>
 #include <string>
 #include <vector>
+#include <cassert>
+#include <iostream>
 
 namespace Hashing {
 struct MOD { static int64_t value; };
-int64_t MOD::value = 1'000'000'000'000'000'003;
-using hash_t = ModInt<MOD>;
+using hash_t = OY::mint1000000000000000003;
 const hash_t base = std::mt19937_64(std::chrono::steady_clock::now().time_since_epoch().count())() % MOD::value;
 
 static std::vector<hash_t> pow{1};
@@ -46,7 +47,7 @@ struct HashResult {
     friend HashResult operator+(HashResult lhs, HashResult rhs) { return lhs += rhs; }
     bool operator==(HashResult rhs) const { return len == rhs.len && h == rhs.h; }
     size_t size() const { return len; }
-    uint64_t hash() const { return h.val; }
+    uint64_t hash() const { return h.val(); }
     hash_t index_value(size_t index) const {
         assert(index < len);
         expand_pow(len - index - 1);
