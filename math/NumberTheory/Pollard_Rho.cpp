@@ -1,106 +1,169 @@
-#include <bits/stdc++.h>
+/*
+最后修改:
+20240318
+测试环境:
+gcc11.2,c++11
+clang12.0,C++11
+msvc14.2,C++14
+*/
+#ifndef __OY_POLLARDRHO__
+#define __OY_POLLARDRHO__
+
+#include <algorithm>
+#include <cstdint>
+#include <numeric>
+#include <vector>
+
+#include "MATH/NumberTheory/PrimeCheck.h"
 
 /**
- * @brief Pollard Rho 分解质因数
- * @link https://www.luogu.com.cn/problem/P4718
+ * @brief Pollard Rho，因数分解
  */
-struct Pollard_Rho {
-private:
-    uint64_t mod_mul64(uint64_t a, uint64_t b, uint64_t mod) {
-        assert(a < mod && b < mod);
-        if (mod <= 1LLU << 32) return a * b % mod;
-        if (mod <= 1LLU << 63) {
-            uint64_t q = uint64_t((long double) a * b / mod);
-            uint64_t result = a * b - q * mod;
-            if (result > 1LLU << 63) {
-                result += mod;
-            } else if (result >= mod) {
-                result -= mod;
-            }
-            return result;
-        }
-    #ifdef __SIZEOF_INT128__
-        return uint64_t(__uint128_t(a) * b % mod);
-    #endif
-        assert(false);
-    }
-    uint64_t mod_pow64(uint64_t a, uint64_t b, uint64_t mod) {
-        uint64_t result = 1;
-        for (; b; b >>= 1, a = mod_mul64(a, a, mod)) {
-            if (b & 1) result = mod_mul64(result, a, mod);
-        }
-        return result;
-    }
-    bool miller_rabin(uint64_t n) {
-        if (n < 2) return false;
-        // Check small primes.
-        for (uint64_t p : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29}) {
-            if (n % p == 0) return n == p;
-        }
-        // https://miller-rabin.appspot.com/
-        auto get_miller_rabin_bases = [&]() -> std::vector<uint64_t> {
-            if (n < 341531) return {9345883071009581737LLU};
-            if (n < 1050535501) return {336781006125, 9639812373923155};
-            if (n < 350269456337) return {4230279247111683200, 14694767155120705706LLU, 16641139526367750375LLU};
-            if (n < 55245642489451) return {2, 141889084524735, 1199124725622454117, 11096072698276303650LLU};
-            if (n < 7999252175582851) return {2, 4130806001517, 149795463772692060, 186635894390467037, 3967304179347715805};
-            if (n < 585226005592931977) return {2, 123635709730000, 9233062284813009, 43835965440333360, 761179012939631437, 1263739024124850375};
-            return {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+namespace OY {
+    class PollardRho {
+        struct PollardRhoPair {
+            uint64_t m_prime;
+            uint32_t m_count;
+            bool operator<(const PollardRhoPair &rhs) const { return m_prime < rhs.m_prime; }
         };
-        int r = __builtin_ctzll(n - 1);
-        uint64_t d = (n - 1) >> r;
-        for (uint64_t a : get_miller_rabin_bases()) {
-            if (a % n == 0) continue;
-            uint64_t x = mod_pow64(a % n, d, n);
-            if (x == 1 || x == n - 1) continue;
-            for (int i = 0; i < r - 1 && x != n - 1; i++) {
-                x = mod_mul64(x, x, n);
-            }
-            if (x != n - 1) return false;
+        static bool is_prime(uint64_t x) { return is_prime64(x); }
+        template <typename Callback>
+        static void _dfs(uint64_t cur, Callback &&call) {
+            if (!is_prime(cur)) {
+                uint64_t a = pick(cur);
+                _dfs(a, call), _dfs(cur / a, call);
+            } else
+                call(cur);
         }
-        return true;
-    }
-    int64_t solve(int64_t x) {
-        int64_t s = 0, t = 0;
-        int64_t c = (int64_t)rand() % (x - 1) + 1;
-        int step = 0, goal = 1;
-        int64_t val = 1;
-        for (goal = 1;; goal *= 2, s = t, val = 1) {  // 倍增优化
-            for (step = 1; step <= goal; ++step) {
-                t = ((__int128)t * t + c) % x;
-                val = (__int128)val * abs(t - s) % x;
-                if ((step % 127) == 0) {
-                    int64_t d = std::gcd(val, x);
-                    if (d > 1) return d;
+        template <typename Callback>
+        static void _dfs(uint32_t index, uint64_t prod, const std::vector<PollardRhoPair> &pairs, Callback &&call) {
+            if (index == pairs.size())
+                call(prod);
+            else {
+                auto &&pair = pairs[index];
+                uint64_t p = pair.m_prime, c = pair.m_count;
+                _dfs(index + 1, prod, pairs, call);
+                while (c--) _dfs(index + 1, prod *= p, pairs, call);
+            }
+        }
+    public:
+        /**
+         * @brief 枚举 n 的所有质因子
+         */
+        template <typename Callback>
+        static void enumerate_prime_factors(uint64_t n, Callback &&call) {
+            if (n % 2 == 0) {
+                uint32_t ctz = std::countr_zero(n);
+                n >>= ctz;
+                while (ctz--) call(uint64_t(2));
+            }
+            if (n > 1) _dfs(n, call);
+        }
+        /**
+         * @brief 根据质因数分解的结果枚举所有因数
+         */
+        template <typename Callback>
+        static void enumerate_factors(const std::vector<PollardRhoPair> &pairs, Callback &&call) { _dfs(0, 1, pairs, call); }
+        /**
+         * @brief 获得 n 的所有因数
+         */
+        template <typename Callback>
+        static void enumerate_factors(uint64_t n, Callback &&call) { enumerate_factors(decomposite<false>(n), call); }
+        /**
+         * @brief 返回 n 的一个非平凡因数，需要保证 n 不是质数
+         */
+        static uint64_t pick(uint64_t n) {
+            if (n % 2 == 0) { return 2; }
+            struct Info {
+                uint64_t m_mod, m_pinv;
+                void set_mod(uint64_t n) {
+                    m_mod = m_pinv = n;
+                    for (size_t i = 0; i < 5; ++i) m_pinv *= 2 - m_mod * m_pinv;
                 }
+                uint64_t mul_add(uint64_t a, uint64_t b, uint64_t c) const {
+                    __uint128_t d = __uint128_t(a) * b;
+                    return c + m_mod + (d >> 64) - uint64_t((__uint128_t(uint64_t(d) * m_pinv) * m_mod) >> 64);
+                }
+                uint64_t mul(uint64_t a, uint64_t b) const { return mul_add(a, b, 0); }
+            };
+            Info info;
+            info.set_mod(n);
+            uint64_t C1 = 1, C2 = 2, M = 512, Z1 = 1, Z2 = 2, ans = 0;
+            auto find = [&]() {
+                uint64_t z1 = Z1, z2 = Z2;
+                for (uint64_t k = M;; k *= 2) {
+                    uint64_t x1 = z1 + n, x2 = z2 + n;
+                    for (uint64_t j = 0; j < k; j += M) {
+                        uint64_t y1 = z1, y2 = z2, q1 = 1, q2 = 2;
+                        z1 = info.mul_add(z1, z1, C1), z2 = info.mul_add(z2, z2, C2);
+                        for (uint64_t i = 0; i < M; ++i) {
+                            uint64_t t1 = x1 - z1, t2 = x2 - z2;
+                            z1 = info.mul_add(z1, z1, C1), z2 = info.mul_add(z2, z2, C2);
+                            q1 = info.mul(q1, t1), q2 = info.mul(q2, t2);
+                        }
+                        q1 = info.mul(q1, x1 - z1), q2 = info.mul(q2, x2 - z2);
+                        uint64_t q3 = info.mul(q1, q2), g3 = std::gcd(n, q3);
+                        if (g3 == 1) continue;
+                        if (g3 != n) return void(ans = g3);
+                        uint64_t g1 = std::gcd(n, q1), g2 = std::gcd(n, q2), C = g1 != 1 ? C1 : C2, x = g1 != 1 ? x1 : x2, z = g1 != 1 ? y1 : y2, g = g1 != 1 ? g1 : g2;
+                        if (g == n)
+                            do z = info.mul_add(z, z, C), g = std::gcd(n, x - z);
+                            while (g == 1);
+                        if (g != n) return void(ans = g);
+                        Z1 += 2, Z2 += 2;
+                        return;
+                    }
+                }
+            };
+            do { find(); } while (!ans);
+            return ans;
+        }
+        /**
+         * @brief 分解质因数
+         * @tparam Sorted 表示返回的质因数是否按照升序排列
+         * @return `std::vector<PollardRhoPair>` ，其中 `PollardRhoPair` 包含 `m_prime` 和 `m_count` 两个属性，表示包含的质因子以及包含的数量。
+         */
+        template <bool Sorted = false>
+        static std::vector<PollardRhoPair> decomposite(uint64_t n) {
+            std::vector<PollardRhoPair> res;
+            if (n % 2 == 0) {
+                uint32_t ctz = std::countr_zero(n);
+                res.push_back({uint64_t(2), ctz}), n >>= ctz;
             }
-            int64_t d = std::gcd(val, x);
-            if (d > 1) return d;
+            auto call = [&](uint64_t x) {
+                auto find = std::find_if(res.begin(), res.end(), [&](const PollardRhoPair &p) { return p.m_prime == x; });
+                if (find == res.end())
+                    res.push_back({x, 1});
+                else
+                    find->m_count++;
+            };
+            if (n > 1) _dfs(n, call);
+            if constexpr (Sorted) std::sort(res.begin(), res.end());
+            return res;
         }
-    }
-    void fac(int64_t x, std::vector<int64_t> &ans) {
-        if (x == 1) return;
-        if (miller_rabin(x)) { // 如果 x 为质数
-            ans.push_back(x);
-            return;
+        /**
+         * @brief 返回 n 的所有因数
+         * @tparam Sorted 表示返回的因数是否按照升序排列
+         */
+        template <bool Sorted = false>
+        static std::vector<uint64_t> get_factors(uint64_t n) {
+            std::vector<uint64_t> res;
+            uint32_t count = 1;
+            auto pairs = decomposite<false>(n);
+            for (auto &&pair : pairs) count *= pair.m_count + 1;
+            res.reserve(count);
+            enumerate_factors(pairs, [&](uint64_t f) { res.push_back(f); });
+            if constexpr (Sorted) std::sort(res.begin(), res.end());
+            return res;
         }
-        int64_t p = x;
-        while (p >= x) p = solve(x);  // 使用该算法
-        while ((x % p) == 0) x /= p;
-        fac(x, ans), fac(p, ans);  // 继续向下分解 x 和 p
-    }
-    
-public:
-    Pollard_Rho() { srand((unsigned)time(NULL)); }
-    /**
-     * @return 返回 x 的所有质因数的集合（因子不重复出现）
-    */
-    std::vector<int64_t> pollard_Rho(int64_t x) {
-        std::vector<int64_t> ans;
-        fac(x, ans);
-        return ans;
-    }
-    bool isPrime(int64_t x) {
-        return miller_rabin(x);
-    }
-};
+        /**
+         * @brief 返回 n 的欧拉函数值
+         */
+        static uint64_t get_Euler_Phi(uint64_t n) {
+            for (const auto &pair : decomposite(n)) n = n / pair.m_prime * (pair.m_prime - 1);
+            return n;
+        }
+    };
+}
+
+#endif
