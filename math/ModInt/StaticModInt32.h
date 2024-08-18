@@ -14,6 +14,10 @@ msvc14.2,C++14
 #include <limits>
 #include <numeric>
 
+/**
+ * @brief 静态 32 位模数取余
+ * @example using Z = OY::mint1000000007;
+ */
 namespace OY {
     template <uint32_t P, bool IsPrime, typename = typename std::enable_if<(P > 1 && P < uint32_t(1) << 31)>::type>
     struct StaticModInt32 {
@@ -81,7 +85,7 @@ namespace OY {
     template <typename Ostream, uint32_t P, bool IsPrime>
     Ostream &operator<<(Ostream &os, const StaticModInt32<P, IsPrime> &x) { return os << x.val(); }
     using mint998244353 = StaticModInt32<998244353, true>;
-    using mint1000000007 = StaticModInt32<1000000007, true>;
+    using mint1000000007 = StaticModInt32<1'000'000'007, true>;
 }
 
 #endif
