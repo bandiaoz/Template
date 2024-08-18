@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
-#include "../../misc/Z.hpp"
-#include "../Matrix.cpp"
+#include "Math/ModInt/StaticModInt32.h"
+#include "Math/StaticMatrix.h"
+#include "Math/Misc/power.hpp"
 
-struct MOD { static int value; };
-int MOD::value = 1'000'000'007;
-using Z = ModInt<MOD>;
+using Z = OY::mint1000000007;
 
 /**
  * @brief 斐波那契数列
@@ -13,8 +12,7 @@ using Z = ModInt<MOD>;
  */
 auto f(int64_t n) -> Z {
     if (n <= 2) return Z(1);   
-    Matrix<Z> base(2, 2);
-    base[0][0] = base[0][1] = base[1][0] = 1;
-    Matrix res = power(base, n - 2);
+    OY::StaticMatrix<Z, 2, 2> base{{{1, 1}, {1, 0}}};
+    auto res = power(base, n - 2);
     return res[0][0] * f(2) + res[0][1] * f(1);
 }
