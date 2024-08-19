@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-#include "Math/ModInt/StaticModInt32.h"
-#include "Math/StaticMatrix.h"
-#include "Math/Misc/power.hpp"
+#include "src/Math/ModInt/StaticModInt32.h"
+#include "src/Math/StaticMatrix.h"
+#include "src/Math/Misc/power.hpp"
 
 using Z = OY::mint1000000007;
 
