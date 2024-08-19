@@ -8,6 +8,8 @@
 
 /**
  * @brief Disjoint Set Union 并查集
+ * @tparam MaintainGroupSize 是否维护每个组的大小
+ * @example OY::DSUTable<true> dsu(n);
  */
 namespace OY {
     namespace DSU {
@@ -59,6 +61,9 @@ namespace OY {
             }
             bool in_same_group(size_type a, size_type b) const { return leader(a) == leader(b); }
             bool is_leader(size_type i) const { return i == m_parent[i]; }
+            /**
+             * @brief 返回当前有多少个组
+             */
             size_type count() const { return m_group_cnt; }
             std::vector<size_type> leaders() const {
                 std::vector<size_type> ret;
@@ -90,6 +95,9 @@ namespace OY {
                 }
             }
         };
+        /**
+         * @brief 合并两个并查集并返回
+         */
         template <bool MaintainGroupSize>
         Table<MaintainGroupSize> merge(const Table<MaintainGroupSize> &a, const Table<MaintainGroupSize> &b) {
             assert(a.m_size == b.m_size);
