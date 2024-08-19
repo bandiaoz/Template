@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "DataStruct/Fenwick.hpp"
+#include "src/DataStruct/Fenwick.hpp"
 
 /**
  * @brief 矩形范围内点的权值和

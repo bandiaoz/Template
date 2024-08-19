@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "Fenwick.hpp"
+#include "src/DataStruct/Fenwick.hpp"
 
 /**
  * @brief 区间数颜色
