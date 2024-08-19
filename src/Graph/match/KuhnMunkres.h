@@ -18,6 +18,7 @@ msvc14.2,C++14
 /**
  * @brief KuhnMunkres 二分图最大权匹配
  * @tparam CostType 权值类型
+ * @example OY::KM::Graph<ll> graph(std::max(nl, nr), 0);
  */
 namespace OY {
     namespace KM {
