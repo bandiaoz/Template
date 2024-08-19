@@ -1,16 +1,4 @@
-*.tex
-*.aux
-*.bcf
-*.log
-*.out
-*.toc
-*.synctex.gz
-*.synctex(busy)
-*.run.xml
-*.DS_Store
-tp.py
+.vscode
 *.zip
-*.pdf
-
-generate_contents.py
-tp.py
+**/.DS_Store
+# 忽略所有的 .zip 文件
