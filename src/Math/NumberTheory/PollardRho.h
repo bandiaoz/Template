@@ -14,7 +14,7 @@ msvc14.2,C++14
 #include <numeric>
 #include <vector>
 
-#include "MATH/NumberTheory/PrimeCheck.h"
+#include "src/MATH/NumberTheory/PrimeCheck.h"
 
 /**
  * @brief Pollard Rho，因数分解
@@ -48,7 +48,7 @@ namespace OY {
         }
     public:
         /**
-         * @brief 枚举 n 的所有质因子
+         * @brief 枚举 n 的所有质因子，重复的质因子会被枚举多次
          */
         template <typename Callback>
         static void enumerate_prime_factors(uint64_t n, Callback &&call) {
