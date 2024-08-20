@@ -3,6 +3,7 @@
 
 /**
  * [P4718【模板】Pollard-Rho](https://www.luogu.com.cn/problem/P4718)
+ * [status](https://www.luogu.com.cn/record/173870688)
  */
 
 void solve() {
