@@ -4,7 +4,6 @@ template <typename T>
 class MinMax {
     std::multiset<T> min, max;
     int64_t min_sum, max_sum;
-    MinMax() : min_sum(0), max_sum(0) {}
 
     void insert(std::multiset<T>& st, int64_t& sum, T x) {
         st.insert(x);
@@ -37,6 +36,7 @@ class MinMax {
     }
 
 public:
+    MinMax() : min_sum(0), max_sum(0) {}
     void insert(T x) {
         insert(min, min_sum, x);
         maintain();

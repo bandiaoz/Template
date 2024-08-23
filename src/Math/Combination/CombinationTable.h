@@ -16,7 +16,7 @@ msvc14.2,C++14
 
 /**
  * @brief 排列组合表
- * @example OY::CombinationTable<Z, 100000> table;
+ * @example OY::CombinationTable<Z, 100000> comb;
  */
 namespace OY {
     template <typename Tp, uint32_t MAX_RANGE>
