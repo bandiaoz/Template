@@ -18,6 +18,11 @@ msvc14.2,C++14
 #include <immintrin.h>
 #endif
 
+/**
+ * @brief 动态 64 位模数取余
+ * @example using mint = OY::DynamicModInt64<0>;
+ *         mint::set_mod(9223372036854775783, true);
+ */
 namespace OY {
     template <size_t _Id>
     struct DynamicModInt64 {

@@ -14,6 +14,10 @@ msvc14.2,C++14
 #include <limits>
 #include <numeric>
 
+/**
+ * @brief 静态 64 位模数取余
+ * @example using Z = OY::mint4611686018427387847;
+ */
 namespace OY {
     template <uint64_t P, bool IsPrime, typename = typename std::enable_if<(P > 1 && P < uint64_t(1) << 63)>::type>
     struct StaticModInt64 {
