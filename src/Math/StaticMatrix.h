@@ -40,10 +40,6 @@ namespace OY {
         }
         Tp *operator[](uint32_t i) { return m_val[i]; }
         const Tp *operator[](uint32_t i) const { return m_val[i]; }
-        Tp *begin() { return m_val[0]; }
-        Tp *end() { return m_val[0] + M * N; }
-        const Tp *begin() const { return m_val[0]; }
-        const Tp *end() const { return m_val[0] + M * N; }
         StaticMatrix<Tp, M, N> &operator+=(Tp a) {
             for (uint32_t i = 0; i != M; i++)
                 for (uint32_t j = 0; j != N; j++) m_val[i][j] += a;
