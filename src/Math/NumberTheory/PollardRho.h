@@ -46,6 +46,11 @@ namespace OY {
                 while (c--) _dfs(index + 1, prod *= p, pairs, call);
             }
         }
+        /**
+         * @brief 根据质因数分解的结果枚举所有因数
+         */
+        template <typename Callback>
+        static void enumerate_factors(const std::vector<PollardRhoPair> &pairs, Callback &&call) { _dfs(0, 1, pairs, call); }
     public:
         /**
          * @brief 枚举 n 的所有质因子，重复的质因子会被枚举多次
@@ -59,11 +64,6 @@ namespace OY {
             }
             if (n > 1) _dfs(n, call);
         }
-        /**
-         * @brief 根据质因数分解的结果枚举所有因数
-         */
-        template <typename Callback>
-        static void enumerate_factors(const std::vector<PollardRhoPair> &pairs, Callback &&call) { _dfs(0, 1, pairs, call); }
         /**
          * @brief 获得 n 的所有因数
          */

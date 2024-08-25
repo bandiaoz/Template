@@ -14,6 +14,11 @@ msvc14.2,C++14
 #include <cstdint>
 #include <limits>
 
+/**
+ * @brief 动态 32 位模数取余
+ * @example using mint = OY::DynamicModInt32<0>; 
+ *          mint::set_mod(10000019, true);
+ */
 namespace OY {
     template <size_t Id>
     struct DynamicModInt32 {
@@ -24,13 +29,7 @@ namespace OY {
         static uint64_t s_inv;
         static bool s_is_prime;
         static mod_type _mod(uint64_t val) {
-#ifdef _MSC_VER
-            uint64_t x;
-            _umul128(val, s_inv, &x);
-            mod_type res = val - x * mod();
-#else
             mod_type res = val - uint64_t((__uint128_t(val) * s_inv) >> 64) * mod();
-#endif
             if (res >= mod()) res += mod();
             return res;
         }
