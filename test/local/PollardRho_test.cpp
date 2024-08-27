@@ -1,12 +1,4 @@
 #include <bits/stdc++.h>
-#ifdef LOCAL
-#include "pprint.hpp"
-#else
-#define debug(...)
-#endif
-
-using ll = long long;
-
 #include "src/Math/NumberTheory/PollardRho.h"
 
 int main() {
