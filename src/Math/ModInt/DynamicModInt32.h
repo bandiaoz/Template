@@ -1,13 +1,4 @@
-/*
-最后修改:
-20231120
-测试环境:
-gcc11.2,c++11
-clang12.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_DYNAMICMODINT32__
-#define __OY_DYNAMICMODINT32__
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -104,5 +95,3 @@ namespace OY {
     template <typename Ostream, size_t Id>
     Ostream &operator<<(Ostream &os, const DynamicModInt32<Id> &x) { return os << x.m_val; }
 }
-
-#endif
