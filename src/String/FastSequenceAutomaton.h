@@ -7,7 +7,7 @@
 
 /**
  * @brief 快速序列自动机
- * @tparam MAX_VALUE 字符集大小
+ * @tparam MAX_VALUE 字符集大小，区间中出现的最大值
  * @example OY::FastSequenceAutomaton<26> sa(n, [&](int i) { return a[i] - 'a'; });
  * @example OY::FastSequenceAutomaton<100> sa(a.begin(), a.end());
  */
@@ -20,8 +20,16 @@ namespace OY {
         std::vector<node> m_next;
     public:
         FastSequenceAutomaton() = default;
+        /**
+         * @brief 初始化序列自动机
+         * @param length 序列长度
+         * @param mapping 表示区间下标到元素值的映射
+         */
         template <typename InitMapping>
         FastSequenceAutomaton(uint32_t length, InitMapping mapping) { resize(length, mapping); }
+        /**
+         * @brief 根据迭代器范围初始化序列自动机
+         */
         template <typename Iterator>
         FastSequenceAutomaton(Iterator first, Iterator last) { reset(first, last); }
         template <typename InitMapping>
@@ -38,9 +46,13 @@ namespace OY {
         void reset(Iterator first, Iterator last) {
             resize(last - first, [&](uint32_t i) { return *(first + i); });
         }
+        /**
+         * @brief 查询在原序列中，下标大于 `last_pos` 的范围内出现的第一个 `elem` 的下标。
+         */
         uint32_t next(uint32_t last_pos, uint32_t elem) const { return m_next[last_pos + 1].m_pos[elem]; }
         /**
          * @brief 判断是否包含子序列
+         * @param first, last 子序列的迭代器范围
          */
         template <typename Iterator>
         bool contains(Iterator first, Iterator last) const {

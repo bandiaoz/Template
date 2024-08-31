@@ -1,13 +1,4 @@
-/*
-最后修改:
-20240318
-测试环境:
-gcc11.2,c++11
-clang12.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_PRIMECHECK0__
-#define __OY_PRIMECHECK0__
+#pragma once
 
 #include <algorithm>
 #include <cstdint>
@@ -115,5 +106,3 @@ namespace OY {
             return is_prime64(n);
     }
 }
-
-#endif
