@@ -17,6 +17,10 @@ namespace OY {
         struct node {
             uint32_t m_pos[MAX_VALUE + 1];
         };
+        /**
+         * @brief `m_next[i].m_pos[j]` 表示在原序列中，下标大于等于 `i` 的范围内出现的第一个 `j` 的下标。
+         *          如果不存在，则 `m_next[i].m_pos[j] = length`，其中 `length` 为原序列长度。
+         */
         std::vector<node> m_next;
     public:
         FastSequenceAutomaton() = default;
@@ -24,6 +28,7 @@ namespace OY {
          * @brief 初始化序列自动机
          * @param length 序列长度
          * @param mapping 表示区间下标到元素值的映射
+         * @note 时间复杂度 $O(length \cdot MAX\_VALUE)$
          */
         template <typename InitMapping>
         FastSequenceAutomaton(uint32_t length, InitMapping mapping) { resize(length, mapping); }
@@ -47,12 +52,13 @@ namespace OY {
             resize(last - first, [&](uint32_t i) { return *(first + i); });
         }
         /**
-         * @brief 查询在原序列中，下标大于 `last_pos` 的范围内出现的第一个 `elem` 的下标。
+         * @brief 查询在原序列中，下标严格大于 `last_pos` 的范围内出现的第一个 `elem` 的下标。
          */
         uint32_t next(uint32_t last_pos, uint32_t elem) const { return m_next[last_pos + 1].m_pos[elem]; }
         /**
          * @brief 判断是否包含子序列
          * @param first, last 子序列的迭代器范围
+         * @note 时间复杂度 $O(last - first)$
          */
         template <typename Iterator>
         bool contains(Iterator first, Iterator last) const {
