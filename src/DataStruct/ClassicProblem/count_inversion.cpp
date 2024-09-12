@@ -3,6 +3,7 @@
 
 /**
  * @brief 计算数组 v 的逆序对数，即有多少对 (i, j) 满足 i < j 且 v[i] > v[j]
+ * @note 如果计算 i < j 且 v[i] >= v[j] 的逆序对数，将 if 条件修改为 `i < mid && a[i] < a[j]` 即可。
  */
 template<typename T>
 int64_t count_inversion(const std::vector<T>& v) {

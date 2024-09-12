@@ -27,6 +27,7 @@ namespace OY {
                 std::iota(m_parent.begin(), m_parent.end(), 0);
             }
             size_type leader(size_type i) const { return m_parent[i] == i ? i : m_parent[i] = leader(m_parent[i]); }
+            size_type size() const { return m_size; }
             template <bool IsHead = false>
             size_type size(size_type i) const {
                 static_assert(MaintainGroupSize, "MaintainGroupSize Must Be True");
@@ -100,9 +101,9 @@ namespace OY {
          */
         template <bool MaintainGroupSize>
         Table<MaintainGroupSize> merge(const Table<MaintainGroupSize> &a, const Table<MaintainGroupSize> &b) {
-            assert(a.m_size == b.m_size);
+            assert(a.size() == b.size());
             auto res = a;
-            for (size_type i = 0; i < b.m_size; i++) {
+            for (size_type i = 0; i < b.size(); i++) {
                 res.merge_to(a.leader(i), b.leader(i));
             }
             return res;
@@ -110,9 +111,9 @@ namespace OY {
         template <typename Ostream, bool MaintainGroupSize>
         Ostream &operator<<(Ostream &out, const Table<MaintainGroupSize> &x) {
             out << "[";
-            for (size_type i = 0; i != x.m_size; i++) {
+            for (size_type i = 0; i != x.size(); i++) {
                 if (i) out << ", ";
-                out << x.m_parent[i];
+                out << x.leader(i);
             }
             return out << "]";
         }
