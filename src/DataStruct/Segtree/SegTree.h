@@ -1,13 +1,4 @@
-/*
-最后修改:
-20240810
-测试环境:
-gcc11.2,c++11
-clang22.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_SEGTREE__
-#define __OY_SEGTREE__
+#pragma once
 
 #include <algorithm>
 #include <cstdint>
@@ -546,5 +537,3 @@ namespace OY {
     template <typename Tp, bool Complete = false, typename SizeType = uint64_t>
     using VectorSegLazySumTree = Seg::Tree<Seg::LazyNode<Tp, Tp, SizeType>, Seg::Ignore, Complete, SizeType, Seg::VectorBuffer>;
 }
-
-#endif

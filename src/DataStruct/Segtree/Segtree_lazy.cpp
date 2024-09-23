@@ -6,8 +6,7 @@
 template <class Info, class Tag, class Apply, class Merge = std::plus<Info>>
 struct LazySegmentTree {
     LazySegmentTree() : n(0) {}
-    LazySegmentTree(int n, Info v = Info()) { init(std::vector(n, v));
-    }
+    LazySegmentTree(int n, Info v = Info()) { init(std::vector(n, v)); }
     template <class T>
     LazySegmentTree(std::vector<T> &list) { init(list); }
 
