@@ -18,7 +18,7 @@ namespace OY {
     namespace DINIC {
         using size_type = uint32_t;
         template <typename FlowType, bool Directed = true>
-        class Graph {
+        struct Graph {
             struct raw_edge {
                 size_type m_from, m_to;
                 FlowType m_cap;
@@ -74,7 +74,6 @@ namespace OY {
                 }
                 return flow;
             }
-        public:
             Graph(size_type vertex_cnt = 0, size_type edge_cnt = 0) { resize(vertex_cnt, edge_cnt); }
             void resize(size_type vertex_cnt, size_type edge_cnt) {
                 if (!(m_vertex_cnt = vertex_cnt)) return;
