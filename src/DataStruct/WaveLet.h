@@ -11,6 +11,7 @@
 /**
  * @brief 小波树
  * @example OY::WaveLet::Table<int> table(n, [&](int i) { return a[i]; });
+ * @example OY::WaveLet::Tree<int> table(a.begin(), a.end());
  */
 namespace OY {
     namespace WaveLet {
@@ -51,7 +52,7 @@ namespace OY {
             void operator()(Callback &&call, Tr &&tr, size_type left, size_type right) const { call(tr.query(left, right)); }
         };
         template <typename Tp, typename SumTable = VoidTable>
-        struct Table {
+        class Table {
             static constexpr size_type mask_size = sizeof(Tp) << 3;
             size_type m_size, m_alpha;
             std::vector<BitRank> m_ranks;
@@ -330,7 +331,7 @@ namespace OY {
             }
         };
         template <typename Tp, typename SumTable = VoidTable>
-        struct Tree {
+        class Tree {
             struct pair {
                 Tp m_val;
                 size_type m_index;
@@ -343,9 +344,16 @@ namespace OY {
             size_type m_size;
             size_type _find(const Tp &val) const { return std::lower_bound(m_discretizer.begin(), m_discretizer.end(), val) - m_discretizer.begin(); }
             size_type _find2(const Tp &val) const { return std::upper_bound(m_discretizer.begin(), m_discretizer.end(), val) - m_discretizer.begin() - 1; }
+        public:
             Tree() = default;
+            /**
+             * @brief 使用映射初始化
+             */
             template <typename InitMapping, typename Compare = std::less<Tp>>
             Tree(size_type length, InitMapping mapping, Compare &&comp = Compare()) { resize(length, mapping, {}, comp); }
+            /**
+             * @brief 使用迭代器初始化
+             */
             template <typename Iterator, typename Compare = std::less<Tp>>
             Tree(Iterator first, Iterator last, Compare &&comp = Compare()) { reset(first, last, {}, comp); }
             template <typename InitMapping, typename TableMapping = Ignore, typename Compare = std::less<Tp>>
@@ -367,6 +375,9 @@ namespace OY {
                 else
                     m_table.reset(id.begin(), id.end(), std::bit_width(cnt + 1), [&](size_type val) { return table_mapping(m_discretizer[val]); });
             }
+            /**
+             * @brief 将 `pair(val, index)` 作为元素初始化，可以区分不同位置的相等元素
+             */
             template <typename InitMapping, typename TableMapping, typename Compare = std::less<Tp>>
             void resize_mapping_with_index(size_type length, InitMapping mapping, TableMapping table_mapping, Compare &&comp = Compare()) {
                 if (!(m_size = length)) return;
@@ -385,33 +396,61 @@ namespace OY {
             }
             template <typename Iterator, typename TableMapping = Ignore, typename Compare = std::less<Tp>>
             void reset(Iterator first, Iterator last, TableMapping table_mapping = TableMapping(), Compare &&comp = Compare()) {
-                resize(
-                    last - first, [&](size_type i) { return *(first + i); }, table_mapping, comp);
+                resize(last - first, [&](size_type i) { return *(first + i); }, table_mapping, comp);
             }
             template <typename Iterator, typename TableMapping, typename Compare = std::less<Tp>>
             void reset_mapping_with_index(Iterator first, Iterator last, TableMapping table_mapping, Compare &&comp = Compare()) {
-                resize_mapping_with_index(
-                    last - first, [&](size_type i) { return *(first + i); }, table_mapping, comp);
+                resize_mapping_with_index(last - first, [&](size_type i) { return *(first + i); }, table_mapping, comp);
             }
+            /**
+             * @brief 查询 [left, right] 中值为 val 的元素个数
+             */
             size_type count(size_type left, size_type right, const Tp &val) const {
                 size_type find = _find(val);
                 return find < m_discretizer.size() && m_discretizer[find] == val ? m_table.count(left, right, find) : 0;
             }
+            /**
+             * @brief 查询 [left, right] 中值在 [minimum, maximum] 之间的元素个数
+             */
             size_type count(size_type left, size_type right, const Tp &minimum, const Tp &maximum) const {
                 size_type find1 = _find(minimum), find2 = _find2(maximum);
                 if (find1 == find2 + 1) return 0;
                 return m_table.count(left, right, find1, find2);
             }
+            /**
+             * @brief 查询 [left, right] 中是否至少存在一个值在 [minimum, maximum] 之间
+             */
             bool any(size_type left, size_type right, const Tp &minimum, const Tp &maximum) const {
                 size_type find1 = _find(minimum), find2 = _find2(maximum);
                 return find1 != find2 + 1 && m_table.any(left, right, find1, find2);
             }
+            /**
+             * @brief 查询 [left, right] 中 val 的排名，即小于 val 的元素个数
+             */
             size_type rank(size_type left, size_type right, const Tp &val) const { return m_table.rank(left, right, _find(val)); }
+            /**
+             * @brief 查询 [left, right] 中元素最小值
+             */
             Tp minimum(size_type left, size_type right) const { return m_discretizer[m_table.minimum(left, right)]; }
+            /**
+             * @brief 查询 [left, right] 中元素最大值
+             */
             Tp maximum(size_type left, size_type right) const { return m_discretizer[m_table.maximum(left, right)]; }
+            /**
+             * @brief 查询 `[left, right]` 中值为排名为 `k` 的元素，即第 `k` 小的元素
+             * @note `k` 从 0 开始，可以理解为将 `[l, r]` 排序后，位置 `l + k` 的元素
+             */
             Tp quantile(size_type left, size_type right, size_type k) const { return m_discretizer[m_table.quantile(left, right, k)]; }
+            /**
+             * @brief 对区间排名在 `[rk1, rk2]` 之间的元素进行操作
+             */
             template <typename Callback, typename Querier = DefaultQuerier>
-            void do_for_rank_range(size_type left, size_type right, size_type rk1, size_type rk2, Callback &&call, Querier &&q = Querier()) const { m_table.do_for_rank_range(left, right, rk1, rk2, call, q); }
+            void do_for_rank_range(size_type left, size_type right, size_type rk1, size_type rk2, Callback &&call, Querier &&q = Querier()) const { 
+                m_table.do_for_rank_range(left, right, rk1, rk2, call, q); 
+            }
+            /**
+             * @brief 对区间值在 `[left, right]` 之间的元素进行操作
+             */
             template <typename Callback, typename Querier = DefaultQuerier>
             void do_for_value_range(size_type left, size_type right, const Tp &floor, const Tp &ceil, Callback &&call, Querier &&q = Querier()) const {
                 size_type find1 = _find(floor), find2 = _find2(ceil);
