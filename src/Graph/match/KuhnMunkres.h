@@ -8,7 +8,8 @@
 /**
  * @brief KuhnMunkres 二分图最大权匹配
  * @tparam CostType 权值类型
- * @example OY::KM::Graph<ll> graph(std::max(nl, nr), 0);
+ * @example OY::KM::Graph<ll> graph(vertex_cnt, init_value);
+ * @note 会建立一个大小为 vertex_cnt * vertex_cnt 的二分图，其中 vertex_cnt = std::max(nl, nr)
  */
 namespace OY {
     namespace KM {
@@ -19,24 +20,31 @@ namespace OY {
                 size_type m_from_vertex;
                 bool m_left_visit, m_right_visit;
             };
-            size_type m_vertex_cnt;
-            std::vector<size_type> m_left_match, m_right_match;
+            size_type m_vertex_cnt; // 点的数量
+            std::vector<size_type> m_left_match, m_right_match; // 左侧点匹配的右侧点，右侧点匹配的左侧点
             std::vector<node> m_label;
             std::vector<CostType> m_val, m_left_label, m_right_label, m_slack;
         public:
             /**
              * @param vertex_cnt 点的数量
-             * @param init_value 边的初始值
+             * @param init_value 边的默认权值
              */
-            Graph(size_type vertex_cnt = 0, const CostType &init_value = 0) { resize(vertex_cnt, init_value); }
+            Graph(size_type vertex_cnt = 0, const CostType &init_value = 0) { 
+                resize(vertex_cnt, init_value); 
+            }
             /**
              * @param vertex_cnt 点的数量
-             * @param init_value 边的初始值
+             * @param init_value 边的默认权值
              */
             void resize(size_type vertex_cnt, const CostType &init_value = 0) {
                 if (!(m_vertex_cnt = vertex_cnt)) return;
-                m_left_match.assign(m_vertex_cnt, -1), m_right_match.assign(m_vertex_cnt, -1), m_label.assign(m_vertex_cnt, {}), m_val.assign(m_vertex_cnt * m_vertex_cnt, init_value);
-                m_left_label.resize(m_vertex_cnt), m_right_label.assign(m_vertex_cnt, {}), m_slack.resize(m_vertex_cnt);
+                m_left_match.assign(m_vertex_cnt, -1);
+                m_right_match.assign(m_vertex_cnt, -1);
+                m_label.assign(m_vertex_cnt, {});
+                m_val.assign(m_vertex_cnt * m_vertex_cnt, init_value);
+                m_left_label.resize(m_vertex_cnt);
+                m_right_label.assign(m_vertex_cnt, {});
+                m_slack.resize(m_vertex_cnt);
             }
             /**
              * @brief 从左边第 left 个点到右边第 right 个点连一条权值为 val 的边
@@ -90,10 +98,16 @@ namespace OY {
                             if (!m_label[left].m_left_visit && !m_slack[left] && aug(left)) return;
                     }
                 };
-                for (size_type left = 0; left != m_vertex_cnt; left++) m_left_label[left] = *std::max_element(m_val.data() + m_vertex_cnt * left, m_val.data() + m_vertex_cnt * (left + 1));
-                for (size_type right = 0; right != m_vertex_cnt; right++) bfs(right);
+                for (size_type left = 0; left != m_vertex_cnt; left++) {
+                    m_left_label[left] = *std::max_element(m_val.data() + m_vertex_cnt * left, m_val.data() + m_vertex_cnt * (left + 1));
+                }
+                for (size_type right = 0; right != m_vertex_cnt; right++) {
+                    bfs(right);
+                }
                 CostType res{};
-                for (size_type left = 0; left != m_vertex_cnt; left++) res += m_val[m_vertex_cnt * left + m_left_match[left]];
+                for (size_type left = 0; left != m_vertex_cnt; left++) {
+                    res += m_val[m_vertex_cnt * left + m_left_match[left]];
+                }
                 return res;
             }
             /**
@@ -105,7 +119,7 @@ namespace OY {
              */
             size_type find_right(size_type left) const { return m_left_match[left]; }
             /**
-             * @brief 查询左侧节点到右侧节点的边权
+             * @brief 查询左侧节点到右侧节点的边权，如果不存在则返回默认边权
              */
             const CostType &query(size_type left, size_type right) const { return m_val[m_vertex_cnt * left + right]; }
         };
