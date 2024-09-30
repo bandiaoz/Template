@@ -4,7 +4,7 @@ struct Triangle {
     Triangle(const Point &a, const Point &b, const Point &c)
         : a(a), b(b), c(c){};
     Point a, b, c;
-    double getArea() { return det(b - a, c - a) * sin(arg_2(b - c, c - a)); }
+    double getArea() { return std::abs(det(b - a, c - a)) / 2; }
     // 外心
     Point outCenter() {
         Line u, v;
