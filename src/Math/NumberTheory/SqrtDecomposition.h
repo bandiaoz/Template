@@ -1,24 +1,20 @@
-/*
-最后修改:
-20240621
-测试环境:
-gcc11.2,c++11
-clang12.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_SQRTDECOMPOSITION__
-#define __OY_SQRTDECOMPOSITION__
+#pragma once
 
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
 
+/**
+ * @brief 分块
+ * @example OY::SqrtDecomposition<uint32_t> sd(n);
+ */
 namespace OY {
     template <typename Tp, typename = typename std::enable_if<std::is_unsigned<Tp>::value>::type>
     struct SqrtDecomposition {
         struct iterator {
             struct _range {
-                Tp m_quot, m_left, m_right;
+                // m_val / m_left = m_val / m_right = m_quot
+                Tp m_quot, m_left, m_right; // 商，左端点，右端点
                 Tp quot() const { return m_quot; }
                 Tp left() const { return m_left; }
                 Tp right() const { return m_right; }
@@ -27,15 +23,16 @@ namespace OY {
             } m_range;
             Tp m_val;
             iterator &operator--() {
-                if (m_range.m_quot == 1)
+                if (m_range.m_quot == 1) {
                     m_range = {0, m_val + 1, Tp(-1)};
-                else {
+                } else {
                     m_range.m_left = m_range.m_right + 1;
                     m_range.m_quot = m_val / m_range.m_left;
-                    if (m_range.m_quot >= m_range.m_left)
+                    if (m_range.m_quot >= m_range.m_left) {
                         m_range.m_right = m_range.m_left;
-                    else
+                    } else {
                         m_range.m_right = m_val / m_range.m_quot;
+                    }
                 }
                 return *this;
             }
@@ -75,10 +72,11 @@ namespace OY {
         SqrtDecomposition(Tp val) : m_val(val) {}
         Tp size() const {
             Tp r;
-            if constexpr (sizeof(Tp) == 8)
+            if constexpr (sizeof(Tp) == 8) {
                 r = std::sqrt((long double)m_val);
-            else
+            } else {
                 r = std::sqrt((double)m_val);
+            }
             return r * 2 - (m_val * 2 + 1 < (r + 1) * r * 2);
         }
         iterator lower_bound(Tp quot) const {
@@ -88,8 +86,9 @@ namespace OY {
             if (quot < right) {
                 Tp left = m_val / (quot + 1) + 1;
                 return iterator{{quot, left, right}, m_val};
-            } else
+            } else {
                 return iterator{{m_val / right, right, right}, m_val};
+            }
         }
         iterator upper_bound(Tp quot) const { return lower_bound(quot + 1); }
         iterator find_by_divisor(Tp divisor) const {
@@ -120,5 +119,3 @@ namespace OY {
         return out << '}';
     }
 }
-
-#endif
