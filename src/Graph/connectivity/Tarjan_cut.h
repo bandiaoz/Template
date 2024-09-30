@@ -5,6 +5,9 @@
 #include <numeric>
 #include <vector>
 
+/**
+ * @brief 割点，点双连通分量
+ */
 namespace OY {
     namespace VBCC {
         using size_type = uint32_t;
@@ -32,7 +35,7 @@ namespace OY {
                     } else if (index != from)
                         m_info[i].m_low = std::min(m_info[i].m_low, m_info[to].m_dfn);
                 });
-                if constexpr (GetVBCC)
+                if constexpr (GetVBCC) {
                     if (!~from) {
                         if (!adj) m_vbccs[m_starts[m_vbcc_cnt++] = m_cursor++] = i;
                         m_stack_len = pos;
@@ -42,8 +45,10 @@ namespace OY {
                         std::copy_n(m_stack.data() + pos - 1, len, m_vbccs.data() + m_cursor);
                         m_starts[m_vbcc_cnt++] = m_cursor, m_cursor += len, m_stack[(m_stack_len = pos) - 1] = parent;
                     }
-                if constexpr (GetCut)
+                }
+                if constexpr (GetCut) {
                     if (adj > 1) m_is_cut[i] = true, m_cut_cnt++;
+                }
             }
             template <typename EdgeCallback, typename SingleCallback, typename Traverser>
             void _dfs(size_type i, size_type from, size_type parent, std::vector<size_type> &stack, std::vector<bool> &visit, EdgeCallback &&edge_call, SingleCallback &&single_call, Traverser &&traverser) {
@@ -54,27 +59,34 @@ namespace OY {
                     if (!visit[to]) {
                         _dfs(to, index, i, stack, visit, edge_call, single_call, traverser);
                         if (m_info[to].m_low >= m_info[i].m_dfn) adj++;
-                    } else if (index != from && m_info[to].m_dfn <= m_info[i].m_dfn)
+                    } else if (index != from && m_info[to].m_dfn <= m_info[i].m_dfn) {
                         stack.push_back(index);
+                    }
                 });
                 if (!~from) {
-                    if (!adj)
-                        if (stack.size() == pos)
+                    if (!adj) {
+                        if (stack.size() == pos) {
                             single_call(i);
-                        else
+                        } else {
                             edge_call(stack.data() + pos, stack.data() + stack.size());
+                        }
+                    }
                     stack.resize(pos);
                 } else if (m_info[i].m_low >= m_info[parent].m_dfn) {
                     edge_call(stack.data() + pos, stack.data() + stack.size());
                     stack.resize(pos);
                 }
             }
-            Solver(size_type vertex_cnt, size_type edge_cnt) : m_vertex_cnt(vertex_cnt), m_dfn_cnt(0), m_cut_cnt(0), m_vbcc_cnt(0), m_stack_len(0), m_cursor(0), m_info(vertex_cnt), m_starts(vertex_cnt + 1), m_stack(vertex_cnt), m_vbccs(vertex_cnt + edge_cnt), m_is_cut(vertex_cnt) {}
+            Solver(size_type vertex_cnt, size_type edge_cnt) 
+                : m_vertex_cnt(vertex_cnt), m_dfn_cnt(0), m_cut_cnt(0), m_vbcc_cnt(0), 
+                m_stack_len(0), m_cursor(0), m_info(vertex_cnt), m_starts(vertex_cnt + 1), 
+                m_stack(vertex_cnt), m_vbccs(vertex_cnt + edge_cnt), m_is_cut(vertex_cnt) {}
             template <typename Traverser>
             void run(Traverser &&traverser) {
                 for (size_type i = 0; i != m_vertex_cnt; i++) m_info[i].m_dfn = -1;
-                for (size_type i = 0; i != m_vertex_cnt; i++)
+                for (size_type i = 0; i != m_vertex_cnt; i++) {
                     if (!~m_info[i].m_dfn) _dfs(i, -1, -1, traverser);
+                }
                 if constexpr (GetVBCC) m_starts[m_vbcc_cnt] = m_cursor;
             }
             template <typename EdgeCallback, typename SingleCallback, typename Traverser>
@@ -82,17 +94,23 @@ namespace OY {
                 std::vector<bool> visit(m_vertex_cnt);
                 std::vector<size_type> stack;
                 stack.reserve(m_vbccs.size() - m_vertex_cnt);
-                for (size_type i = 0; i != m_vertex_cnt; i++)
-                    if (!visit[i]) _dfs(i, -1, -1, stack, visit, edge_call, single_call, traverser);
+                for (size_type i = 0; i != m_vertex_cnt; i++) {
+                    if (!visit[i]) {
+                        _dfs(i, -1, -1, stack, visit, edge_call, single_call, traverser);
+                    }
+                }
             }
             template <typename Callback>
             void do_for_each_vbcc(Callback &&call) {
-                for (size_type i = 0, cur = m_starts[0], end; i != m_vbcc_cnt; cur = end, i++) call(m_vbccs.data() + cur, m_vbccs.data() + (end = m_starts[i + 1]));
+                for (size_type i = 0, cur = m_starts[0], end; i != m_vbcc_cnt; cur = end, i++) {
+                    call(m_vbccs.data() + cur, m_vbccs.data() + (end = m_starts[i + 1]));
+                }
             }
             template <typename Callback>
             void do_for_each_cut(Callback &&call) {
-                for (size_type index = 0; index != m_vertex_cnt; index++)
+                for (size_type index = 0; index != m_vertex_cnt; index++) {
                     if (m_is_cut[index]) call(index);
+                }
             }
         };
         struct Graph {
@@ -135,6 +153,11 @@ namespace OY {
                 m_starts.assign(m_vertex_cnt + 1, {});
             }
             void add_edge(size_type a, size_type b) { m_raw_edges.push_back({a, b}); }
+            /**
+             * @brief 获得查询器
+             * @tparam GetCut 是否查询割点
+             * @tparam GetVBCC 是否查询点双连通分量
+             */
             template <bool GetCut, bool GetVBCC>
             Solver<GetCut, GetVBCC> calc() const {
                 if (!m_prepared) _prepare();
