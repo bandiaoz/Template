@@ -165,6 +165,9 @@ namespace OY {
                 sol.run(*this);
                 return sol;
             }
+            /**
+             * @brief 查询点双连通分量
+             */
             std::vector<std::vector<size_type>> get_vbccs() const {
                 if (!m_prepared) _prepare();
                 Solver<false, true> sol(m_vertex_cnt, m_raw_edges.size());
@@ -174,6 +177,9 @@ namespace OY {
                 sol.do_for_each_vbcc([&](size_type *first, size_type *last) { res.emplace_back(first, last); });
                 return res;
             }
+            /**
+             * @brief 查询割点
+             */
             std::vector<size_type> get_cuts() const {
                 if (!m_prepared) _prepare();
                 Solver<true, false> sol(m_vertex_cnt, m_raw_edges.size());
