@@ -5,6 +5,11 @@
 #include <numeric>
 #include <vector>
 
+/**
+ * @brief 桥，边双连通分量
+ * @example OY::EBCC::Graph G(vertex_cnt, edge_cnt);
+ *          auto solver = G.calc<true, true>();
+ */
 namespace OY {
     namespace EBCC {
         using size_type = uint32_t;
@@ -30,11 +35,17 @@ namespace OY {
                         m_info[i].m_low = std::min(m_info[i].m_low, m_info[to].m_dfn);
                 });
                 if (m_info[i].m_low != m_info[i].m_dfn) return;
-                if constexpr (GetEBCC) std::copy(m_stack.data() + pos, m_stack.data() + m_stack_len, m_ebccs.data() + (m_starts[m_ebcc_cnt++] = m_dfn_cnt - m_stack_len)), m_stack_len = pos;
+                if constexpr (GetEBCC) {
+                    std::copy(m_stack.data() + pos, m_stack.data() + m_stack_len, m_ebccs.data() + (m_starts[m_ebcc_cnt++] = m_dfn_cnt - m_stack_len));
+                    m_stack_len = pos;
+                }
                 if constexpr (GetBridge)
                     if (~from) m_is_bridge[from] = true, m_bridge_cnt++;
             }
-            Solver(size_type vertex_cnt, size_type edge_cnt) : m_vertex_cnt(vertex_cnt), m_dfn_cnt(0), m_bridge_cnt(0), m_ebcc_cnt(0), m_stack_len(0), m_starts(vertex_cnt + 1), m_stack(vertex_cnt), m_ebccs(vertex_cnt), m_is_bridge(edge_cnt), m_info(vertex_cnt) {}
+            Solver(size_type vertex_cnt, size_type edge_cnt) : 
+                m_vertex_cnt(vertex_cnt), m_dfn_cnt(0), m_bridge_cnt(0), m_ebcc_cnt(0), m_stack_len(0), 
+                m_starts(vertex_cnt + 1), m_stack(vertex_cnt), m_ebccs(vertex_cnt), 
+                m_is_bridge(edge_cnt), m_info(vertex_cnt) {}
             template <typename Traverser>
             void run(Traverser &&traverser) {
                 for (size_type i = 0; i != m_vertex_cnt; i++) m_info[i].m_dfn = -1;
@@ -42,10 +53,19 @@ namespace OY {
                     if (!~m_info[i].m_dfn) _dfs(i, -1, traverser);
                 if constexpr (GetEBCC) m_starts[m_ebcc_cnt] = m_vertex_cnt;
             }
+            /**
+             * @brief 操作所有的边双连通分量
+             * @param call 的参数是边双连通分量的首尾指针
+             */
             template <typename Callback>
             void do_for_each_ebcc(Callback &&call) {
-                for (size_type i = 0, cur = m_starts[0], end; i != m_ebcc_cnt; cur = end, i++) call(m_ebccs.data() + cur, m_ebccs.data() + (end = m_starts[i + 1]));
+                for (size_type i = 0, cur = m_starts[0], end; i != m_ebcc_cnt; cur = end, i++) 
+                    call(m_ebccs.data() + cur, m_ebccs.data() + (end = m_starts[i + 1]));
             }
+            /**
+             * @brief 操作所有的桥
+             * @param call 的参数是桥的编号
+             */
             template <typename Callback>
             void do_for_each_bridge(Callback &&call) {
                 for (size_type index = 0; index != m_is_bridge.size(); index++)
@@ -92,6 +112,11 @@ namespace OY {
                 m_starts.assign(m_vertex_cnt + 1, {});
             }
             void add_edge(size_type a, size_type b) { m_raw_edges.push_back({a, b}); }
+            /**
+             * @brief 获得查询器
+             * @tparam GetBridge 是否查询桥
+             * @tparam GetEBCC 是否查询边双连通分量
+             */
             template <bool GetBridge, bool GetEBCC>
             Solver<GetBridge, GetEBCC> calc() const {
                 if (!m_prepared) _prepare();
@@ -99,6 +124,9 @@ namespace OY {
                 sol.run(*this);
                 return sol;
             }
+            /**
+             * @brief 返回所有的边双连通分量
+             */
             std::vector<std::vector<size_type>> get_ebccs() const {
                 if (!m_prepared) _prepare();
                 Solver<false, true> sol(m_vertex_cnt, m_raw_edges.size());
@@ -108,6 +136,9 @@ namespace OY {
                 sol.do_for_each_ebcc([&](size_type *first, size_type *last) { res.emplace_back(first, last); });
                 return res;
             }
+            /**
+             * @brief 返回所有的桥的编号
+             */
             std::vector<size_type> get_bridges() const {
                 if (!m_prepared) _prepare();
                 Solver<true, false> sol(m_vertex_cnt, m_raw_edges.size());

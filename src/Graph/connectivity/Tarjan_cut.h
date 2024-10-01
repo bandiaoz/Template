@@ -7,6 +7,8 @@
 
 /**
  * @brief 割点，点双连通分量
+ * @example OY::VBCC::Graph G(vertex_cnt, edge_cnt);
+ *          auto solver = G.calc<true, true>();
  */
 namespace OY {
     namespace VBCC {
@@ -100,12 +102,20 @@ namespace OY {
                     }
                 }
             }
+            /**
+             * @brief 操作所有的点双连通分量
+             * @param call 的参数是点双连通分量的首尾指针
+             */
             template <typename Callback>
             void do_for_each_vbcc(Callback &&call) {
                 for (size_type i = 0, cur = m_starts[0], end; i != m_vbcc_cnt; cur = end, i++) {
                     call(m_vbccs.data() + cur, m_vbccs.data() + (end = m_starts[i + 1]));
                 }
             }
+            /**
+             * @brief 操作所有的割点
+             * @param call 的参数是割点的编号
+             */
             template <typename Callback>
             void do_for_each_cut(Callback &&call) {
                 for (size_type index = 0; index != m_vertex_cnt; index++) {
