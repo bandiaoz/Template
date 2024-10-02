@@ -1,13 +1,4 @@
-/*
-最后修改:
-20231127
-测试环境:
-gcc11.2,c++11
-clang12.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_STATICMATRIX__
-#define __OY_STATICMATRIX__
+#pragma once
 
 #include <algorithm>
 #include <cstdint>
@@ -111,5 +102,3 @@ namespace OY {
         return os;
     }
 };
-
-#endif
