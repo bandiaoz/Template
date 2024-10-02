@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include "src/DataStruct/vector/VectorBufferWithCollect.h"
 #include "src/DataStruct/Segtree/SegTree.h"
 #include "src/Math/ModInt/StaticModInt32.h"
 
