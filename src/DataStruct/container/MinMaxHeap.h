@@ -5,6 +5,10 @@
 #include <numeric>
 #include <vector>
 
+/**
+ * @brief 大小根堆
+ * @example OY::MMHeap::Heap<int> heap;
+ */
 namespace OY {
     namespace MMHeap {
         using size_type = uint32_t;
