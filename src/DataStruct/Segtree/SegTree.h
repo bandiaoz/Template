@@ -3,7 +3,7 @@
 #include <functional>
 #include <numeric>
 
-#include "src/DataStruct/vector/VectorBufferWithCollect.h"
+#include "src/DataStruct/container/VectorBufferWithCollect.h"
 
 /**
  * @brief 线段树
