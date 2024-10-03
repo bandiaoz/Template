@@ -5,7 +5,7 @@ using ll = long long;
 
 /*
 [P4513 小白逛公园](https://www.luogu.com.cn/problem/P4513)
-[status](https://www.luogu.com.cn/record/179571800)
+[status](https://www.luogu.com.cn/record/179755024)
 */
 /**
  * 本题要进行单点修改和查询区间最大子段和
@@ -46,7 +46,7 @@ int main() {
         std::cin >> op >> x >> y;
         if (op == 1) {
             if (x > y) std::swap(x, y);
-            std::cout << seg.query(x - 1, y - 1).ans << '\n';
+            std::cout << seg.query(x - 1, y).ans << '\n';
         } else {
             seg.modify(x - 1, Info{y, y, y, y});
         }

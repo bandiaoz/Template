@@ -5,7 +5,7 @@ using ll = long long;
 
 /*
 [P3372 【模板】线段树 1](https://www.luogu.com.cn/problem/P3372)
-[status](https://www.luogu.com.cn/record/179551196)
+[status](https://www.luogu.com.cn/record/179754134)
 */
 /**
  * 本题要进行区间修改和区间查询
@@ -32,11 +32,11 @@ int main() {
         if (op == 1) {
             ll k;
             std::cin >> l >> r >> k;
-            l--, r--;
+            l--;
             seg.add(l, r, k);
         } else {
             std::cin >> l >> r;
-            l--, r--;
+            l--;
             std::cout << seg.query(l, r) << '\n';
         }
     }

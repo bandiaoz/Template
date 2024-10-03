@@ -63,7 +63,9 @@ namespace OY {
             /**
              * @brief 添加一个查询，范围为 [x_min, x_max) * [y_min, y_max)
              */
-            void add_query(SizeType x_min, SizeType x_max, SizeType y_min, SizeType y_max) { m_queries.push_back({x_min, x_max - 1, y_min, y_max - 1}); }
+            void add_query(SizeType x_min, SizeType x_max, SizeType y_min, SizeType y_max) { 
+                m_queries.push_back({x_min, x_max - 1, y_min, y_max - 1}); 
+            }
             /**
              * @brief 查询答案，并按顺序返回
              * @tparam SumType 答案的类型，如果权值为 bool，则默认为 size_type，否则默认使用 WeightType

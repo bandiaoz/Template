@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <vector>
 
+/**
+ * @brief VectorBufferWithCollect
+ */
 namespace OY {
     namespace VectorBufferWithCollect_imp {
         using size_type = uint32_t;

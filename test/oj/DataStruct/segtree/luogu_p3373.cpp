@@ -6,7 +6,7 @@ using ll = long long;
 
 /*
 [P3373 【模板】线段树 2](https://www.luogu.com.cn/problem/P3373)
-[status](https://www.luogu.com.cn/record/179556118)
+[status](https://www.luogu.com.cn/record/179754598)
 */
 /**
  * 本题要进行区间修改和区间查询
@@ -48,15 +48,15 @@ int main() {
         
         if (op == 1) {
             std::cin >> l >> r >> x;
-            l--, r--;
+            l--;
             seg.add(l, r, Tag{x, 0});
         } else if (op == 2) {
             std::cin >> l >> r >> x;
-            l--, r--;
+            l--;
             seg.add(l, r, Tag{1, x});
         } else {
             std::cin >> l >> r;
-            l--, r--;
+            l--;
             std::cout << seg.query(l, r) << '\n';
         }
     }

@@ -2,7 +2,7 @@
 #include "src/DataStruct/Fenwick.hpp"
 
 /**
- * @brief 矩形范围内点的权值和
+ * @brief 离线二维【单点加，矩形区域和查询】表
  * @link https://www.luogu.com.cn/problem/P2163
  * @link https://judge.yosupo.jp/problem/rectangle_sum
  * @note 把所有的点按照 x 坐标排序，询问的时候双指针维护一个区间，用 Fenwick 维护 [y1, y2] 范围内的权值和

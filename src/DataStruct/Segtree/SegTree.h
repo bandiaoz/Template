@@ -460,10 +460,17 @@ namespace OY {
             void modify(SizeType i, const value_type &val) {
                 do_for_node<false>(i, [&](node *p) { p->set(val); });
             }
+            /**
+             * @brief 单点修改，将第 i 个元素修改 modify
+             */
             void add(SizeType i, const modify_type &modify) {
                 do_for_node<false>(i, [&](node *p) { _apply(p, modify); });
             }
+            /**
+             * @brief 区间修改，将区间 [left, right) 的元素修改 modify
+             */
             void add(SizeType left, SizeType right, const modify_type &modify) { 
+                right--;
                 _add(m_rt, 0, m_sz - 1, left, right, modify); 
             }
             /**
@@ -474,10 +481,11 @@ namespace OY {
                 return _query<Getter>(m_rt, 0, m_sz - 1, i); 
             }
             /**
-             * @brief 区间查询，返回区间 [left, right] 的值
+             * @brief 区间查询，返回区间 [left, right) 的值
              */
             template <typename Getter = DefaultGetter>
             typename Getter::value_type query(SizeType left, SizeType right) const { 
+                right--;
                 return _query<Getter>(m_rt, 0, m_sz - 1, left, right); 
             }
             /**
