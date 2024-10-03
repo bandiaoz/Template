@@ -7,6 +7,9 @@
 
 /**
  * @brief 线段树
+ * @note op(Info, Info) -> Info 节点操作函数
+ *       map(Tag, Info, uint32_t) -> Info 懒标记作用函数
+ *       com(Tag new_tag, Tag old_tag) -> Tag 懒标记合并函数
  */
 namespace OY {
     namespace Seg {
@@ -595,7 +598,7 @@ namespace OY {
      * @param length 线段树的长度
      * @param mapping 映射函数
      * @param op 节点操作函数
-     * @param map 懒标记映射函数
+     * @param map 懒标记作用函数
      * @param com 懒标记合并函数
      * @param default_modify 默认的懒标记
      */

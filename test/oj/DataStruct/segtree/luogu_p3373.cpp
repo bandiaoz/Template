@@ -14,11 +14,11 @@ using ll = long long;
  */
 
 using Z = OY::StaticModInt32<571373, true>;
-
+using Info = Z;
 struct Tag {
     Z mul, add;
 };
-auto map = [](Tag modify, Z old_val, uint32_t len) { 
+auto map = [](Tag modify, Info old_val, uint32_t len) { 
     return old_val * modify.mul + modify.add * len; 
 };
 auto com = [](Tag new_modify, Tag old_modify) { 
@@ -39,7 +39,7 @@ int main() {
         std::cin >> x;
         return x;
     };
-    auto seg = OY::make_lazy_SegTree<Z, Tag, true, OY::Seg::Ignore, uint32_t>(
+    auto seg = OY::make_lazy_SegTree<Info, Tag, true>(
         n, read, std::plus<>(), map, com, Tag{1, 0}
     );
     for (int i = 0; i < m; i++) {
