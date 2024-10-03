@@ -561,14 +561,36 @@ namespace OY {
             return out << "]";
         }
     }
+    
+    /**
+     * @brief 根据长度和 op 函数构造线段树，可以使用 mapping 函数映射初始值
+     * @tparam Tp 线段树节点类型
+     */
     template <typename Tp, typename RangeMapping = Seg::Ignore, typename SizeType, template <typename> typename BufferType = VectorBufferWithCollect, typename Operation, typename InitMapping = Seg::Ignore, typename TreeType = Seg::Tree<Seg::CustomNode<Tp, Operation>, RangeMapping, SizeType, BufferType>>
     auto make_SegTree(SizeType length, Operation op, InitMapping mapping = InitMapping()) -> TreeType { 
         return TreeType(length, mapping); 
     }
+    /**
+     * @brief 根据迭代器范围和 op 函数构造线段树
+     */
     template <template <typename> typename BufferType = VectorBufferWithCollect, typename Iterator, typename Operation, typename Tp = typename std::iterator_traits<Iterator>::value_type, typename TreeType = Seg::Tree<Seg::CustomNode<Tp, Operation>, Seg::Ignore, uint32_t, BufferType>>
     auto make_SegTree(Iterator first, Iterator last, Operation op) -> TreeType { 
         return TreeType(first, last); 
     }
+    /**
+     * @brief 根据长度和 op 函数构造线段树，可以使用 mapping 函数映射初始值
+     * @tparam ValueType 线段树节点的值类型
+     * @tparam ModifyType 懒标记 Tag 的类型
+     * @tparam InitClearLazy 是否在初始化时清空懒标记
+     * @tparam RangeMapping 线段树的区间映射类型，默认为 Seg::Ignore
+     * @tparam SizeType 线段树的长度类型
+     * @param length 线段树的长度
+     * @param mapping 映射函数
+     * @param op 节点操作函数
+     * @param map 懒标记映射函数
+     * @param com 懒标记合并函数
+     * @param default_modify 默认的懒标记
+     */
     template <typename ValueType, typename ModifyType, bool InitClearLazy, typename RangeMapping = Seg::Ignore, typename SizeType, template <typename> typename BufferType = VectorBufferWithCollect, typename InitMapping = Seg::Ignore, typename Operation, typename Mapping, typename Composition, typename TreeType = Seg::Tree<Seg::CustomLazyNode<ValueType, ModifyType, Operation, Mapping, Composition, InitClearLazy, SizeType>, RangeMapping, SizeType, BufferType>>
     auto make_lazy_SegTree(SizeType length, InitMapping mapping, Operation op, Mapping map, Composition com, const ModifyType &default_modify = ModifyType()) -> TreeType { 
         return TreeType::node::s_default_modify = default_modify, TreeType(length, mapping); 
