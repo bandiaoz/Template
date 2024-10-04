@@ -8,6 +8,10 @@
 
 /**
  * @brief SPFA
+ * @example OY::SPFA::Graph<int> G(n, m);
+ *          OY::SPFA::Solver<int, int, false> sol(n);
+ *          sol.set_distance(start, 0);
+ *          sol.run(G);
  */
 namespace OY {
     namespace SPFA {
@@ -72,7 +76,12 @@ namespace OY {
                 size_type prev = m_distance[target].m_from;
                 if (~prev) trace(prev, call), call(prev, target);
             }
-            const SumType &query(size_type target) const { return m_distance[target].m_val; }
+            /**
+             * @brief 获取最短路径长度
+             */
+            const SumType &query(size_type target) const { 
+                return m_distance[target].m_val; 
+            }
         };
         template <typename Tp>
         struct Graph {
