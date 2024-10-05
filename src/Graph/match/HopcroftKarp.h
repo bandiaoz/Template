@@ -8,6 +8,7 @@
 /**
  * @brief 二分图最大匹配
  * @example OY::HK::Graph graph(vertex_cnt, edge_cnt);
+ * @note vertex_cnt 为左右两侧节点数量的最大值
  */
 namespace OY {
     namespace HK {

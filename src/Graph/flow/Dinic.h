@@ -11,7 +11,7 @@
  * @note Graph 可以解决最大流问题
  * @note BoundGraph 可以解决上下界可行流、上下界最小流、上下界最大流问题。
  * @tparam FlowType 流量类型
- * @example OY::DINIC::Graph<int> flow(n, m);
+ * @example OY::DINIC::Graph<FlowType> flow(n, m);
  *          flow.calc<ll>(source, target);
  */
 namespace OY {
@@ -124,7 +124,8 @@ namespace OY {
             }
             /**
              * @brief 对找到的流调用回调
-             * @note 回调函数的参数为 (size_type i, FlowType flow)，i 为边的编号，flow 为这条边的流量
+             * @note 回调函数的参数为 `call(size_type i, FlowType flow)`，`i` 为边的编号，`flow` 为这条边的流量
+             * @note 可以通过 `m_raw_edges[i]` 获取边的 `[from, to, cap]` 信息
              */
             template <typename Callback>
             void do_for_flows(Callback &&call) const {
