@@ -38,6 +38,10 @@
 
 [P6086 【模板】Prufer 序列](https://www.luogu.com.cn/problem/P6086)
 
+### HLD
+
+[P3979 遥远的国度](https://www.luogu.com.cn/problem/P3979)
+
 ## 数据结构
 
 ### 经典问题
@@ -58,9 +62,17 @@
 
 ## 数学
 
+### 数论
+
 [P4718【模板】Pollard-Rho](https://www.luogu.com.cn/problem/P4718)
 
 [Enumerate Quotients](https://judge.yosupo.jp/problem/enumerate_quotients)(https://github.com/yosupo06/library-checker-problems/issues/922)
+
+### LinearAlgebra
+
+[P3389 【模板】高斯消元法](https://www.luogu.com.cn/problem/P3389)
+
+[System of Linear Equations (Mod 2)](https://judge.yosupo.jp/problem/system_of_linear_equations_mod_2)(https://github.com/yosupo06/library-checker-problems/issues/896)
 
 ## 字符串
 
