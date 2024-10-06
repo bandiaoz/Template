@@ -8,7 +8,9 @@
 
 /**
  * @brief VectorTree
- * @example OY::VectorTree::Tree<bool> tree(5);
+ * @tparam Tp 边权类型，bool 代表无权图
+ * @example OY::VectorTree::Tree<Tp> tree(5);
+ * @note 注意设置 root
  */
 namespace OY {
     namespace VectorTree {
@@ -27,7 +29,7 @@ namespace OY {
             size_type m_to;
         };
         template <typename Tp>
-        class Tree {
+        struct Tree {
             std::vector<std::vector<Edge<Tp>>> m_adj;
             size_type m_root = -1, m_vertex_cnt;
             void _add(size_type a, size_type b) { m_adj[a].push_back({b}); }
@@ -62,7 +64,6 @@ namespace OY {
                 after_work(a);
                 if constexpr (IsBool) return true;
             }
-        public:
             Tree(size_type vertex_cnt = 0) { resize(vertex_cnt); }
             void resize(size_type vertex_cnt) {
                 m_root = -1;
@@ -79,10 +80,17 @@ namespace OY {
             size_type root() const { return m_root; }
             size_type vertex_cnt() const { return m_vertex_cnt; }
             void set_root(size_type root) { m_root = root; }
+            /**
+             * @brief 对当前点的所有邻接点进行操作
+             */
             template <typename Callback>
             void do_for_each_adj_vertex(size_type a, Callback &&call) const {
                 for (auto &adj : m_adj[a]) call(adj.m_to);
             }
+            /**
+             * @brief 对当前点的所有相邻边进行操作
+             * @param call 回调函数，参数为 (to, dis)
+             */
             template <typename Callback>
             void do_for_each_adj_edge(size_type a, Callback &&call) const {
                 if constexpr (std::is_same<Tp, bool>::value)
@@ -90,10 +98,20 @@ namespace OY {
                 else
                     for (auto &adj : m_adj[a]) call(adj.m_to, adj.m_dis);
             }
+            /**
+             * @brief 基于点的树形 dp
+             */
             template <typename PreWork = Ignore, typename Report = Ignore, typename AfterWork = Ignore>
-            void tree_dp_vertex(size_type a, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { _tree_dp_vertex(a, -1, pre_work, report, after_work); }
+            void tree_dp_vertex(size_type a, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 
+                _tree_dp_vertex(a, -1, pre_work, report, after_work); 
+            }
+            /**
+             * @brief 基于边的树形 dp
+             */
             template <typename PreWork = Ignore, typename Report = Ignore, typename AfterWork = Ignore>
-            void tree_dp_edge(size_type a, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { _tree_dp_edge(a, -1, {}, pre_work, report, after_work); }
+            void tree_dp_edge(size_type a, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 
+                _tree_dp_edge(a, -1, {}, pre_work, report, after_work); 
+            }
         };
         template <typename Ostream, typename Tp>
         Ostream &operator<<(Ostream &out, const Tree<Tp> &tree) { // http://mshang.ca/syntree/
