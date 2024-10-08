@@ -25,6 +25,7 @@ namespace OY {
             size_type _find(size_type q) const { return m_masks[q] ? q : (m_tail[q] = _find(m_tail[q])); }
         public:
             Table(size_type n = 0) { resize(n); }
+            size_type size() const { return m_size; }
             void resize(size_type n) {
                 if (!(m_size = n)) return;
                 m_group_cnt = m_size;
@@ -122,7 +123,7 @@ namespace OY {
         template <typename Ostream, bool MaintainGroupSize>
         Ostream &operator<<(Ostream &out, const Table<MaintainGroupSize> &x) {
             out << '[';
-            for (size_type l = 0, r; l != x.m_size; l = r + 1) {
+            for (size_type l = 0, r; l != x.size(); l = r + 1) {
                 r = x.find_tail(l);
                 if (l) out << ", ";
                 out << "[" << l << ", " << r << "]";

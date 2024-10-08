@@ -389,7 +389,7 @@ namespace OY {
     template <typename Tp>
     using AssignLcmZkw = ASZKW::Tree<ASZKW::ValLazyMonoid<Tp, 0, ASZKW::FpTransfer<Tp, std::lcm<Tp>>>>;
     template <typename Tp, Tp OneMask = Tp(-1)>
-    using AssignBitandZkw = ASZKW::Tree<ASZKW::ValLazyMonoid<Tp, OneMask, std::bit_and<Tp>>>;
+    using AssignBitAndZkw = ASZKW::Tree<ASZKW::ValLazyMonoid<Tp, OneMask, std::bit_and<Tp>>>;
     template <typename Tp, Tp ZeroMask = 0>
     using AssignBitOrZkw = ASZKW::Tree<ASZKW::ValLazyMonoid<Tp, ZeroMask, std::bit_or<Tp>>>;
     template <typename Tp>
