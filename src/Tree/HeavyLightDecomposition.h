@@ -79,7 +79,13 @@ namespace OY {
                 }
                 return m_seq[info[u].m_dfn - dep + target_dep];
             }
+            /**
+             * @brief 找到 `u` 的父节点，如果 `u` 是根节点则返回 -1
+             */
             size_type find_parent(size_type u) const { return m_info[u].m_top_dep == m_info[u].m_dep ? m_info[u].m_parent : (m_info[u].m_dfn ? m_seq[m_info[u].m_dfn - 1] : -1); }
+            /**
+             * @brief 找到 `u` 在 `b` 方向上的一个孩子，`b` 在 `u` 的子树上
+             */
             size_type find_son(size_type u, size_type b) const { return get_ancestor(b, m_info[b].m_dep - m_info[u].m_dep - 1); }
             size_type get_depth(size_type u) const { return m_info[u].m_dep; }
             template <typename Callback>
