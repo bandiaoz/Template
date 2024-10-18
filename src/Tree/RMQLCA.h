@@ -8,6 +8,7 @@
 
 /**
  * @brief 查询最近公共祖先 LCA
+ * @example OY::RMQLCA::Table<decltype(tree), OY::MaskRMQMinValueTable<uint32_t>> LCA(&tree);
  */
 namespace OY {
     namespace RMQLCA {
