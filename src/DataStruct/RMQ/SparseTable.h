@@ -8,6 +8,8 @@
 
 /**
  * @brief Sparse Table
+ * @example OY::STMaxTable<int> max(n, [&](size_t i) { return a[i]; });
+ * @example auto min = OY::make_STTable<int>(10, std::less<int>(), [](size_t i) { return i; });
  */
 namespace OY {
     namespace ST {
