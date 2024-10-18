@@ -48,11 +48,10 @@ namespace OY {
                 m_seq[cursor] = u;
                 if (~f) m_info[u].m_dep = m_info[f].m_dep + 1;
                 m_info[u].m_dfn = cursor++;
-                if (~f && u == m_info[f].m_heavy) {
-                    m_info[u].m_top_dfn = m_info[f].m_top_dfn, m_info[u].m_top_dep = m_info[f].m_top_dep, m_info[u].m_parent = m_info[f].m_parent;
-                } else {
-                    m_info[u].m_top_dfn = m_info[u].m_dfn, m_info[u].m_top_dep = m_info[u].m_dep, m_info[u].m_parent = f;
-                }
+                bool is_top = !~f || u != m_info[f].m_heavy;
+                m_info[u].m_top_dfn = is_top ? m_info[u].m_dfn : m_info[f].m_top_dfn;
+                m_info[u].m_top_dep = is_top ? m_info[u].m_dep : m_info[f].m_top_dep;
+                m_info[u].m_parent = is_top ? f : m_info[f].m_parent;
                 size_type heavy = m_info[u].m_heavy;
                 if (~heavy) _tree_dfs2(heavy, u, cursor);
                 m_rooted_tree->do_for_each_adj_vertex(u, [&](size_type v) { 
@@ -71,7 +70,7 @@ namespace OY {
              * @brief 查询 `u` 的 `k` 级祖先，0 级祖先就是节点 `u`
              */
             size_type get_ancestor(size_type u, size_type k) const {
-                const node *info = m_info.data();
+                auto info = m_info.data();
                 if (k > info[u].m_dep) return -1;
                 size_type dep = info[u].m_dep, target_dep = dep - k;
                 while (target_dep < info[u].m_top_dep) {
@@ -97,7 +96,7 @@ namespace OY {
              */
             template <bool LCA, typename Callback>
             void do_for_path(size_type u, size_type v, Callback &&call) const {
-                const node *info = m_info.data();
+                auto info = m_info.data();
                 while (info[u].m_top_dfn != info[v].m_top_dfn) {
                     if (info[u].m_top_dep < info[v].m_top_dep)
                         call(info[v].m_top_dfn, info[v].m_dfn + 1), v = info[v].m_parent;
@@ -116,7 +115,7 @@ namespace OY {
              */
             template <typename Callback>
             void do_for_directed_path(size_type u, size_type v, Callback &&call) const {
-                const node *info = m_info.data();
+                auto info = m_info.data();
                 while (info[u].m_top_dfn != info[v].m_top_dfn) {
                     if (info[u].m_top_dep < info[v].m_top_dep) {
                         do_for_directed_path(u, info[v].m_parent, call);
@@ -140,7 +139,7 @@ namespace OY {
              * @brief 查询 `u` 和 `v` 的 LCA
              */
             size_type lca(size_type u, size_type v) const {
-                const node *info = m_info.data();
+                auto info = m_info.data();
                 while (info[u].m_top_dfn != info[v].m_top_dfn)
                     if (info[u].m_top_dep < info[v].m_top_dep)
                         v = info[v].m_parent;
@@ -152,7 +151,7 @@ namespace OY {
              * @brief 判断 `u` 是否是 `v` 的祖先
              */
             bool isAncestor(int u, int v) {
-                const node *info = m_info.data();
+                auto info = m_info.data();
                 return info[u].m_dfn <= info[v].m_dfn && info[v].m_dfn < info[u].m_dfn + info[u].m_size;
             }
         };
