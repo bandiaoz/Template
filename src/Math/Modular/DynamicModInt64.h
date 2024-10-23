@@ -1,22 +1,9 @@
-/*
-最后修改:
-20231120
-测试环境:
-gcc11.2,c++11
-clang12.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_DYNAMICMODINT64__
-#define __OY_DYNAMICMODINT64__
+#pragma once
 
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <limits>
-
-#ifdef _MSC_VER
-#include <immintrin.h>
-#endif
 
 /**
  * @brief 动态 64 位模数取余
@@ -123,5 +110,3 @@ namespace OY {
     template <typename Ostream, size_t Id>
     Ostream &operator<<(Ostream &os, const DynamicModInt64<Id> &x) { return os << x.m_val; }
 }
-
-#endif

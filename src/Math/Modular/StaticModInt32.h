@@ -1,13 +1,4 @@
-/*
-最后修改:
-20240329
-测试环境:
-gcc11.2,c++11
-clang12.0,C++11
-msvc14.2,C++14
-*/
-#ifndef __OY_STATICMODINT32__
-#define __OY_STATICMODINT32__
+#pragma once
 
 #include <algorithm>
 #include <cstdint>
@@ -87,5 +78,3 @@ namespace OY {
     using mint998244353 = StaticModInt32<998244353, true>;
     using mint1000000007 = StaticModInt32<1'000'000'007, true>;
 }
-
-#endif
