@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "src/DataStruct/Fenwick.hpp"
-#include "src/Math/ModInt/StaticModInt32.h"
+#include "src/Math/Modular/StaticModInt32.h"
 
 using Z = OY::StaticModInt32<998244353, true>;
 

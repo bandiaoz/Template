@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math/ModInt/StaticModInt64.h"
+#include "Math/Modular/StaticModInt64.h"
 #include <chrono>
 #include <random>
 #include <string>

@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 #include "src/Math/Poly/FFTPolynomial.h"
 #include "src/Math/Poly/NTTPolynomial.h"
-#include "src/Math/ModInt/StaticModInt32.h"
+#include "src/Math/Modular/StaticModInt32.h"
 
 /*
 [P3803 【模板】多项式乘法（FFT）](https://www.luogu.com.cn/problem/P3803)

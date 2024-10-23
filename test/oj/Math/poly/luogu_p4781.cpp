@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "src/Math/ModInt/StaticModInt32.h"
+#include "src/Math/Modular/StaticModInt32.h"
 #include "src/Math/Poly/LagrangeInterpolation.h"
 
 using Z = OY::mint998244353;

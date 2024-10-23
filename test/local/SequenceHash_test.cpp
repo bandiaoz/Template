@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/Math/ModInt/StaticModInt32.h"
+#include "src/Math/Modular/StaticModInt32.h"
 #include "src/String/SequenceHash.h"
 
 // 此处使用模数为 998244353 的自取模数

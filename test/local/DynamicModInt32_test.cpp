@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 
-#include "src/Math/ModInt/DynamicModInt32.h"
+#include "src/Math/Modular/DynamicModInt32.h"
 
 void test_Fermat_10000019() {
     // 验证费马定理
