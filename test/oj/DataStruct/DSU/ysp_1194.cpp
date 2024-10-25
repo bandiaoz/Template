@@ -7,7 +7,7 @@
 */
 /*
 [Unionfind with Potential (Non-Commutative Group)](https://judge.yosupo.jp/problem/unionfind_with_potential_non_commutative_group)(https://github.com/yosupo06/library-checker-problems/issues/1194)
-[status](https://judge.yosupo.jp/submission/244685)
+[status](https://judge.yosupo.jp/submission/244837)
 */
 /**
  * 维护势能的并查集模板题
