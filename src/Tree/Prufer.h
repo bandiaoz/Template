@@ -7,7 +7,7 @@
 
 /**
  * @brief Prufer 序列
- * @example 1. 使用 `OY::PRUFER::Tree::encode()` 类解码 Prufer 序列
+ * @example 1. 使用 `OY::PRUFER::Tree::encode()` 将无根树编码为 Prufer 序列
  *          2. 使用 `OY::PRUFER::Tree::decode(...)` 静态函数解码 Prufer 序列
  */
 namespace OY {
