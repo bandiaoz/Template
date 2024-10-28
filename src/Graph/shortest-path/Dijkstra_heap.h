@@ -7,7 +7,7 @@
 /**
  * @brief 单源最短路径 Dijkstra 算法
  * @example OY::DijkstraHeap::Graph<Tp> graph(n, m);
- *          graph.calc<GetPath, SumType>(source, target, infinite);
+ *          auto dij_solver = graph.calc<GetPath, SumType>(source, target, infinite);
  *          OY::DijkstraHeap::Solver<Tp, SumType, GetPath> sol(vertex_cnt, infinite);
  */
 namespace OY {
@@ -120,6 +120,8 @@ namespace OY {
              * @brief 获得从 source 到 target 的最短路径
              * @tparam SumType 路径长度的类型，默认为 Tp
              * @tparam GetPath 是否需要记录路径
+             * @param target 如果为 -1，则计算 source 到所有点的最短路径
+             * @param infinite 无穷大的值，默认为 `std::numeric_limits<SumType>::max() / 2`
              */
             template <bool GetPath, typename SumType = Tp>
             Solver<Tp, SumType, GetPath> calc(size_type source, size_type target = -1, const SumType &infinite = std::numeric_limits<SumType>::max() / 2) const {
