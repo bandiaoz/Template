@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "src/DataStruct/container/SiftHeap.h"
+#include "src/DataStruct/container/FastHeap.h"
 
 /**
  * @brief 最小费用最大流 Dinic
@@ -92,7 +92,7 @@ namespace OY {
                 if (!m_prepared) _prepare();
                 if constexpr (HasNegative) _spfa(source, infinite_cost);
                 auto mapping = [&](size_type i) { return m_distance[i].m_dist; };
-                Sift::Heap<decltype(mapping), std::greater<CostType>> heap(m_vertex_cnt, mapping);
+                FastHeap<decltype(mapping), std::greater<CostType>> heap(m_vertex_cnt, mapping);
                 while (true) {
                     for (size_type i = 0; i != m_vertex_cnt; i++) m_distance[i].m_dist = infinite_cost;
                     m_distance[source].m_dist = 0, heap.push(source);

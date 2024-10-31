@@ -3,7 +3,7 @@
 
 /*
 [P3381 【模板】最小费用最大流](https://www.luogu.com.cn/problem/P3381)
-[status](https://www.luogu.com.cn/record/178915909)
+[status](https://www.luogu.com.cn/record/185887207)
 */
 /**
  * 本题为最小费用最大流模板题
