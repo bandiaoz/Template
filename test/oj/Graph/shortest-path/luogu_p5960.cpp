@@ -1,11 +1,9 @@
 #include <bits/stdc++.h>
 #include "src/Graph/shortest-path/SPFA.h"
 
-using ll = long long;
-
 /*
 [P5960 【模板】差分约束](https://www.luogu.com.cn/problem/P5960)
-[status](https://www.luogu.com.cn/record/179811804)
+[status](https://www.luogu.com.cn/record/185889571)
 */
 /**
  * 本题为差分约束模板题
@@ -32,7 +30,7 @@ int main() {
         G.add_edge(n, i, 0);
     }
 
-    auto [sol, ok] = G.calc<false>(n);
+    auto [sol, ok] = G.calc(n);
     if (!ok) {
         std::cout << "NO\n";
     } else {

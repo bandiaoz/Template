@@ -25,7 +25,7 @@ int main() {
         G.add_edge(u, v, w);
     }
 
-    auto sol = G.calc<false>(s);
+    auto sol = G.calc(s);
     for (int i = 0; i < n; i++) {
         std::cout << sol.query(i) << " \n"[i == n - 1];
     }
