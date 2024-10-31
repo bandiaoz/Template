@@ -184,6 +184,7 @@ namespace OY {
              * @tparam CountType 路径数量的类型
              * @tparam Compare 路径长度比较器
              * @tparam GetPath 是否需要记录路径
+             * @param source 源点
              * @param target 如果为 -1，则计算 source 到所有点的最短路径
              */
             template <typename SemiGroup = AddSemiGroup<Tp, Tp, std::numeric_limits<Tp>::max() / 2>, typename CountType = void, typename Compare = std::less<typename SemiGroup::sum_type>, bool GetPath = false>
