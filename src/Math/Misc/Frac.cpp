@@ -2,7 +2,7 @@ template<class T>
 class Frac {
 public:
     T num, den;
-    Frac(T num, T den) : num(num), den(den) {
+    Frac(T num_, T den_) : num(num_), den(den_) {
         if (den < 0) {
             den = -den;
             num = -num;
