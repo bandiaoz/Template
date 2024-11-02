@@ -16,7 +16,8 @@ namespace OY {
         using mod_type = uint64_t;
         mod_type m_val;
         static mod_type _mul(mod_type a, mod_type b) {
-            int64_t res = a * b - mod_type((long double)(a)*b / mod()) * mod();
+            // int64_t res = a * b - mod_type((long double)(a)*b / mod()) * mod();
+            int64_t res = __int128(a) * b % mod();
             if (res < 0)
                 res += mod();
             else if (res >= mod())
