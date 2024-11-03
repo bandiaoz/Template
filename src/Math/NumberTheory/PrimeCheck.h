@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_PRIMECHECK0__
+#define __OY_PRIMECHECK0__
 
 #include <algorithm>
 #include <cstdint>
@@ -106,3 +107,5 @@ namespace OY {
             return is_prime64(n);
     }
 }
+
+#endif
