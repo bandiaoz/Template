@@ -113,8 +113,11 @@ namespace OY {
         TreeTrie::TreeTrieNode TreeTrie::s_root(0);
         size_type TreeTrie::s_id_count = 1;
         /**
-         * @brief 重心分治
+         * @brief 重心分治，解决树上路径问题
          * @tparam MAX_BUFFER 树的最大节点数量
+         * @note 重心满足：删除重心后，剩余的树中最大子树的节点数量不超过总节点数量的一半
+         * @note 分治每一层的复杂度为 `O(n)`，重心分治保证了分治的层数为 `O(logn)`。
+         * @note 付出 `O(logn)` 的代价，换取「路径经过当前分治根节点」这一条件
          */
         template <size_type MAX_BUFFER>
         struct CentroidDecomposition {
