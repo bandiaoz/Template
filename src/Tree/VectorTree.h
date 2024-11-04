@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_VECTORTREE__
+#define __OY_VECTORTREE__
 
 #include <algorithm>
 #include <cstdint>
@@ -120,3 +121,5 @@ namespace OY {
         }
     }
 }
+
+#endif

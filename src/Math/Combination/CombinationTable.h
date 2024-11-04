@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_COMBINATIONTABLE__
+#define __OY_COMBINATIONTABLE__
 
 #include <algorithm>
 #include <cstdint>
@@ -77,3 +78,5 @@ namespace OY {
         }
     };
 }
+
+#endif

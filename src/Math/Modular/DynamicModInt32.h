@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_DYNAMICMODINT32__
+#define __OY_DYNAMICMODINT32__
 
 #include <algorithm>
 #include <cassert>
@@ -95,3 +96,5 @@ namespace OY {
     template <typename Ostream, size_t Id>
     Ostream &operator<<(Ostream &os, const DynamicModInt32<Id> &x) { return os << x.m_val; }
 }
+
+#endif
