@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_EULERSIEVE__
+#define __OY_EULERSIEVE__
 
 #include <algorithm>
 #include <bitset>
@@ -173,3 +174,5 @@ namespace OY {
         };
     }
 }
+
+#endif

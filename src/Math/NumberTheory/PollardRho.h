@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_POLLARDRHO__
+#define __OY_POLLARDRHO__
 
 #include <algorithm>
 #include <cstdint>
@@ -156,3 +157,5 @@ namespace OY {
         }
     };
 }
+
+#endif

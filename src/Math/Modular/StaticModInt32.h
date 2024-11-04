@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_STATICMODINT32__
+#define __OY_STATICMODINT32__
 
 #include <algorithm>
 #include <cstdint>
@@ -78,3 +79,5 @@ namespace OY {
     using mint998244353 = StaticModInt32<998244353, true>;
     using mint1000000007 = StaticModInt32<1'000'000'007, true>;
 }
+
+#endif
