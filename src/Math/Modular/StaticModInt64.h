@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_STATICMODINT64__
+#define __OY_STATICMODINT64__
 
 #include <algorithm>
 #include <cstdint>
@@ -16,13 +17,7 @@ namespace OY {
         using mod_type = uint64_t;
         mod_type m_val;
         static mod_type _mul(mod_type a, mod_type b) {
-            // int64_t res = a * b - mod_type((long double)(a)*b / mod()) * mod();
-            int64_t res = __int128(a) * b % mod();
-            if (res < 0)
-                res += mod();
-            else if (res >= mod())
-                res -= mod();
-            return res;
+            return __uint128(a) * b % mod();
         }
         StaticModInt64() = default;
         template <typename Tp, typename std::enable_if<std::is_signed<Tp>::value>::type * = nullptr>
@@ -86,3 +81,5 @@ namespace OY {
     using mint9223372036854775783 = StaticModInt64<9223372036854775783, true>;
     using mint1000000000000000003 = StaticModInt64<1'000'000'000'000'000'003, true>;
 }
+
+#endif

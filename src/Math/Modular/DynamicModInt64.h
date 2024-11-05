@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_DYNAMICMODINT64__
+#define __OY_DYNAMICMODINT64__
 
 #include <algorithm>
 #include <cassert>
@@ -31,19 +32,7 @@ namespace OY {
             return res;
         }
         static mod_type _mul(mod_type a, mod_type b) {
-#ifdef _MSC_VER
-            mod_type high, low, res;
-            low = _umul128(a, b, &high);
-            _udiv128(high, low, mod(), &res);
-#else
-            // int64_t res = a * b - mod_type((long double)(a)*b / mod()) * mod();
-            int64_t res = __int128(a) * b % mod();
-            if (res < 0)
-                res += mod();
-            else if (res >= mod())
-                res -= mod();
-#endif
-            return res;
+            return __uint128_t(a) * b % mod();
         }
         DynamicModInt64() : m_val{} {}
         template <typename Tp, typename std::enable_if<std::is_signed<Tp>::value>::type * = nullptr>
@@ -111,3 +100,5 @@ namespace OY {
     template <typename Ostream, size_t Id>
     Ostream &operator<<(Ostream &os, const DynamicModInt64<Id> &x) { return os << x.m_val; }
 }
+
+#endif
