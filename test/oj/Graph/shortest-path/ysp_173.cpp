@@ -5,7 +5,7 @@ using ll = long long;
 
 /*
 [Shortest Path](https://judge.yosupo.jp/problem/shortest_path)(https://github.com/yosupo06/library-checker-problems/issues/173)
-[status](https://judge.yosupo.jp/submission/245929)
+[status](https://judge.yosupo.jp/submission/247167)
 */
 /**
  * 本题为最短路模板题
@@ -37,11 +37,13 @@ int main() {
     struct monoid {
         using value_type = int;
         using sum_type = sum_path;
+        using compare_type = std::less<>;
         static sum_type op(const sum_type &x, value_type y) { return x + y; }
-        static sum_type identity() { return {inf_dist, inf_step}; }
+        static sum_type identity() { return {}; }
+        static sum_type infinite() { return {inf_dist, inf_step}; }
     };
 
-    auto sol = G.calc<monoid, void, std::less<>, true>(s, t);
+    auto sol = G.calc<monoid, void, true>(s, t);
     if (sol.query(t) == sol.infinite()) {
         std::cout << "-1\n";
     } else {

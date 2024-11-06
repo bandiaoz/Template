@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_FASTHEAP__
+#define __OY_FASTHEAP__
 
 #include <algorithm>
 #include <cstdint>
@@ -113,3 +114,5 @@ namespace OY {
     template <typename Mapping, typename Compare = std::less<void>>
     using FastHeap = FHeap::Heap<Mapping, Compare>;
 }
+
+#endif
