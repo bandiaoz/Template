@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_HEAVYLIGHTDECOMPOSITION__
+#define __OY_HEAVYLIGHTDECOMPOSITION__
 
 #include <algorithm>
 #include <cstdint>
@@ -157,3 +158,5 @@ namespace OY {
         };
     }
 }
+
+#endif

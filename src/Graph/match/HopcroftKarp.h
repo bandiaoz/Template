@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_HOPCROFTKARP__
+#define __OY_HOPCROFTKARP__
 
 #include <algorithm>
 #include <cstdint>
@@ -93,3 +94,5 @@ namespace OY {
         };
     }
 }
+
+#endif
