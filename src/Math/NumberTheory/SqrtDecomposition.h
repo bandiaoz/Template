@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_SQRTDECOMPOSITION__
+#define __OY_SQRTDECOMPOSITION__
 
 #include <algorithm>
 #include <cmath>
@@ -73,7 +74,12 @@ namespace OY {
         Tp size() const {
             Tp r;
             if constexpr (sizeof(Tp) == 8) {
+#ifdef LOCAL
+                r = std::sqrt(val);
+                r -= r * r > val;
+#else
                 r = std::sqrt((long double)m_val);
+#endif
             } else {
                 r = std::sqrt((double)m_val);
             }
@@ -119,3 +125,5 @@ namespace OY {
         return out << '}';
     }
 }
+
+#endif

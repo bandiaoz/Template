@@ -33,7 +33,7 @@ struct Line {
         if (sgn(dot(p - t, s - t)) < 0) return (p - t).norm();
         return disPointLine(p);
     }
-    // 计算点 p 与直线的关系，返回 ONLINE、LEFT、RIGHT 上 0 左 -1 右 1
+    // 计算点 p 与直线的关系，返回 ONLINE、LEFT、RIGHT 上 0 左 1 右 -1
     int relation(const Point &p) { return sgn(det(t - s, p - s)); }
     // 判断 a, b 是否在直线的同侧或者同时在直线上
     bool sameSide(const Point &a, const Point &b) {
@@ -46,6 +46,10 @@ struct Line {
     // 判断两直线是否平行
     friend bool isParallel(const Line &l1, const Line &l2) {
         return sgn(det(l1.vec(), l2.vec())) == 0;
+    }
+    // 判断两直线是否垂直
+    friend bool isVertical(const Line &l1, const Line &l2) {
+        return sgn(dot(l1.vec(), l2.vec())) == 0;
     }
     // 利用相似三角形对应成比例求两直线的交点
     friend Point lineIntersection(const Line &l1, const Line &l2) {

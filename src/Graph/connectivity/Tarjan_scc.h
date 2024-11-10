@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_TARJAN_SCC__
+#define __OY_TARJAN_SCC__
 
 #include <algorithm>
 #include <cstdint>
@@ -111,3 +112,5 @@ namespace OY {
         };
     }
 }
+
+#endif

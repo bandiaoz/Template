@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_TWOSAT__
+#define __OY_TWOSAT__
 
 #include "src/Graph/connectivity/Tarjan_scc.h"
 
@@ -38,3 +39,5 @@ namespace OY {
         };
     }
 };
+
+#endif
