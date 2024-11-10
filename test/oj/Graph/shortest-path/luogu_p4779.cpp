@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "src/Graph/shortest-path/Dijkstra_heap.h"
+#include "src/Graph/shortest-path/Dijkstra.h"
 
 using ll = long long;
 
@@ -17,7 +17,7 @@ int main() {
     int n, m, s;
     std::cin >> n >> m >> s;
     s--;
-    OY::DijkstraHeap::Graph<int> G(n, m);
+    OY::Dijkstra::Graph<int> G(n, m);
     for (int i = 0; i < m; i++) {
         int u, v, w;
         std::cin >> u >> v >> w;

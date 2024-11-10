@@ -1,11 +1,11 @@
 #include <bits/stdc++.h>
-#include "src/Graph/shortest-path/Dijkstra_heap.h"
+#include "src/Graph/shortest-path/Dijkstra.h"
 
 using ll = long long;
 
 /*
 [Shortest Path](https://judge.yosupo.jp/problem/shortest_path)(https://github.com/yosupo06/library-checker-problems/issues/173)
-[status](https://judge.yosupo.jp/submission/247167)
+[status](https://judge.yosupo.jp/submission/248048)
 */
 /**
  * 本题为最短路模板题
@@ -25,7 +25,7 @@ int main() {
 
     int n, m, s, t;
     std::cin >> n >> m >> s >> t;
-    OY::DijkstraHeap::Graph<int> G(n, m);
+    OY::Dijkstra::Graph<int> G(n, m);
     for (int i = 0; i < m; i++) {
         int u, v, w;
         std::cin >> u >> v >> w;

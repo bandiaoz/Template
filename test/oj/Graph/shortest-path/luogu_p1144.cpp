@@ -1,12 +1,12 @@
 #include <bits/stdc++.h>
-#include "src/Graph/shortest-path/Dijkstra_heap.h"
+#include "src/Graph/shortest-path/Dijkstra.h"
 #include "src/Math/Modular/StaticModInt32.h"
 
 using ll = long long;
 
 /*
 [P1144 最短路计数](https://www.luogu.com.cn/problem/P1144)
-[status](https://www.luogu.com.cn/record/187052953)
+[status](https://www.luogu.com.cn/record/188054463)
 */
 /**
  * 本题为 Dijkstra 算法模板题
@@ -14,7 +14,7 @@ using ll = long long;
  */
 
 using Z = OY::StaticModInt32<100003, false>;
-using group = OY::DijkstraHeap::AddGroup<int>;
+using group = OY::Dijkstra::AddGroup<int>;
 
 int main() {
     std::ios::sync_with_stdio(false);
@@ -22,7 +22,7 @@ int main() {
 
     int n, m;
     std::cin >> n >> m;
-    OY::DijkstraHeap::Graph<int> G(n, m * 2);
+    OY::Dijkstra::Graph<int> G(n, m * 2);
     for (int i = 0; i < m; i++) {
         int u, v;
         std::cin >> u >> v;
