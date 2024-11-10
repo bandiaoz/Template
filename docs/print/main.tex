@@ -1,0 +1,106 @@
+\documentclass[a4paper,11pt]{ctexbook} 
+\usepackage[a4paper,scale=0.8,bindingoffset=8mm]{geometry} % A4纸大小，缩放80%，设置奇数页右边留空多一点
+\usepackage{hyperref}      % 超链接
+\usepackage{listings}      % 代码块
+\usepackage{fancyhdr}      % 页眉页脚相关宏包
+\usepackage{lastpage}      % 引用最后一页
+\usepackage{amsmath,amsthm,amsfonts,amssymb,bm} %数学
+\usepackage{graphicx}      % 图片
+\usepackage{subcaption}    % 图片描述
+\usepackage{longtable,booktabs} % 表格
+\usepackage{xeCJK}
+
+\usepackage{listings}
+\usepackage{ctex}
+\usepackage{color,xcolor}
+
+% 用来设置附录中代码的样式
+
+
+
+\lstset{
+    basicstyle          =   \sffamily,          % 基本代码风格
+    keywordstyle        =   \bfseries,          % 关键字风格
+    commentstyle        =   \rmfamily\itshape,  % 注释的风格，斜体
+    stringstyle         =   \ttfamily,  % 字符串风格
+    flexiblecolumns,                % 别问为什么，加上这个
+    numbers             =   left,   % 行号的位置在左边
+    showspaces          =   false,  % 是否显示空格，显示了有点乱，所以不现实了
+    numberstyle         =   \zihao{-5}\ttfamily,    % 行号的样式，小五号，tt等宽字体
+    showstringspaces    =   false,
+    captionpos          =   t,      % 这段代码的名字所呈现的位置，t指的是top上面
+    frame               =   l,   % 显示边框
+}
+
+\lstdefinestyle{Python}{
+    language        =   Python, % 语言选Python
+    basicstyle      =   \zihao{-5}\ttfamily,
+    numberstyle     =   \zihao{-5}\ttfamily,
+    keywordstyle    =   \color{blue},
+    keywordstyle    =   [2] \color{teal},
+    stringstyle     =   \color{magenta},
+    commentstyle    =   \color{red}\ttfamily,
+    breaklines      =   true,   % 自动换行，建议不要写太长的行
+    columns         =   fixed,  % 如果不加这一句，字间距就不固定，很丑，必须加
+    basewidth       =   0.5em,
+}
+\lstdefinestyle{cpp}{
+    language        =   C++, % 语言选C++
+    basicstyle      =   \zihao{-5}\ttfamily,
+    numberstyle     =   \zihao{-5}\ttfamily,
+    % keywordstyle    =   \color{blue}, % 彩色
+    % keywordstyle    =   [2] \color{teal},% 彩色
+    keywordstyle    =   \color{black}, % 黑白
+    keywordstyle    =   [2] \color{black},% 黑白
+    % stringstyle     =   \color{magenta}, % 彩色
+    stringstyle     =   \color{black}, % 黑白
+    % commentstyle    =   \color{red}\ttfamily,% 彩色
+    commentstyle    =   \color{black}\ttfamily, % 黑白
+    breaklines      =   true,   % 自动换行，建议不要写太长的行
+    columns         =   fixed,  % 如果不加这一句，字间距就不固定，很丑，必须加
+    basewidth       =   0.5em,
+}
+
+%\lstinputlisting[
+%     style       =   Python,
+%     caption     =   {\bf ff.py},
+%     label       =   {ff.py}
+% ]{../src/duke/ff.py}
+
+
+\pagestyle{fancy}         % 页眉页脚风格
+\fancyhf{}                % 清空当前设置
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}}%页脚中间显示 当前页 / 总页数，把\label{LastPage}放在最后
+\fancyhead[RO,LE]{\thepage}% 页眉奇数页左边，偶数页右边显示当前页
+\begin{document} 
+  \begin{titlepage}       % 封面
+    \centering
+    \vspace*{\baselineskip}
+    \rule{\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt}
+    \rule{\textwidth}{0.4pt}\\[\baselineskip]
+    {\LARGE Algos @bandiaoz 2024\\[\baselineskip]\small for ACM}
+    \\[0.2\baselineskip]
+    \rule{\textwidth}{0.4pt}\vspace*{-\baselineskip}\vspace{3.2pt}
+    \rule{\textwidth}{1.6pt}\\[\baselineskip]
+    \scshape
+
+    \begin{figure}[!htb]
+        \centering
+        %\includegraphics[width=0.3\textwidth]{icpc}    % 当前tex文件同一目录下名为icpc的任意格式图片
+    \end{figure}
+
+    % \vspace*{3\baselineskip}
+    % Edited by \\[\baselineskip] {Byjiang\par}
+    % {Team \Large Byjiang \normalsize{at CUGB}\par }
+    \vfill
+    {\scshape 2024} \\{\large bandiaoz}\par
+  \end{titlepage}
+ \newpage            % 封面背后空白页
+\tableofcontents     % 目录
+
+\setcounter{page}{1}
+
+\input{contents.tex}
+
+\end{document}
+\label{LastPage}
