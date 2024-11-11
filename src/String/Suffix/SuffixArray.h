@@ -19,6 +19,11 @@ namespace OY {
         template <bool Rank, bool Height, size_type MAX_LEN>
         struct SuffixArray {
             size_type m_length;
+            /**
+             * @param m_sa m_sa[i] 表示排名为 `i` 的后缀的起始位置
+             * @param m_rank m_rank[i] 表示位置为子串 `substr(i)` 的后缀的排名
+             * @param m_height m_height[i] = lcp(substr(m_sa[i]), substr(m_sa[i - 1]))
+             */
             std::vector<size_type> m_sa, m_rank, m_height;
             static bool s_bool_buffer[MAX_LEN << 1];
             static size_type s_lms_map_buffer[MAX_LEN + 1], s_buffer[MAX_LEN * 6];
