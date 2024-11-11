@@ -7,7 +7,7 @@
 [status](https://www.luogu.com.cn/record/175520546)
 */
 /**
- * 本题为序列自动机模板题
+ * 本题为序列自动机模板题，给定一个序列 a，每次询问一个序列 b 是否为 a 的子序列。
  * 值域(字符集)小时，适用 FastSequenceAutomaton
  * 值域(字符集)大时，适用 SequenceAutomaton
  */

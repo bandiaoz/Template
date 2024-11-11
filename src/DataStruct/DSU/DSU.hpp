@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_DISJOINTUNION__
+#define __OY_DISJOINTUNION__
 
 #include <algorithm>
 #include <cstdint>
@@ -121,3 +122,5 @@ namespace OY {
     template <bool MaintainGroupSize = false>
     using DSUTable = DSU::Table<MaintainGroupSize>;
 }
+
+#endif
