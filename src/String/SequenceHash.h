@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_SEQUENCEHASH__
+#define __OY_SEQUENCEHASH__
 
 #include <algorithm>
 #include <chrono>
@@ -70,6 +71,9 @@ namespace OY {
                 for (size_type i = 1; i != length; i++) s *= u, m_de[i] = inv * m_de[i + 1], inv *= s - one;
             }
         };
+        /**
+         * @brief 哈希结果
+         */
         template <typename... Tps>
         struct SeqHash {
             using hash_type = SeqHash<Tps...>;
@@ -121,7 +125,7 @@ namespace OY {
             using hash_type = SeqHash<Tps...>;
             using Tp = typename hash_type::Tp;
             struct SubSeqHashValue {
-                size_type m_left;
+                size_type m_left; // 左端点
                 Tp m_val;
                 friend bool operator==(const SubSeqHashValue &lhs, const Tp &rhs) { return lhs.m_val == rhs * hash_type::unit_of(lhs.m_left); }
                 friend bool operator!=(const SubSeqHashValue &lhs, const Tp &rhs) { return lhs.m_val != rhs * hash_type::unit_of(lhs.m_left); }
@@ -132,13 +136,19 @@ namespace OY {
                 operator Tp() const { return m_val * hash_type::unit_inv_of(m_left); }
             };
             std::vector<Tp> m_presum;
-            Tp _raw_dif(size_type left, size_type right) const { return m_presum[right + 1] - m_presum[left]; }
+            /**
+             * @brief 获得区间 [left, right) 的哈希值之和
+             */
+            Tp _raw_dif(size_type left, size_type right) const { return m_presum[right] - m_presum[left]; }
+            /**
+             * @brief 询问 `substr(i1, limit)` 和 `substr(i2, limit)` 的 lcp 长度
+             */
             static size_type lcp(const table_type &t1, size_type i1, const table_type &t2, size_type i2, size_type limit) {
                 if (i1 > i2) return lcp(t2, i2, t1, i1, limit);
                 size_type low = 0, high = limit, d = i2 - i1;
                 while (low < high) {
                     size_type mid = (low + high + 1) / 2;
-                    if (t1._raw_dif(i1, i1 + mid - 1) * hash_type::unit_of(d) == t2._raw_dif(i2, i2 + mid - 1))
+                    if (t1._raw_dif(i1, i1 + mid) * hash_type::unit_of(d) == t2._raw_dif(i2, i2 + mid))
                         low = mid;
                     else
                         high = mid - 1;
@@ -146,13 +156,17 @@ namespace OY {
                 return low;
             }
             /**
-             * @brief 询问两个串的子串 lcp 长度
+             * @brief 询问 `t1.substr(i1)` 和 `t2.substr(i2)` 的 lcp 长度
              */
             static size_type lcp(const table_type &t1, size_type i1, const table_type &t2, size_type i2) { 
                 return lcp(t1, i1, t2, i2, std::min<size_type>(t1.m_presum.size() - 1 - i1, t2.m_presum.size() - 1 - i2)); 
             }
+            /**
+             * @brief 比较两个串的子串 [l1, r1) 和 [l2, r2) 的哈希值大小
+             * @note 注意，比较的是哈希值，而不是实际字典序
+             */
             static int compare(const table_type &t1, size_type l1, size_type r1, const table_type &t2, size_type l2, size_type r2) {
-                size_type len1 = r1 - l1 + 1, len2 = r2 - l2 + 1, len = lcp(t1, l1, t2, l2, std::min(len1, len2));
+                size_type len1 = r1 - l1, len2 = r2 - l2, len = lcp(t1, l1, t2, l2, std::min(len1, len2));
                 if (len == len1) {
                     return len == len2 ? 0 : -1;
                 } else if (len == len2) {
@@ -186,17 +200,19 @@ namespace OY {
             void push_back(typename Tp::mod_type elem) { m_presum.push_back(m_presum.back() + Tp::raw(elem) * hash_type::unit_of(m_presum.size() - 1)); }
             void pop_back() { m_presum.pop_back(); }
             /**
-             * @brief 询问区间 [left, right] 的哈希值
+             * @brief 询问区间 [left, right) 的哈希值
              */
             SubSeqHashValue query_value(size_type left, size_type right) const { 
                 return {left, _raw_dif(left, right)}; 
             }
             /**
-             * @brief 询问区间 [left, right] 的哈希
+             * @brief 询问区间 [left, right) 的哈希
              */
             hash_type query_hash(size_type left, size_type right) const { 
-                return {right - left + 1, _raw_dif(left, right) * hash_type::unit_inv_of(left)}; 
+                return {right - left, _raw_dif(left, right) * hash_type::unit_inv_of(left)}; 
             }
         };
     }
 }
+
+#endif

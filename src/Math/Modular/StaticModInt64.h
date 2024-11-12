@@ -17,7 +17,7 @@ namespace OY {
         using mod_type = uint64_t;
         mod_type m_val;
         static mod_type _mul(mod_type a, mod_type b) {
-            return __uint128(a) * b % mod();
+            return __int128(a) * b % mod();
         }
         StaticModInt64() = default;
         template <typename Tp, typename std::enable_if<std::is_signed<Tp>::value>::type * = nullptr>
