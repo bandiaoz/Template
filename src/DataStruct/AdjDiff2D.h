@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_ADJDIFF2D__
+#define __OY_ADJDIFF2D__
 
 #include <algorithm>
 #include <cstdint>
@@ -150,3 +151,5 @@ namespace OY {
     template <typename Tp, bool AutoSwitch = true>
     using AdjBitxorTable2D = AdjDiff2D::Table<AdjDiff2D::BitxorCommutativeGroup<Tp>, AutoSwitch>;
 }
+
+#endif

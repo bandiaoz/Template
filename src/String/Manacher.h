@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_MANACHER__
+#define __OY_MANACHER__
 
 #include <algorithm>
 #include <cstdint>
@@ -76,3 +77,5 @@ namespace OY {
         }
     };
 }
+
+#endif

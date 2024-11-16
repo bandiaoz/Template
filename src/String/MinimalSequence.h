@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_MINIMALSEQUENCE__
+#define __OY_MINIMALSEQUENCE__
 
 #include <algorithm>
 #include <cstdint>
@@ -28,3 +29,5 @@ namespace OY {
         return i;
     }
 }
+
+#endif
