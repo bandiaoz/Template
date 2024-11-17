@@ -9,6 +9,7 @@ using ll = long long;
 [status](https://www.luogu.com.cn/record/184878849)
 */
 /**
+ * 删去一条边，并添加一条边，求新树的最大直径和最小直径
  * 本题为射线线段助手模板题
  */
 

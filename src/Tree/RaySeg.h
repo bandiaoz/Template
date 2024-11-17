@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_RAYSEG__
+#define __OY_RAYSEG__
 
 #include <algorithm>
 #include <cstdint>
@@ -185,3 +186,5 @@ namespace OY {
         size_type Table<Tree, Tp, MAX_VERTEX>::s_use_count;
     }
 }
+
+#endif

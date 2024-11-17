@@ -9,6 +9,7 @@ using ll = long long;
 [status](https://www.luogu.com.cn/record/184865259)
 */
 /**
+ * 对于给定的树，有多少条边满足所有直径都经过这条边
  * 与直径相关的问题，可以使用最长射线线段助手解决
  */
 
