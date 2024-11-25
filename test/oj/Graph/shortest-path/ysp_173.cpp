@@ -8,7 +8,8 @@ using ll = long long;
 [status](https://judge.yosupo.jp/submission/248048)
 */
 /**
- * 本题为最短路模板题
+ * 本题为最短路模板题，求从 s 到 t 的最短路径长度，并还原路径。
+ * 维护路径信息为路径长度，路径步数。
  */
 
 struct sum_path {
