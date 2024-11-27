@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_BIT2DEX__
+#define __OY_BIT2DEX__
 
 #include <algorithm>
 #include <cstdint>
@@ -145,3 +146,5 @@ namespace OY {
     }
     using BIT2D64_ex = BIT2DEX::Tree<int64_t>;
 }
+
+#endif

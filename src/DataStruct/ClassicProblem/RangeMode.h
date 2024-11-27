@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_RANGEMODE__
+#define __OY_RANGEMODE__
 
 #include <algorithm>
 #include <cmath>
@@ -156,3 +157,5 @@ namespace OY {
         }
     };
 }
+
+#endif
