@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_JOHNSON__
+#define __OY_JOHNSON__
 
 #include <limits>
 #include "src/DataStruct/container/FastHeap.h"
@@ -189,3 +190,5 @@ namespace OY {
         };
     }
 }
+
+#endif

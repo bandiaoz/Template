@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_TARJAN_BRIDGE__
+#define __OY_TARJAN_BRIDGE__
 
 #include <algorithm>
 #include <cstdint>
@@ -151,3 +152,5 @@ namespace OY {
         };
     }
 }
+
+#endif

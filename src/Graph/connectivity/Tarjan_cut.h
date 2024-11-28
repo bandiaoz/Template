@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_TARJAN_CUT__
+#define __OY_TARJAN_CUT__
 
 #include <algorithm>
 #include <cstdint>
@@ -202,3 +203,5 @@ namespace OY {
         };
     }
 }
+
+#endif
