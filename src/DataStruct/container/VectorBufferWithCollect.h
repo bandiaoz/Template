@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_VECTORBUFFERWITHCOLLECT__
+#define __OY_VECTORBUFFERWITHCOLLECT__
 
 #include <algorithm>
 #include <cstdint>
@@ -38,3 +39,5 @@ namespace OY {
     }
     using VectorBufferWithCollect_imp::VectorBufferWithCollect;
 }
+
+#endif

@@ -172,7 +172,7 @@ namespace OY {
                 } else if (len == len2) {
                     return 1;
                 } else {
-                    return Tp(t1.query_value(l1 + len, l1 + len)) < Tp(t2.query_value(l2 + len, l2 + len)) ? -1 : 1;
+                    return Tp(t1.query_value(l1 + len, l1 + len + 1)) < Tp(t2.query_value(l2 + len, l2 + len + 1)) ? -1 : 1;
                 }
             }
             SeqHashPresumTable() = default;

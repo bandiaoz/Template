@@ -6,7 +6,7 @@
 [status](https://judge.yosupo.jp/submission/239175)
 */
 /**
- * 本题为 tarjan 算法求 ebcc 模板题
+ * 本题为 tarjan 算法求边双模板题
  */
 
 int main() {

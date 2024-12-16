@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_MASKRMQ__
+#define __OY_MASKRMQ__
 
 #include "src/DataStruct/RMQ/SparseTable.h"
 
@@ -164,3 +165,5 @@ namespace OY {
     template <typename Tp, size_t MAX_LEVEL = 30 - MASKRMQ::MASK_WIDTH>
     using MaskRMQMinValueTable = MASKRMQ::ValueTable<Tp, std::greater<Tp>, MAX_LEVEL>;
 }
+
+#endif

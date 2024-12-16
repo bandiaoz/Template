@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_FASTSEQUENCEAUTOMATON__
+#define __OY_FASTSEQUENCEAUTOMATON__
 
 #include <algorithm>
 #include <cstdint>
@@ -71,3 +72,5 @@ namespace OY {
         }
     };
 }
+
+#endif

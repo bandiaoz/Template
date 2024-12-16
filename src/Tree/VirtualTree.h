@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_VIRTUALTREE__
+#define __OY_VIRTUALTREE__
 
 #include <algorithm>
 #include <cstdint>
@@ -71,3 +72,5 @@ namespace OY {
         size_type VirtualTree<MAX_BUFFER>::s_key_buffer[MAX_BUFFER];
     }
 }
+
+#endif

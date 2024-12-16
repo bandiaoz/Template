@@ -1,20 +1,19 @@
 #include <bits/stdc++.h>
-#include "src/DataStruct/Segtree/SegTree.h"
-#include "src/DataStruct/Segtree/ZkwTree.h"
 #include "src/Math/Modular/StaticModInt32.h"
+#include "src/DataStruct/Segtree/ZkwTree.h"
 
-using ll = long long;
+using Z = OY::mint998244353;
 
 /*
-[P3373 【模板】线段树 2](https://www.luogu.com.cn/problem/P3373)
-[status](https://www.luogu.com.cn/record/191938060)
+[Range Affine Range Sum](https://judge.yosupo.jp/problem/range_affine_range_sum)(https://github.com/yosupo06/library-checker-problems/issues/233)
+[status](https://judge.yosupo.jp/submission/255565)
 */
 /**
- * 本题要进行区间修改和区间查询
- * 为线段树模板题
+ * 本题为区间更新区间查询线段树模板题
+ * 区间更新：a_i <- b \times a_i + c
+ * 区间查询：\sum_{i=l}^{r-1} a_i
  */
 
-using Z = OY::StaticModInt32<571373, true>;
 using Info = Z;
 struct Tag {
     Z mul, add;
@@ -33,8 +32,8 @@ int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    int n, m, p;
-    std::cin >> n >> m >> p;
+    int n, q;
+    std::cin >> n >> q;
     auto read = [&](...) {
         int x;
         std::cin >> x;
@@ -46,21 +45,15 @@ int main() {
     auto seg = OY::make_lazy_ZkwTree<Info, Tag, true>(
         n, read, std::plus<>(), map, com, Tag{1, 0}
     );
-    for (int i = 0; i < m; i++) {
-        int op, l, r, x;
+    while (q--) {
+        int op, l, r, mul, add;
         std::cin >> op;
         
-        if (op == 1) {
-            std::cin >> l >> r >> x;
-            l--;
-            seg.add(l, r, Tag{x, 0});
-        } else if (op == 2) {
-            std::cin >> l >> r >> x;
-            l--;
-            seg.add(l, r, Tag{1, x});
+        if (op == 0) {
+            std::cin >> l >> r >> mul >> add;
+            seg.add(l, r, Tag{mul, add});
         } else {
             std::cin >> l >> r;
-            l--;
             std::cout << seg.query(l, r) << '\n';
         }
     }

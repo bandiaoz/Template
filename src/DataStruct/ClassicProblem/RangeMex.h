@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_RANGEMEX__
+#define __OY_RANGEMEX__
 
 #include "src/DataStruct/Segtree/PersistentCompressedTree.h"
 
@@ -44,3 +45,5 @@ namespace OY {
         }
     };
 }
+
+#endif

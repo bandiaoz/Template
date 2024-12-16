@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_RMQLCA__
+#define __OY_RMQLCA__
 
 #include <algorithm>
 #include <cstdint>
@@ -41,3 +42,5 @@ namespace OY {
         };
     }
 }
+
+#endif

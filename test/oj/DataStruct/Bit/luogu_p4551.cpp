@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "src/DataStruct/BiTrie.h"
+#include "src/DataStruct/Bit/BiTrie.h"
 
 using ll = long long;
 

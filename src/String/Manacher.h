@@ -51,7 +51,7 @@ namespace OY {
          * @brief 询问以 center 为中心的回文串的最大长度
          * @note 若返回值为 `x` ，则从 `center` 扩展所得的最长对称子串长度为 `x * 2 + 1` 。
          */
-        uint32_t query_max_odd(uint32_t center) const {
+        uint32_t query_max_odd_arm(uint32_t center) const {
             static_assert(Odd, "Odd Must Be True");
             return m_odd_arm[center];
         }
@@ -60,7 +60,7 @@ namespace OY {
          * @note 需要满足 `center_l + 1 == center_r`
          *       若返回值为 `x` ，则从 `center_l` 和 `center_r` 扩展所得的最长对称子串长度为 `x * 2` 。
          */
-        uint32_t query_max_even(uint32_t center_l, uint32_t center_r) const {
+        uint32_t query_max_even_arm(uint32_t center_l, uint32_t center_r) const {
             static_assert(Even, "Even Must Be True");
             return m_even_arm[center_r];
         }

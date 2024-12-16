@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_OFFLINEPOINTADDRECTSUMMAINTAINER2D__
+#define __OY_OFFLINEPOINTADDRECTSUMMAINTAINER2D__
 
 #include "src/DataStruct/ClassicProblem/PointAddRectSumCounter2D.h"
 
@@ -71,3 +72,5 @@ namespace OY {
         };
     };
 }
+
+#endif

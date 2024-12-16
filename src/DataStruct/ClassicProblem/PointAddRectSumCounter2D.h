@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_POINTADDRECTSUMCOUNTER2D__
+#define __OY_POINTADDRECTSUMCOUNTER2D__
 
 #include "src/DataStruct/WaveLet.h"
 
@@ -121,3 +122,5 @@ namespace OY {
         };
     };
 }
+
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __OY_SPARSETABLE__
+#define __OY_SPARSETABLE__
+
 
 #include <algorithm>
 #include <cstdint>
@@ -9,7 +11,8 @@
 /**
  * @brief Sparse Table
  * @example OY::STMaxTable<int> max(n, [&](size_t i) { return a[i]; });
- * @example auto min = OY::make_STTable<int>(10, std::less<int>(), [](size_t i) { return i; });
+ * @example auto op = [](int x, int y) { return std::min(x, y); };
+ * @example auto min = OY::make_STTable<int>(10, op, [&](size_t i) { return a[i]; });
  */
 namespace OY {
     namespace ST {
@@ -159,3 +162,5 @@ namespace OY {
     template <typename Tp, size_t MAX_LEVEL = 30>
     using STBitOrTable = ST::Table<ST::BaseSemiGroup<Tp, std::bit_or<Tp>>, MAX_LEVEL>;
 }
+
+#endif

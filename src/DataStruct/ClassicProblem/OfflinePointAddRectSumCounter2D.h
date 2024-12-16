@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_OFFLINEPOINTADDRECTSUMCOUNTER2D__
+#define __OY_OFFLINEPOINTADDRECTSUMCOUNTER2D__
 
 #include <algorithm>
 #include <cstdint>
@@ -117,3 +118,5 @@ namespace OY {
         };
     };
 }
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_LINEARDISJOINTUNION__
+#define __OY_LINEARDISJOINTUNION__
 
 #include <algorithm>
 #include <cstdint>
@@ -84,6 +85,10 @@ namespace OY {
                     return false;
             }
             /**
+             * @brief 把 i 和 i - 1 合并
+             */
+            bool unite_before(size_type i) { return unite_after(i - 1); }
+            /**
              * @brief 查询 left 和 right 是否在同一个组，需要保证 left < right
              */
             bool in_same_group(size_type left, size_type right) const { return find_tail(left) >= right; }
@@ -132,3 +137,5 @@ namespace OY {
         }
     }
 }
+
+#endif

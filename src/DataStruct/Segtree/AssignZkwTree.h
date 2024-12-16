@@ -369,6 +369,14 @@ namespace OY {
     }
     template <typename Tp, Tp Identity, typename Operation, typename Pow, typename InitMapping, typename TreeType = ASZKW::Tree<ASZKW::FastPowMonoid<Tp, Identity, Operation, Pow>>>
     auto make_fast_pow_AssignZkwTree(ASZKW::size_type length, Operation op, Pow pow, InitMapping mapping) -> TreeType { return TreeType(length, mapping); }
+    /**
+     * @brief 创建一个区间赋值线段树
+     * @tparam Tp 元素类型
+     * @tparam Identity 单位元
+     * @param length 长度
+     * @param op 
+     * @param mapping 
+     */
     template <typename Tp, Tp Identity, ASZKW::size_type BATCH = 1 << 17, typename Operation, typename InitMapping, typename TreeType = ASZKW::Tree<ASZKW::LazyMonoid<Tp, Identity, Operation>, BATCH>>
     auto make_lazy_AssignZkwTree(ASZKW::size_type length, Operation op, InitMapping mapping) -> TreeType { return TreeType(length, mapping); }
     template <typename Tp>
