@@ -87,7 +87,13 @@ namespace OY {
              * @brief 找到 `u` 在 `b` 方向上的一个孩子，`b` 在 `u` 的子树上
              */
             size_type find_son(size_type u, size_type b) const { return get_ancestor(b, m_info[b].m_dep - m_info[u].m_dep - 1); }
+            /**
+             * @brief 查询节点 `u` 的深度
+             */
             size_type get_depth(size_type u) const { return m_info[u].m_dep; }
+            /**
+             * @brief 对节点 `u` 调用回调，回调的参数为节点在 `m_seq` 中的下标，即 call(m_info[u].m_dfn)
+             */
             template <typename Callback>
             auto do_for_vertex(size_type u, Callback &&call) const -> decltype(call(0)) { return call(m_info[u].m_dfn); }
             /**

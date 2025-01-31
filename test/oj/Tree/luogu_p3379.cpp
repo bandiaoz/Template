@@ -2,6 +2,7 @@
 #include "src/Tree/VectorTree.h"
 #include "src/DataStruct/RMQ/MaskRMQ.h"
 #include "src/Tree/RMQLCA.h"
+#include "src/Tree/DoubleLCA.h"
 
 using ll = long long;
 
@@ -31,6 +32,7 @@ int main() {
     tree.set_root(root);
     tree.prepare();
     OY::RMQLCA::Table<decltype(tree), OY::MaskRMQMinValueTable<uint32_t>> LCA(&tree);
+    // OY::DoubleLCA::Table<decltype(tree)> LCA(&tree);
 
     while (q--) {
         int u, v;

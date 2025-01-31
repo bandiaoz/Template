@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_DINICMCMF__
+#define __OY_DINICMCMF__
 
 #include <algorithm>
 #include <cstdint>
@@ -15,7 +16,7 @@
  * 第二个为 `BoundGraph` ，可以解决（非负费用）无源汇上下界最小费用可行流、有源汇上下界最小费用最小流、有源汇上下界最小费用最大流问题；
  * 第三个为 `NegativeCycleGraph` ，可以解决有负圈情况下的最小费用最大流问题；
  * 第四个为 `NegativeCycleBoundGraph` ，可以解决有负圈情况下的无源汇上下界最小费用可行流、有源汇上下界最小费用最小流、有源汇上下界最小费用最大流问题。
- * @example OY::DINICMCMF::Graph<int, int, false> flow(n, m);
+ * @example OY::DINICMCMF::Graph<FlowType, CostType, HasNegative> flow(n, m);
  */
 namespace OY {
     namespace DINICMCMF {
@@ -359,3 +360,5 @@ namespace OY {
         };
     }
 }
+
+#endif

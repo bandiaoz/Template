@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#include "src/Graph/EulerPath_udg.h"
-#include "src/Graph/EulerPath_dg.h"
+#include "src/Graph/misc/EulerPath_udg.h"
+#include "src/Graph/misc/EulerPath_dg.h"
 
 /*
 [Eulerian Trail (Directed)](https://judge.yosupo.jp/problem/eulerian_trail_directed)(https://github.com/yosupo06/library-checker-problems/issues/25)

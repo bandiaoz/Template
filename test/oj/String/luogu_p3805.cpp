@@ -20,9 +20,9 @@ int main() {
     OY::Manacher<true, true> manacher(s);
     int ans = 0;
     for (int i = 0; i < s.size(); i++) {
-        ans = std::max<int>(ans, manacher.query_max_odd(i) * 2 + 1);
+        ans = std::max<int>(ans, manacher.query_max_odd_arm(i) * 2 + 1);
         if (i + 1 < s.size()) {
-            ans = std::max<int>(ans, manacher.query_max_even(i, i + 1) * 2);
+            ans = std::max<int>(ans, manacher.query_max_even_arm(i, i + 1) * 2);
         }
     }
 

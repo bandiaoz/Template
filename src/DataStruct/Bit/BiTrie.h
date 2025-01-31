@@ -9,7 +9,12 @@
 
 /**
  * @brief 01 字典树
- * @example OY::BiTrie::Tree<uint32_t, 30>;
+ * @tparam Key 字典树的元素类型，一般为 `uint32_t` 或 `uint64_t`
+ * @tparam L 字典树的位数，表示对每个数字的 `[0, L)` 位，从高位到低位进行考虑，`uint32_t` 可取 `32`
+ * @example OY::BiTrie::Tree<Key, L, Info> trie;
+ * @example OY::BiTrie::CountTree<Key, CountType, L> cnt_trie;
+ * @note 可处理范围为 $[0, 2^L - 1]$ 的数字
+ * @note judge(Tree::node *child) 表示对 child 节点的检查，是否可以从 child 节点继续向下走
  */
 namespace OY {
     namespace BiTrie {
@@ -23,6 +28,11 @@ namespace OY {
             template <typename Node>
             bool operator()(Node *p) const { return !p->is_null(); }
         };
+        /**
+         * @brief 数字迭代器，从二进制高位到低位遍历数字的每一位
+         * @tparam Key 数字类型
+         * @tparam L 数字的位数
+         */
         template <typename Key, size_type L>
         struct NumberIteration {
             Key m_number;
@@ -42,6 +52,13 @@ namespace OY {
             NumberIterator begin() const { return NumberIterator(m_number, L - 1); }
             NumberIterator end() const { return NumberIterator(m_number, -1); }
         };
+        /**
+         * @brief 01 字典树，维护一个数字集合
+         * @tparam Key 字典树的元素类型
+         * @tparam L 字典树的位数
+         * @tparam Info 字典树的节点额外信息类型
+         * @tparam BufferType 缓冲区类型
+         */
         template <typename Key, size_type L, typename Info = Ignore, template <typename> typename BufferType = VectorBufferWithCollect>
         class Tree {
         public:
@@ -53,6 +70,14 @@ namespace OY {
                 node *child1() const { return _ptr(m_child[1]); }
             };
             struct handler {
+                /**
+                 * @brief 查询和 `number` 的最相似的数字，也就是和 `number` 的异或值最小的数字
+                 * @tparam Judger 
+                 * @param tr 字典树
+                 * @param number 要查询的数字
+                 * @param judge 每次面临左右孩子分叉时，最佳分叉的检查条件
+                 * @return 返回适配的叶子结点指针，以及逐位判定相同与否的 `mask`
+                 */
                 template <typename Judger>
                 static std::pair<node *, Key> _query(const tree_type &tr, Key number, Judger &&judge) {
                     size_type it = tr.m_root;
@@ -160,7 +185,8 @@ namespace OY {
             /**
              * @brief 插入一个数 `number`
              * @param number 插入的数字
-             * @param modify 表示从根节点到叶子节点，对一路上的节点所做的操作
+             * @param modify 表示从根节点到叶子节点，对一路上的节点所做的操作，
+             *               参数为 modify(Tree::node*) 
              * @return 插入元素后的叶子节点
              */
             template <typename Modify = Ignore>
@@ -185,7 +211,8 @@ namespace OY {
             /**
              * @brief 对于从根到叶子节点的路径上的每个节点，执行 `modify` 操作
              * @param number 要追溯的值
-             * @param modify 表示从根节点到叶子节点，对一路上的节点所做的操作
+             * @param modify 表示从根节点到叶子节点，对一路上的节点所做的操作，
+             *               参数为 modify(Tree::node*)
              */
             template <typename Modify>
             void trace(Key number, Modify &&modify) {
@@ -194,7 +221,8 @@ namespace OY {
             }
             /**
              * @brief 是否包含数字 `number`
-             * @return 如果包含返回叶子节点，否则通过 `is_null()` 判断是否空节点
+             * @return 返回对应的叶子节点
+             * @note 需要通过 `is_null()` 判断是否空节点
              */
             const node *contains(Key number) const {
                 NumberIteration<Key, L> num(number);
@@ -202,9 +230,9 @@ namespace OY {
             }
             /**
              * @brief 查询和 `number` 的异或值最小的叶子节点
-             * @param judge 
+             * @param judge 表示每次面临左右孩子分叉时，最佳分叉的检查条件
              * @note 默认树中至少有一个可选的元素
-             * @return 返回适配的叶子结点指针和异或的最小值
+             * @return 返回适配的叶子结点指针和异或得到的最小值
              */
             template <typename Judger = BaseQueryJudger>
             std::pair<node *, Key> min_bitxor(Key number, Judger &&judge = Judger()) const {
@@ -214,9 +242,9 @@ namespace OY {
             }
             /**
              * @brief 查询和 `number` 的异或值最大的叶子节点
-             * @param judge 
+             * @param judge 表示每次面临左右孩子分叉时，最佳分叉的检查条件
              * @note 默认树中至少有一个可选的元素
-             * @return 返回适配的叶子结点指针和异或的最大值
+             * @return 返回适配的叶子结点指针和异或得到的最大值
              */
             template <typename Judger = BaseQueryJudger>
             std::pair<node *, Key> max_bitxor(Key number, Judger &&judge = Judger()) const { 
@@ -231,6 +259,13 @@ namespace OY {
                 if (m_root) _dfs<0>(m_root, 0, call);
             }
         };
+        /**
+         * @brief 计数字典树，可以统计每个数字出现的次数
+         * @tparam Key 字典树的元素类型
+         * @tparam CountType 计数类型
+         * @tparam L 字典树的位数
+         * @tparam BufferType 缓冲区类型
+         */
         template <typename Key, typename CountType, size_type L, template <typename> typename BufferType = VectorBufferWithCollect>
         struct CountTree {
             struct CountInfo {
@@ -246,13 +281,28 @@ namespace OY {
             static void _reserve(size_type capacity) { inner_type::_reserve(capacity); }
             static constexpr Key _mask() { return inner_type::_mask(); }
             inner_type m_tree;
+            /**
+             * @brief 获取根节点
+             */
             node *root() const { return m_tree.root(); }
+            /**
+             * @brief 判断字典树是否为空
+             */
             bool empty() const { return m_tree.empty(); }
+            /**
+             * @brief 插入一个数字 `number`
+             * @param number 插入的数字
+             * @return 插入元素后的叶子节点
+             */
             node *insert_one(Key number) {
                 auto res = m_tree.insert(number, [](node *p) { p->add_one(); });
                 root()->add_one();
                 return res;
             }
+            /**
+             * @brief 删除一个数字 `number`
+             * @param number 要删除的数字
+             */
             void erase_one(Key number) {
                 bool changed = false;
                 m_tree.erase(number, [&](node *p) {
@@ -262,9 +312,31 @@ namespace OY {
                 });
                 if (changed) m_tree.trace(number, [](node *p) { p->remove_one(); });
             }
+            /**
+             * @brief 是否包含数字 `number`
+             * @return 返回对应的叶子节点
+             * @note 需要通过 `is_null()` 判断是否空节点
+             */
             const node *contains(Key number) const { return m_tree.contains(number); }
+            /**
+             * @brief 查询和 `number` 的异或值最小的叶子节点
+             * @param number 要查询的数字
+             * @return 返回适配的叶子结点指针和异或的最小值
+             */
             std::pair<node *, Key> min_bitxor(Key number) const { return m_tree.min_bitxor(number); }
+            /**
+             * @brief 查询和 `number` 的异或值最大的叶子节点
+             * @param number 要查询的数字
+             * @return 返回适配的叶子结点指针和异或的最大值
+             */
             std::pair<node *, Key> max_bitxor(Key number) const { return m_tree.max_bitxor(number); }
+            /**
+             * @brief 查询和 `number` 的异或值第 `k` 大的叶子节点
+             * @param number 要查询的数字
+             * @param k 第 `k` 大的异或值
+             * @return 返回适配的叶子结点指针和异或得到的第 `k` 大的异或值
+             * @note 需要保证 `k` 在 `[0, root()->count()]` 范围内
+             */
             std::pair<node *, Key> kth_bitxor(Key number, CountType k) const {
                 return handler::_query(m_tree, number ^ _mask(), [rnk = root()->count() - 1 - k](node *p) mutable {
                     auto cnt = p->count();
@@ -272,6 +344,12 @@ namespace OY {
                     return rnk -= cnt, false;
                 });
             }
+            /**
+             * @brief 查询和 `number` 的异或值等于 `result` 的叶子节点，在字典树中的排名
+             * @param number 要查询的数字
+             * @param result 要查询的异或值
+             * @return 返回和 `number` 的异或值等于 `result` 的叶子节点，在字典树中的排名
+             */
             CountType rank_bitxor(Key number, Key result) const {
                 CountType smaller{};
                 handler::_query(m_tree, number, [&, it = NumberIteration<Key, L>(result).begin()](node *p) mutable {
@@ -281,6 +359,10 @@ namespace OY {
                 });
                 return smaller;
             }
+            /**
+             * @brief 枚举字典树中所有的数字
+             * @param call 对每个数字的回调函数
+             */
             template <typename Callback>
             void enumerate(Callback &&call) const { m_tree.enumerate(call); }
         };

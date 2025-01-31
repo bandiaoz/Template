@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __POWER__
+#define __POWER__
+
 #include <cassert>
 
 template <typename T>
@@ -19,3 +21,5 @@ constexpr static T power(T a, int64_t b) {
     }
     return res;
 }
+
+#endif

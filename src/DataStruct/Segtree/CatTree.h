@@ -110,7 +110,7 @@ namespace OY {
             /**
              * @brief 询问所有元素
              */
-            value_type query_all() const { return query(0, m_size - 1); }
+            value_type query_all() const { return query(0, m_size); }
             /**
              * @brief 树上二分查询右边界
              * @note 假设本函数返回 `r` ，则表示，对于 `i∈[left, r]`  ，均有 `judge(query(left, i))` 为真。而当 `i>r` 时，有 `judge(query(left, i))` 为假。显然，`r` 的最大值为 `m_size-1` 。

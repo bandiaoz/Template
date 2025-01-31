@@ -103,7 +103,7 @@ namespace OY {
              * @brief 区间查询，返回区间 `[left, right)` 的和
              * @note 允许 `left == right`，此时返回 `0`
              */
-            Tp query(size_type left, size_type right) const { right--; return presum(right) - presum(left - 1); }
+            Tp query(size_type left, size_type right) const { return presum(right) - presum(left); }
             /**
              * @brief 全区间查询，返回区间 `[0, n)` 的和
              */

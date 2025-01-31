@@ -3,6 +3,9 @@
 
 #include "src/DataStruct/Segtree/CatTree.h"
 
+/**
+ * @brief 根树
+ */
 namespace OY {
     namespace SQRT {
         using size_type = uint32_t;
@@ -148,7 +151,7 @@ namespace OY {
                 } else if (l + 1 == r)
                     return group::op(m_suffix[left], m_prefix[right]);
                 else
-                    return group::op(group::op(m_suffix[left], m_table.query(l + 1, r - 1)), m_prefix[right]);
+                    return group::op(group::op(m_suffix[left], m_table.query(l + 1, r)), m_prefix[right]);
             }
             value_type query_all() const { return m_table.query_all(); }
             /**
@@ -164,7 +167,7 @@ namespace OY {
                 if (l + 1 == m_table.size()) return m_size - 1;
                 size_type r = m_table.max_right(l + 1, [&](const value_type &x) { return judge(group::op(val, x)); });
                 if (r + 1 == m_table.size()) return m_size - 1;
-                if (r > l) val = group::op(val, m_table.query(l + 1, r));
+                if (r > l) val = group::op(val, m_table.query(l + 1, r + 1));
                 return _max_right2((r + 1) * m_ctrl.block_size(), std::min(m_size, (r + 2) * m_ctrl.block_size()), [&](const value_type &x) { return judge(group::op(val, x)); });
             }
             /**
@@ -180,7 +183,7 @@ namespace OY {
                 if (!r) return 0;
                 size_type l = m_table.min_left(r - 1, [&](const value_type &x) { return judge(group::op(x, val)); });
                 if (!l) return 0;
-                if (l < r) val = group::op(m_table.query(l, r - 1), val);
+                if (l < r) val = group::op(m_table.query(l, r), val);
                 return _min_left2(((l - 1) * m_ctrl.block_size()) - 1, (l * m_ctrl.block_size()) - 1, [&](const value_type &x) { return judge(group::op(x, val)); });
             }
         };

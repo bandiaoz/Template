@@ -7,7 +7,7 @@ using Z = OY::mint998244353;
 
 /*
 [Range Set Range Composite](https://judge.yosupo.jp/problem/range_set_range_composite)(https://github.com/yosupo06/library-checker-problems/issues/829)
-[status](https://judge.yosupo.jp/submission/255564)
+[status](https://judge.yosupo.jp/submission/2593584)
 */
 /**
  * 本题为区间更新区间查询线段树模板题
@@ -38,7 +38,7 @@ int main() {
         std::cin >> mul >> add;
         return Info{mul, add};
     };
-    auto S = OY::make_lazy_AssignZkwTree<Info, identity>(n, op, read);
+    auto S = OY::make_lazy_AssignZkwTree<Info>(n, op, read, identity);
     while (q--) {
         int op;
         std::cin >> op;

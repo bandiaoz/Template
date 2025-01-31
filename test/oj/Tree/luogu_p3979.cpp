@@ -42,7 +42,7 @@ int main() {
     OY::HLD::Table<decltype(tree)> hld(&tree);
     OY::AssignMinZkw<int> zkw(n, [&](int u) {
         return vals[hld.m_seq[u]];
-    });
+    }, INT32_MAX);
 
     while (q--) {
         int op;

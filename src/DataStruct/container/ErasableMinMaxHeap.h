@@ -1,9 +1,11 @@
-#pragma once
+#ifndef __OY_ERASABLEMINMAXHEAP__
+#define __OY_ERASABLEMINMAXHEAP__
 
 #include "src/DataStruct/container/MinMaxHeap.h"
 
 /**
  * @brief 懒删除的大小根堆
+ * @example OY::EMMHeap::Heap<Tp> heap;
  */
 namespace OY {
     namespace EMMHeap {
@@ -63,3 +65,5 @@ namespace OY {
         };
     }
 }
+
+#endif

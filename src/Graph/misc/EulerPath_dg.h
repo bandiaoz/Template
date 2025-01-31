@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_EULERPATH_DG__
+#define __OY_EULERPATH_DG__
 
 #include <algorithm>
 #include <cstdint>
@@ -126,7 +127,7 @@ namespace OY {
             /**
              * @brief 获取欧拉路
              */
-            template <typename Callback>
+            // template <typename Callback>
             std::vector<size_type> get_path(size_type prefer_source = 0) const {
                 if (!m_prepared) _prepare();
                 std::vector<size_type> res;
@@ -143,3 +144,5 @@ namespace OY {
         };
     }
 }
+
+#endif

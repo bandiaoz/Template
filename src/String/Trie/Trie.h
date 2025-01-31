@@ -8,6 +8,7 @@
 
 /**
  * @brief Trie 前缀树
+ * @example OY::Trie::StaticTrie<NodeWrap, ChildCount> trie;
  */
 namespace OY {
     namespace Trie {

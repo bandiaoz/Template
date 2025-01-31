@@ -8,6 +8,8 @@
 #include <numeric>
 #include <vector>
 
+#include "src/Misc/std_bit.h"
+
 /**
  * @brief Sparse Table
  * @example OY::STMaxTable<int> max(n, [&](size_t i) { return a[i]; });

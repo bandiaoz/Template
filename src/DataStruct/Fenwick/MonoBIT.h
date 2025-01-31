@@ -10,6 +10,7 @@
 
 /**
  * @brief Mono 树状数组
+ * @note 本模板为 `BIT` 在只有单点修改、没有区间修改情况下的特化。
  */
 namespace OY {
     namespace MONOBIT {
@@ -114,6 +115,7 @@ namespace OY {
             }
             /**
              * @brief 区间查询，返回区间 `[left, right)` 的和
+             * @note 允许 `left == right`，此时返回 `group::identity()`
              */
             value_type query(size_type left, size_type right) const {
                 right--;

@@ -10,7 +10,7 @@
 /**
  * @brief 二维差分/前缀和表
  * @tparam Tp 数据类型
- * @tparam AutoSwitch 是否自动切换状态
+ * @tparam AutoSwitch 是否自动切换状态，默认为 true
  * @example OY::AdjSumTable2D<Tp> table(row, column);
  *          OY::AdjBitxorTable2D<Tp> table(row, column);
  */
