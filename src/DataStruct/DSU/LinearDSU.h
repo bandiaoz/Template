@@ -12,6 +12,7 @@
  * @brief 线性并查集
  * @tparam MaintainGroupSize 是否维护每个组的大小
  * @example OY::LDSU::Table<true> dsu(n);
+ * @note 每个联通块都是一个连续的区间 [head, head + size)
  */
 namespace OY {
     namespace LDSU {
@@ -35,7 +36,7 @@ namespace OY {
                 for (size_t i = 0; i != m_tail.size(); i++) m_tail[i] = i;
             }
             /**
-             * @brief 查询 i 所在的组的头部
+             * @brief 查询元素 `i` 所在分组的头部。
              */
             size_type find_head(size_type i) const {
                 static_assert(MaintainGroupSize, "MaintainGroupSize Must Be True");
@@ -43,7 +44,7 @@ namespace OY {
                 return tail - m_group_size[tail] + 1;
             }
             /**
-             * @brief 查询 i 所在的组的尾部
+             * @brief 查询元素 `i` 所在分组的尾元素。
              */
             size_type find_tail(size_type i) const {
                 size_type quot = i >> MASK_WIDTH, rem = i & (MASK_SIZE - 1);
@@ -56,10 +57,16 @@ namespace OY {
                     return (m_tail[quot] << MASK_WIDTH) ^ std::countr_zero(m_masks[m_tail[quot]]);
                 }
             }
+            /**
+             * @brief 查询元素 `i` 所在分组的上一个分组的尾元素
+             */
             size_type find_prev(size_type i) const { return find_head(i) - 1; }
+            /**
+             * @brief 查询元素 `i` 所在分组的下一个分组的首个元素
+             */
             size_type find_next(size_type i) const { return find_tail(i) + 1; }
             /**
-             * @brief 查询 i 所在的组的大小，即 m_group_size[find_tail(i)]
+             * @brief 查询元素 `i` 所在分组的大小，即 m_group_size[find_tail(i)]
              * @tparam IsTail 是否已经是这个组的尾部
              */
             template <bool IsTail = false>

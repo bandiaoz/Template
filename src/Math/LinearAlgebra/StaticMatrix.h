@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_STATICMATRIX__
+#define __OY_STATICMATRIX__
 
 #include <algorithm>
 #include <cstdint>
@@ -102,3 +103,5 @@ namespace OY {
         return os;
     }
 };
+
+#endif

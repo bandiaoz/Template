@@ -1,12 +1,5 @@
 #include <bits/stdc++.h>
-#include "src/Graph/EulerPath_dg.h"
-#ifdef LOCAL
-#include "pprint.hpp"
-#else
-#define debug(...)
-#endif
-
-using ll = long long;
+#include "src/Graph/misc/EulerPath_dg.h"
 
 /*
 [P7771 【模板】欧拉路径](https://www.luogu.com.cn/problem/P7771)

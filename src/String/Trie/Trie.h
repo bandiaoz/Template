@@ -56,6 +56,10 @@ namespace OY {
                 }
                 modify(&m_data[cur]);
             }
+            /**
+             * @brief 初始化 trie 树
+             * @note 根节点为 `m_data[0]`
+             */
             void _init() { m_data.push_back({}); }
             Tree() { _init(); }
             void reserve(size_type length) { m_data.clear(), m_data.reserve(length + 1), _init(); }

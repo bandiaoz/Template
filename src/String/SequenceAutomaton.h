@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_SEQUENCEAUTOMATON__
+#define __OY_SEQUENCEAUTOMATON__
 
 #include <algorithm>
 #include <cstdint>
@@ -94,3 +95,5 @@ namespace OY {
     using SequenceAutomaton_vector = SequenceAutomaton<std::vector<std::vector<uint32_t>>>;
     using SequenceAutomaton_map = SequenceAutomaton<std::map<uint32_t, std::vector<uint32_t>>>;
 }
+
+#endif

@@ -10,7 +10,6 @@
  * 两个模式串不同当且仅当他们编号不同
  * 
  * 本题为 ac 自动机模板题
- * 建好 ac 自动机之后，按照 fail 序求前缀和，即为子串出现次数
  */
 
 int main() {
@@ -32,12 +31,12 @@ int main() {
 
     ac.prepare();
 
-    std::string t;
-    std::cin >> t;
+    std::string text;
+    std::cin >> text;
 
     int ans = 0;
-    for (int i = 0, j = 0; i < t.size(); i++) {
-        j = ac.next(j, t[i] - 'a');
+    for (int i = 0, j = 0; i < text.size(); i++) {
+        j = ac.next(j, text[i] - 'a');
         // 可以边搜边改，搜过的就清空，以避免重复统计；同时也保证了时间复杂度
         for (int x = j; x && cnt[x]; x = ac.query_fail(x)) {
             ans += cnt[x];

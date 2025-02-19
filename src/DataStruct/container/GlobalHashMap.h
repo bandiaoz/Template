@@ -8,6 +8,9 @@
 #include <numeric>
 #include <vector>
 
+/**
+ * @brief 全局哈希表
+ */
 namespace OY {
     namespace GHASH {
         using size_type = uint32_t;
@@ -67,22 +70,40 @@ namespace OY {
             Recorder<MakeRecord> m_recs;
             size_type m_size;
         public:
+            /**
+             * @brief 预留空间
+             */
             void reserve(size_type count) {
                 if constexpr (MakeRecord) m_recs.reserve(count);
             }
+            /**
+             * @brief 返回哈希表中元素的个数
+             */
             size_type size() const { return m_size; }
+            /**
+             * @brief 判断哈希表是否为空
+             */
             bool empty() const { return !size(); }
+            /**
+             * @brief 清空哈希表
+             */
             void clear() {
                 static_assert(MakeRecord, "MakeRecord Must Be True");
                 for (auto i : m_recs) m_occupied[i] = false;
                 m_recs.clear(), m_size = 0;
             }
+            /**
+             * @brief 遍历哈希表
+             */
             template <typename Callback>
             void do_for_each(Callback &&call) {
                 static_assert(MakeRecord, "MakeRecord Must Be True");
                 for (auto i : m_recs)
                     if (m_occupied[i]) call(m_pool + i);
             }
+            /**
+             * @brief 插入元素
+             */
             pair insert(const KeyType &key) {
                 size_type ha = Moder<BUFFER>()(Hash<KeyType>()(key)), i = ha;
                 while (m_occupied[i]) {
@@ -93,6 +114,9 @@ namespace OY {
                 if constexpr (MakeRecord) m_recs.push_back(i);
                 return {m_pool + i, true};
             }
+            /**
+             * @brief 查找元素
+             */
             node *find(const KeyType &key) const {
                 size_type ha = Moder<BUFFER>()(Hash<KeyType>()(key)), i = ha;
                 while (m_occupied[i]) {
@@ -107,25 +131,38 @@ namespace OY {
         template <typename KeyType, typename MappedType, bool MakeRecord, size_type BUFFER>
         struct UnorderedMap : TableBase<KeyType, MappedType, MakeRecord, BUFFER> {
             using typename TableBase<KeyType, MappedType, MakeRecord, BUFFER>::pair;
+            /**
+             * @brief 插入否则赋值
+             */
             pair insert_or_assign(const KeyType &key, const MappedType &mapped) {
                 pair res = this->insert(key);
                 res.m_ptr->m_mapped = mapped;
                 return res;
             }
+            /**
+             * @brief 插入否则忽略
+             */
             pair insert_or_ignore(const KeyType &key, const MappedType &mapped) {
                 pair res = this->insert(key);
                 if (res.m_flag) res.m_ptr->m_mapped = mapped;
                 return res;
             }
+
             MappedType &operator[](const KeyType &key) {
                 pair res = this->insert(key);
                 if (res.m_flag) res.m_ptr->m_mapped = MappedType{};
                 return res.m_ptr->m_mapped;
             }
+            /**
+             * @brief 获取映射值，若不存在则返回默认值
+             */
             MappedType get(const KeyType &key, const MappedType &_default) const {
                 auto res = this->find(key);
                 return res ? res->m_mapped : _default;
             }
+            /**
+             * @brief 获取映射值，必须保证哈希表中存在该键值
+             */
             const MappedType &get(const KeyType &key) const { return this->find(key)->m_mapped; }
         };
     }

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_STATICBUFFERWRAPWITHCOLLECT__
+#define __OY_STATICBUFFERWRAPWITHCOLLECT__
 
 #include <algorithm>
 #include <cstdint>
@@ -37,3 +38,5 @@ namespace OY {
     }
     using StaticBufferWrapWithCollect_imp::StaticBufferWrapWithCollect;
 }
+
+#endif

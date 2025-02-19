@@ -13,10 +13,12 @@
 
 /**
  * @brief 数位 dp
- * @example auto sol = OY::DIGITDP::AppendHighSolver<Tp, IntStr, Trace>();
+ * @example OY::DIGITDP::AppendHighSolver<Tp, IntStr, Trace=false> sol;
  * @tparam Tp 表达数字数量的类型
- * @tparam IntStr 数字的表示方式
+ * @tparam IntStr 数字的表示方式，IntStr2, IntStr10, StaticIntegerString<base>
  * @tparam Trace 是否开启状态回溯
+ * 
+ * @example sol.solve(number, state_count, transfer, mapping)->Tp
  */
 namespace OY {
     namespace DIGITDP {
@@ -147,6 +149,9 @@ namespace OY {
             for (size_type i = str.size() - 1; ~i; i--) out << str.get(i);
             return out;
         }
+        /**
+         * @brief 获得上一个数字
+         */
         template <typename IntStr>
         IntStr prev_number(IntStr s) {
             size_type n = s.size(), i = 0;
@@ -155,6 +160,9 @@ namespace OY {
             if (n > 1 && i == n - 1 && !s.get(i)) s.pop_high();
             return s;
         }
+        /**
+         * @brief 获得下一个数字
+         */
         template <typename IntStr>
         IntStr next_number(IntStr s) {
             size_type n = s.size(), i = 0;
@@ -269,6 +277,22 @@ namespace OY {
                         for (uint32_t state = 0; state != state_count; state++) plus(dp[state][0], state, i + 1);
                 }
             }
+            /**
+             * @brief 从低位向高位添加数字的数位 dp 模板
+             * @param number 统计 `[1, number]` 范围内的状态的权值和
+             * @param state_count 状态数量
+             * @param transfer 状态转移函数
+             * @param mapping 合法状态权值计算函数
+             * @note `transfer(uint32_t old, uint32_t len, uint32_t c) -> uint32_t;`
+             *       `old` 表示旧状态，`[-1, state_count)`，空状态和舍弃状态为 `-1`，旧状态不会是舍弃状态;
+             *       `len` 表示旧长度;
+             *       `c` 表示在旧数字的基础上，添加一个数字 `c` 到最高位;
+             *       需要返回一个 `uint32_t` 作为添加最高位之后的状态。
+             * @note `map(uint32_t state, uint32_t len) -> Tp;`
+             *       `state` 表示当前状态;
+             *       `len` 表示当前长度;
+             *       需要返回一个 `Tp` 作为当前状态的权值。
+             */
             template <typename Transfer, typename ValueMapping>
             Tp solve(IntStr number, uint32_t state_count, Transfer &&transfer, ValueMapping &&mapping) {
                 Tp ans{};
@@ -342,6 +366,22 @@ namespace OY {
                     call(ceil.second, ceil.first, n - i);
                 }
             }
+            /**
+             * @brief 从高位向低位添加数字的数位 dp 模板
+             * @param number 统计 `[1, number]` 范围内的状态的权值和
+             * @param state_count 状态数量
+             * @param transfer 状态转移函数
+             * @param mapping 合法状态权值计算函数
+             * @note `transfer(uint32_t old, uint32_t i, uint32_t c) -> uint32_t;`
+             *       `old` 表示旧状态，`[-1, state_count)`，空状态和舍弃状态为 `-1`，旧状态不会是舍弃状态;
+             *       `i` 表示已填满 `[i+1, len(number)-1]` ，即将填充的是第 `i` 位;
+             *       `c` 表示在旧数字的基础上，添加一个数字 `c` 到最低位;
+             *       需要返回一个 `uint32_t` 作为添加最低位之后的状态。
+             * @note `map(uint32_t state, uint32_t len) -> Tp;`
+             *       `state` 表示当前状态;
+             *       len 表示当前长度;
+             *       需要返回一个 `Tp` 作为当前状态的权值。
+             */
             template <typename Transfer, typename ValueMapping>
             Tp solve(IntStr number, uint32_t state_count, Transfer &&transfer, ValueMapping &&mapping) {
                 Tp ans{};
@@ -349,6 +389,12 @@ namespace OY {
                 _solve_callback(std::move(number), state_count, transfer, call);
                 return ans;
             }
+            /**
+             * @brief 枚举哪些数字做了贡献
+             * @param mapping 合法状态权值计算函数
+             * @param call 参数为 `call(IntStr val)`
+             * @example sol.enumerate(map, [&](IntStr val) { std::cerr << val << " "; });
+             */
             template <typename ValueMapping, typename Callback>
             void enumerate(ValueMapping &&mapping, Callback &&call) {
                 static_assert(Trace, "Trace Must Be True");

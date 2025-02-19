@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_SIFTHEAP__
+#define __OY_SIFTHEAP__
 
 #include <algorithm>
 #include <cstdint>
@@ -8,6 +9,7 @@
 
 /**
  * @brief 原地升降二叉堆
+ * @note 原本用于 Dijkstra 算法，现基本被 FastHeap 取代
  */
 namespace OY {
     namespace Sift {
@@ -91,3 +93,5 @@ namespace OY {
     template <typename Mapping, typename Compare = std::less<void>>
     using SiftHeap = Sift::Heap<Mapping, Compare>;
 }
+
+#endif

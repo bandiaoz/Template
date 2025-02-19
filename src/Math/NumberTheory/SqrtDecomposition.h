@@ -75,8 +75,8 @@ namespace OY {
             Tp r;
             if constexpr (sizeof(Tp) == 8) {
 #ifdef LOCAL
-                r = std::sqrt(val);
-                r -= r * r > val;
+                r = std::sqrt(m_val);
+                r -= r * r > m_val;
 #else
                 r = std::sqrt((long double)m_val);
 #endif

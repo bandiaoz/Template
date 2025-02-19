@@ -6,8 +6,8 @@
 [status(avl)](https://www.luogu.com.cn/record/198405199)
 */
 /**
- * 本题为 P3369 加强版
- * 为二叉平衡树模板题
+ * 本题为 P3369 加强版，为二叉平衡树模板题
+ * 需要动态维护可重集，支持插入，删除，查询 rank，查询 kth，查询前驱后继
  */
 
 using AVL = OY::AVLMultiset<int>;

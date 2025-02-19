@@ -8,7 +8,7 @@ using ll = long long;
 [status](https://www.luogu.com.cn/record/196229347)
 */
 /**
- * 给定若干数字串，判断是否存在一个串是另一个串的前缀
+ * 给定若干数字串，判断是否存在一个串是另一个串的前缀，如果存在则输出 NO，否则输出 YES
  */
 
 template <typename Node>

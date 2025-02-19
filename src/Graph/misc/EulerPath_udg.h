@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_EULERPATH_UDG__
+#define __OY_EULERPATH_UDG__
 
 #include <algorithm>
 #include <cstdint>
@@ -127,17 +128,18 @@ namespace OY {
              * @param prefer_source 定义优先起点
              */
             Solver calc(size_type prefer_source = 0) const {
-                _prepare();
+                if (!m_prepared) _prepare();
                 Solver sol(m_vertex_cnt, m_raw_edges.size());
-                sol.run(prefer_source, *this, [&](size_type from) { return m_starts[from]; }, [&](size_type from) { return m_starts[from + 1]; }, [&](size_type i) { return i + 1; }, *this);
+                sol.run(
+                    prefer_source, 
+                    *this, [&](size_type from) { return m_starts[from]; }, [&](size_type from) { return m_starts[from + 1]; }, [&](size_type i) { return i + 1; }, *this);
                 return sol;
             }
             /**
              * @brief 获取欧拉路
              */
-            template <typename Callback>
             std::vector<size_type> get_path(size_type prefer_source = 0) const {
-                _prepare();
+                if (!m_prepared) _prepare();
                 std::vector<size_type> res;
                 Solver sol(m_vertex_cnt, m_raw_edges.size());
                 sol.run(
@@ -152,3 +154,5 @@ namespace OY {
         };
     }
 }
+
+#endif

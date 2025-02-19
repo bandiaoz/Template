@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 #include "src/String/Suffix/SuffixArray.h"
 
-using ll = long long;
-
 /*
 [Longest Common Substring](https://judge.yosupo.jp/problem/longest_common_substring)(https://github.com/yosupo06/library-checker-problems/issues/889)
 [status](https://judge.yosupo.jp/submission/255742)

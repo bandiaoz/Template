@@ -8,7 +8,10 @@
 /**
  * @brief 单源最短路径 Dijkstra 算法
  * @example OY::Dijkstra::Graph<Tp> graph(n, m);
- *          OY::Dijkstra::Solver<SemiGroup, CountType, Compare, GetPath> sol(vertex_cnt);
+ *          using Group = OY::Dijkstra::AddGroup<ValueType, SumType=ValueType, Compare=std::less<SumType>, Inf=SafeInfinite<SumType>::max()>;
+ *          graph.calc<Group, CountType, GetPath>(source, target);
+ * 
+ *          OY::Dijkstra::Solver<Group, CountType, Compare, GetPath> sol(vertex_cnt);         
  */
 namespace OY {
     namespace Dijkstra {

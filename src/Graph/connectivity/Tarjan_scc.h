@@ -9,6 +9,13 @@
 
 /**
  * @brief 强连通分量 tarjan
+ * @example OY::SCC::Graph graph(vertex_cnt, edge_cnt);
+ * @note 如果两个点在同一个强连通分量中，那么它们一定在一个环上
+ * @note 有向图的 DFS 生成树主要有 4 种边(u -> v)：
+ *       1. 树边（tree edge）：v 通过边 (u, v) 发现，DFS 树中 v 是 u 的子节点
+ *       2. 反祖边（back edge）：DFS 树中 u 是 v 的后代
+ *       3. 前向边（forward edge）：DFS 树中 v 是 u 的后代，但不是儿子 
+ *       4. 横叉边（cross edge）：其他边
  */
 namespace OY {
     namespace SCC {
@@ -20,6 +27,12 @@ namespace OY {
             size_type m_vertex_cnt, m_id_cnt, m_dfn_cnt;
             std::vector<Info> m_info;
             std::vector<size_type> m_id, m_topo;
+            /**
+             * @brief 找强连通分量
+             * @note 递归栈保存了当前点到 dfs 树根的链，而 tarjan 算法中的 stack 还保存了已经访问过，并且能走到 u/anc[u] 的节点
+             * @note m_info[u].m_low 表示从 u 子树中的节点出发，走一条 B 边或者 C 边可以到达的 v 的 dfn 最小值，并且要求 v 能够到达 u，即 v 在 stack 中
+             * @note 如果 m_info[u].m_low == m_info[u].m_dfn，则 u 是强连通分量的「根」，因为 u 子树的任何点都无法到达 u 的祖先
+             */
             template <typename Traverser>
             void _dfs(size_type i, std::vector<size_type> &stack, Traverser &&traverse) {
                 m_info[i].m_dfn = m_info[i].m_low = m_dfn_cnt++;
@@ -65,6 +78,7 @@ namespace OY {
             size_type query(size_type i) const { return m_id[i]; }
             /**
              * @brief 按照拓扑序返回所有强连通分量
+             * @note 拓扑序：如果 u 能到达 v，那么 u 的拓扑序小于 v 的拓扑序
              */
             std::vector<std::vector<size_type>> get_groups() const {
                 std::vector<std::vector<size_type>> res(m_id_cnt);
@@ -93,6 +107,12 @@ namespace OY {
                 m_edges.resize(m_starts.back());
                 for (auto &e : m_raw_edges) m_edges[cursor[e.m_from]++] = e.m_to;
             }
+            /**
+             * @brief 遍历从 from 出发的边
+             * @tparam Callback 回调函数类型
+             * @param from 起点
+             * @param call 回调函数 `call(to)`
+             */
             template <typename Callback>
             void operator()(size_type from, Callback &&call) const {
                 for (size_type cur = m_starts[from], end = m_starts[from + 1]; cur != end; cur++) call(m_edges[cur]);
@@ -102,7 +122,13 @@ namespace OY {
                 if (!(m_vertex_cnt = vertex_cnt)) return;
                 m_prepared = false, m_raw_edges.clear(), m_raw_edges.reserve(edge_cnt);
             }
+            /**
+             * @brief 添加一条有向边
+             */
             void add_edge(size_type from, size_type to) { m_raw_edges.push_back({from, to}); }
+            /**
+             * @brief 获取 SCC 查询器
+             */
             Solver calc() const {
                 if (!m_prepared) _prepare();
                 Solver sol(m_vertex_cnt);

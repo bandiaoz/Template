@@ -3,8 +3,6 @@
 #include "src/Math/Modular/StaticModInt32.h"
 #include "src/String/SequenceHash.h"
 
-using ll = long long;
-
 /*
 [P2870 [USACO07DEC] Best Cow Line G](https://www.luogu.com.cn/problem/P2870)
 [status(SA)](https://www.luogu.com.cn/record/192132172)
@@ -12,6 +10,7 @@ using ll = long long;
 */
 /**
  * 每次从字符串的头或者尾取一个字符，形成最小字典序的字符串
+ * 
  * 本题求正向和反向的后缀子串字典序顺序，可以有多种做法
  * 可以使用后缀数组解决，也可以使用字符串哈希解决
  * 对于字符串 s，如果 s < reverse(s)，那么就从 s 的头部取一个字符，否则从尾部取一个字符

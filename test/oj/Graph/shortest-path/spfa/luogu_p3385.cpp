@@ -1,15 +1,13 @@
 #include <bits/stdc++.h>
 #include "src/Graph/shortest-path/SPFA.h"
 
-using ll = long long;
-
 /*
 [P3385 【模板】负环](https://www.luogu.com.cn/problem/P3385)
 [status](https://www.luogu.com.cn/record/185889892)
 */
 /**
  * 本题为 Bellman-Ford 算法判负环模板题
- *  SPFA 为 Bellman-Ford 算法的上位替代
+ * SPFA 为 Bellman-Ford 算法的上位替代
  */
 
 int main() {

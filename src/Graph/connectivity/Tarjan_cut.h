@@ -10,6 +10,20 @@
  * @brief 割点，点双连通分量
  * @example OY::VBCC::Graph G(vertex_cnt, edge_cnt);
  *          auto solver = G.calc<true, true>();
+ * @note 无向图中，如果删除某个点后，图变成不连通，则称该点为割点。
+ * @note 如果无论删除哪个点，图都连通，则称该图是点双连通（VBCC）的。
+ *       点双连通分量中，任意两个点都存在至少两条点不重复的路径(不包括端点)。近似等价于不存在割点。
+ * @note 点双连通不具有传递性，即点 A 和点 B 点双连通，点 B 和点 C 点双连通，点 A 和点 C 不一定点双连通。
+ * @note 每条边属于一个点双，割点属于多个点双，其他点属于一个点双。
+ * @note 圆方树中，每个点双对应一个方点，原图的点对应一个圆点，每个圆点向所有包含它的方点连边。
+ *       圆方树的点数是原图的点数（圆点） + 原图的点双连通分量数（方点）。
+ * @note 圆方树的性质：
+ *       1. 圆点方点交替出现，两个方点（点双）之间割点数量 = 树上距离 / 2
+ *          原图 u -> v 的必经点数量 = 圆方树上 u -> v 路径上圆点数量 = 树上距离 / 2
+ *       2. 对于每一个度数为 1 的圆点不是割点，都对应唯一方点（仅属于一个点双）
+ *       3. 原图的割点是圆方树中度数大于 1 的圆点，这种割点被若干点双（与其相邻的方点）共享
+ *       4. 原图中每条边对应唯一方点（点双）
+ *       5. 无论取那个点为根开始 dfs 建圆方树，圆方树的形态不变（找到的点双是固定的）
  */
 namespace OY {
     namespace VBCC {
@@ -23,6 +37,13 @@ namespace OY {
             std::vector<size_type> m_starts, m_stack, m_vbccs;
             std::vector<info> m_info;
             std::vector<bool> m_is_cut;
+            /**
+             * @brief 找点双和割点
+             * @note 无向图中，DFS 生成树上的边要么是树边（tree edge），要么是非树边（返祖边，back edge）。
+             * @note `m_info[u].m_low` 表示 `u` 子树中能够通过一条 B 边（返祖边）走到的最早节点的 dfn 值
+             * @note `adj` 表示 `u` 的子树中，有多少个孩子节点 `v` 到达 `u` 或者比 `u` 更早的点，即 `low[v] >= dfn[u]`
+             * @note 如果 `u` 是根节点，则需要 `adj >= 2` 才是割点，否则需要 `adj >= 1` 才是割点
+             */
             template <typename Traverser>
             void _dfs(size_type i, size_type from, size_type parent, Traverser &&traverser) {
                 size_type pos = m_stack_len, adj = from != -1;
@@ -92,6 +113,12 @@ namespace OY {
                 }
                 if constexpr (GetVBCC) m_starts[m_vbcc_cnt] = m_cursor;
             }
+            /**
+             * @brief 遍历 vbcc 里边的编号，遍历 vbcc 的顺序和 `do_for_each_vbcc` 一致
+             * @param edge_call 处理有边的 vbcc 里的所有边，参数是遍历 vbcc 里边的编号的迭代器，`edge_call(uint32_t *first, uint32_t *last)`
+             * @param single_call 处理没边的 vbcc 里的孤立点，参数是点的编号，`single_call(uint32_t i)`
+             * @param traverser 传入图结构
+             */
             template <typename EdgeCallback, typename SingleCallback, typename Traverser>
             void find_edges(EdgeCallback &&edge_call, SingleCallback &&single_call, Traverser &&traverser) {
                 std::vector<bool> visit(m_vertex_cnt);
@@ -105,7 +132,7 @@ namespace OY {
             }
             /**
              * @brief 操作所有的点双连通分量
-             * @param call 的参数是点双连通分量的首尾指针
+             * @param call 的参数是点双连通分量的首尾指针，`call(uint32_t *first, uint32_t *last)`
              */
             template <typename Callback>
             void do_for_each_vbcc(Callback &&call) {
@@ -115,7 +142,7 @@ namespace OY {
             }
             /**
              * @brief 操作所有的割点
-             * @param call 的参数是割点的编号
+             * @param call 的参数是割点的编号，`call(uint32_t index)`
              */
             template <typename Callback>
             void do_for_each_cut(Callback &&call) {

@@ -20,8 +20,8 @@ using ll = long long;
  * 两次单调栈：维护 height 数组，left[i] 表示 i 左边第一个「小于」 height[i] 的位置，right[i] 表示 i 右边第一个「小于等于」 height[i] 的位置
  *        则 height[i] 对 lcp 的贡献为 (i - left[i]) * (right[i] - i) * height[i]
  * 单调栈：...
- * 涨水法+并查集：从大到小枚举 height，每次将 height[i] 和 height[i-1] 合并
- * 合并前 i-1 集合大小为 left，i 集合大小为 right，对 lcp 产生贡献为 left * right * height[i]
+ * 涨水法+并查集：从大到小枚举 height，如果选到的后缀分别来自 rank - 1 和 rank 所在的组，那么对应的 lcp = height[rank]
+ * 也就是选到的两个后缀为 lcp = height[rank] 的方案数为 size(rank - 1) * size(rank)，对 lcp 产生贡献为 size(rank - 1) * size(rank) * height[i]
  */
 
 void solve_SA_stack2() {

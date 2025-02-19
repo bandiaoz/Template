@@ -3,13 +3,15 @@
 
 /*
 [P3796 【模板】AC 自动机（加强版）](https://www.luogu.com.cn/problem/P3796)
-[status](https://www.luogu.com.cn/record/197125915)
+[status](https://www.luogu.com.cn/record/200964179)
 */
 /**
  * 有 n 个模式串，一个文本串，找出哪些模式串在文本串中出现次数最多
  * 
  * 本题为 ac 自动机模板题
- * 建好 ac 自动机之后，按照 fail 序求前缀和，即为子串出现次数
+ * 建好 ac 自动机之后，在文本串上走一遍，求出每个状态的匹配次数
+ * 然后按照 fail 序求前缀和，即为所有子串出现次数
+ * 同时维护 max 和 ans 数组，记录最大出现次数和模式串编号
  */
 
 int main() {
@@ -31,17 +33,17 @@ int main() {
 
         ac.prepare();
 
-        std::string t;
-        std::cin >> t;
-        for (int i = 0, j = 0; i < t.size(); i++) {
-            j = ac.next(j, t[i] - 'a');
+        std::string text;
+        std::cin >> text;
+        for (int i = 0, j = 0; i < text.size(); i++) {
+            j = ac.next(j, text[i] - 'a');
             cnt[j]++;
         }
 
         int max = 0;
         std::vector<int> ans;
         ac.do_for_failing_nodes([&](int u) {
-            // 在 t 中出现过并且是模式串
+            // 在 text 中出现过并且是模式串
             if (cnt[u] && index[u] != -1) {
                 if (cnt[u] > max) {
                     max = cnt[u];
@@ -50,9 +52,7 @@ int main() {
                     ans.push_back(index[u]);
                 }
             }
-            if (cnt[u]) {
-                cnt[ac.query_fail(u)] += cnt[u];
-            }
+            cnt[ac.query_fail(u)] += cnt[u];
         });
 
         std::sort(ans.begin(), ans.end());

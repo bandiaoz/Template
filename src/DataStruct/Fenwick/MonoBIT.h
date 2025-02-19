@@ -8,6 +8,8 @@
 #include <numeric>
 #include <vector>
 
+#include "src/Misc/std_bit.h"
+
 /**
  * @brief Mono 树状数组
  * @note 本模板为 `BIT` 在只有单点修改、没有区间修改情况下的特化。

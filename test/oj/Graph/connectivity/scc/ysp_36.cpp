@@ -6,7 +6,7 @@
 [status](https://judge.yosupo.jp/submission/239157)
 */
 /**
- * 本题为 tarjan 算法求 scc 模板题
+ * 给定一张图，求出所有的强连通分量，并按照拓扑序输出
  */
 
 int main() {

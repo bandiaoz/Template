@@ -9,7 +9,8 @@
  * 给定 n 个模式串，一个文本串，分别求每个模式串在文本串中的出现次数
  * 
  * 本题为 ac 自动机模板题
- * 建好 ac 自动机之后，按照 fail 序求前缀和，即为子串出现次数
+ * 建好 ac 自动机之后，在文本串上走一遍，求出每个状态的匹配次数
+ * 如果某个状态匹配上了，那么这个状态的所有 fail 状态也匹配上了，因此需要按照 fail 序求前缀和，即为所有子串出现次数
  */
 
 int main() {
@@ -30,11 +31,11 @@ int main() {
     }
     ac.prepare();
 
-    std::string t;
-    std::cin >> t;
+    std::string text;
+    std::cin >> text;
 
-    for (int i = 0, j = 0; i < t.size(); i++) {
-        j = ac.next(j, t[i] - 'a');
+    for (int i = 0, j = 0; i < text.size(); i++) {
+        j = ac.next(j, text[i] - 'a');
         cnt[j]++;
     }
 

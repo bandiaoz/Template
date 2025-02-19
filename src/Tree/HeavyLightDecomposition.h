@@ -84,9 +84,9 @@ namespace OY {
              */
             size_type find_parent(size_type u) const { return m_info[u].m_top_dep == m_info[u].m_dep ? m_info[u].m_parent : (m_info[u].m_dfn ? m_seq[m_info[u].m_dfn - 1] : -1); }
             /**
-             * @brief 找到 `u` 在 `b` 方向上的一个孩子，`b` 在 `u` 的子树上
+             * @brief 找到 `u` 在 `v` 方向上的一个孩子，`v` 在 `u` 的子树上
              */
-            size_type find_son(size_type u, size_type b) const { return get_ancestor(b, m_info[b].m_dep - m_info[u].m_dep - 1); }
+            size_type find_son(size_type u, size_type v) const { return get_ancestor(v, m_info[v].m_dep - m_info[u].m_dep - 1); }
             /**
              * @brief 查询节点 `u` 的深度
              */
@@ -115,6 +115,23 @@ namespace OY {
                     call(info[u].m_dfn, info[v].m_dfn + 1);
                 else if (u != v)
                     call(info[u].m_dfn + 1, info[v].m_dfn + 1);
+            }
+            /**
+             * @brief 对路径外的节点形成的区间依次调用回调
+             * @tparam LCA 是否包含路径最高点
+             * @param call 参数为区间的左右端点，左闭右开
+             */
+            template <bool LCA, typename Callback>
+            void do_for_off_path(size_type u, size_type v, Callback &&call) const {
+                std::pair<size_type, size_type> ranges[32];
+                size_type cnt = 0;
+                do_for_path<LCA>(u, v, [&](size_type l, size_type r) { ranges[cnt++] = {l, r}; });
+                if (!cnt) return;
+                std::sort(ranges, ranges + cnt);
+                if (ranges[0].first) call(0, ranges[0].first);
+                for (size_type i = 1; i != cnt; i++)
+                    if (ranges[i - 1].second != ranges[i].first) call(ranges[i - 1].second, ranges[i].first);
+                if (ranges[cnt - 1].second != m_rooted_tree->vertex_cnt()) call(ranges[cnt - 1].second, m_rooted_tree->vertex_cnt());
             }
             /**
              * @brief 对路径上的节点形成的有序区间调用回调

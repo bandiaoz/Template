@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_FLOYDWARSHALL__
+#define __OY_FLOYDWARSHALL__
 
 #include <bitset>
 #include <cstdint>
@@ -31,3 +32,5 @@ namespace OY {
         };
     }
 }
+
+#endif

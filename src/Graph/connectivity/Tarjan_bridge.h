@@ -10,6 +10,11 @@
  * @brief 桥，边双连通分量
  * @example OY::EBCC::Graph G(vertex_cnt, edge_cnt);
  *          auto solver = G.calc<true, true>();
+ * @note 无向图中，如果删除某条边后，图变成不连通，则称该边为割边（桥）。
+ *       如果无论删除哪条边，图都连通，则称该图是边双连通（EBCC）的。
+ * @note 边双连通具有传递性，即边 a 和边 b 边双连通，边 b 和边 c 边双连通，则边 a 和边 c 边双连通。
+ * @note 原图删掉桥就得到了边双连通分量。边双+桥=树
+ *       每个点属于一个边双，桥横跨了两个边双，其他边每条边属于一个边双
  */
 namespace OY {
     namespace EBCC {
@@ -23,6 +28,12 @@ namespace OY {
             std::vector<size_type> m_starts, m_stack, m_ebccs;
             std::vector<bool> m_is_bridge;
             std::vector<info> m_info;
+            /**
+             * @brief 找桥和边双连通分量
+             * @note 无向图中，DFS 生成树上的边要么是树边（tree edge），要么是非树边（返祖边，back edge）。
+             * @note `m_info[u].m_low` 表示 `u` 子树中能够通过一条 B 边（返祖边）走到的最早节点的 dfn 值
+             * @note 如果树边的孩子节点 `v` 不能到达 `u` 或者比 `u` 更早的点，即 `low[v] > dfn[u]`（等价于 `dfn[v] == dfn[v]`），则边 `(u, v)` 是桥
+             */
             template <typename Traverser>
             void _dfs(size_type i, size_type from, Traverser &&traverser) {
                 size_type pos = m_stack_len;
@@ -56,7 +67,7 @@ namespace OY {
             }
             /**
              * @brief 操作所有的边双连通分量
-             * @param call 的参数是边双连通分量的首尾指针
+             * @param call 的参数是边双连通分量的首尾指针，`call(uint32_t *first, uint32_t *last)`
              */
             template <typename Callback>
             void do_for_each_ebcc(Callback &&call) {
@@ -65,7 +76,8 @@ namespace OY {
             }
             /**
              * @brief 操作所有的桥
-             * @param call 的参数是桥的编号
+             * @param call 的参数是桥的编号，`call(uint32_t index)`
+             * @note 桥的编号是按照输入顺序存储的，如果需要获得边的两个端点，可以 `[u, v] = m_raw_edges[index]`
              */
             template <typename Callback>
             void do_for_each_bridge(Callback &&call) {
@@ -84,7 +96,7 @@ namespace OY {
             mutable bool m_prepared;
             mutable std::vector<size_type> m_starts;
             mutable std::vector<edge> m_edges;
-            std::vector<raw_edge> m_raw_edges;
+            std::vector<raw_edge> m_raw_edges; // 按照输入顺序存储边
             template <typename Callback>
             void operator()(size_type from, Callback &&call) const {
                 auto *first = m_edges.data() + m_starts[from], *last = m_edges.data() + m_starts[from + 1];
@@ -112,6 +124,9 @@ namespace OY {
                 m_prepared = false, m_raw_edges.clear(), m_raw_edges.reserve(edge_cnt);
                 m_starts.assign(m_vertex_cnt + 1, {});
             }
+            /**
+             * @brief 添加一条从 `a` 到 `b` 的无向边
+             */
             void add_edge(size_type a, size_type b) { m_raw_edges.push_back({a, b}); }
             /**
              * @brief 获得查询器
