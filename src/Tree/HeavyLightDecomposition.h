@@ -135,7 +135,10 @@ namespace OY {
             }
             /**
              * @brief 对路径上的节点形成的有序区间调用回调
-             * @param call  参数为区间的左右端点，左闭右开
+             * @param call 按照节点遍历的顺序，依次调用回调
+             * @note 按照 `u` 到 `v` 的方向调用回调，可能出现左端点大于右端点的情况
+             * @note 如果路径从上到下，则 call(l, r) 表示依次经过点的 dfn 为 l, ..., r - 1，即 [l, r)，此时 l < r
+             * @note 如果路径从下到上，则 call(r, l) 表示依次经过点的 dfn 为 r - 1, ..., l，即 (r, l]，此时 l < r
              */
             template <typename Callback>
             void do_for_directed_path(size_type u, size_type v, Callback &&call) const {
@@ -146,10 +149,14 @@ namespace OY {
                         call(info[v].m_top_dfn, info[v].m_dfn + 1);
                         return;
                     } else {
-                        call(info[u].m_dfn, info[u].m_top_dfn + 1), u = info[u].m_parent;
+                        call(info[u].m_dfn + 1, info[u].m_top_dfn), u = info[u].m_parent;
                     }
                 }
-                call(info[u].m_dfn, info[v].m_dfn + 1);
+                if (info[u].m_dep < info[v].m_dep) {
+                    call(info[u].m_dfn, info[v].m_dfn + 1);
+                } else {
+                    call(info[u].m_dfn + 1, info[v].m_dfn);
+                }
             }
             /**
              * @brief 对子树形成的区间依次调用回调

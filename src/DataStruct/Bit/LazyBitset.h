@@ -8,6 +8,7 @@
 
 /**
  * @brief 带懒标记的动态开点位集
+ * @example OY::VectorLazyBitset<uint32_t, MaintainLongest = false> bitset(length);
  */
 namespace OY {
     namespace LazyBitset {

@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "Math/NumberTheory/PollardRho.h"
+#include "src/Math/NumberTheory/PollardRho.h"
 
 /**
  * [P4718【模板】Pollard-Rho](https://www.luogu.com.cn/problem/P4718)

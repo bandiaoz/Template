@@ -1,8 +1,10 @@
-#pragma once
+#ifndef __OY_FFTPOLYNOMIAL__
+#define __OY_FFTPOLYNOMIAL__
 
 #include <algorithm>
-#include <bit>
 #include <cstdint>
+
+#include "src/Misc/std_bit.h"
 
 /**
  * @brief FFT Polynomial
@@ -123,7 +125,7 @@ namespace OY {
                 for (auto &a : *this) a *= __other;
             return *this;
         }
-        poly &operator*=(const poly &__other) { return (*this = product(*this, __other, std::__bit_ceil(size() + __other.size() - 1))).shrink(); }
+        poly &operator*=(const poly &__other) { return (*this = product(*this, __other, std::bit_ceil(size() + __other.size() - 1))).shrink(); }
         poly &operator/=(_Tp __other) {
             for (auto &a : *this) a /= __other;
             return *this;
@@ -150,7 +152,7 @@ namespace OY {
             return res;
         }
         friend poly operator*(const poly &__a, const poly &__b) {
-            poly res(product(__a, __b, std::__bit_ceil(__a.size() + __b.size() - 1)));
+            poly res(product(__a, __b, std::bit_ceil(__a.size() + __b.size() - 1)));
             res.shrink();
             return res;
         }
@@ -179,3 +181,5 @@ namespace OY {
         }
     };
 }
+
+#endif

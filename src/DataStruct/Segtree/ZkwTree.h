@@ -9,6 +9,14 @@
 
 #include "src/Misc/std_bit.h"
 
+/**
+ * @brief zkw 线段树
+ * @example auto zkw = OY::make_ZkwTree<Info>(n, op, mapping);
+ * @example auto zkw = OY::make_lazy_ZkwTree<Info, Tag, InitClearLazy>(n, mapping, op, map, com, Tag{...});
+ * @note auto op = [](Info x, Info y) -> Info { ... };
+ * @note auto map = [](Tag new_modify, Info old_val, uint32_t len) -> Info { ... };
+ * @note auto com = [](Tag new_modify, Tag old_modify) -> Tag { ... };
+ */
 namespace OY {
     namespace ZKW {
         using size_type = uint32_t;

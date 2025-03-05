@@ -10,10 +10,11 @@ using Z = OY::mint998244353;
 [status](https://judge.yosupo.jp/submission/2593584)
 */
 /**
- * 本题为区间更新区间查询线段树模板题
- * 将一次函数进行区间修改 f_i <- c \times x + d
- * 询问区间复合值 f_{r-1}(f_{r-2}(...f_l(x)...))
- * 使用 AssignZkwTree 实现
+ * 给定若干线性函数 f_i = a_i \times x + b_i，有 q 次操作
+ * 0. 将区间 [l, r) 的所有函数更新为 f_i = c \times x + d
+ * 1. 询问区间 [l, r) 的复合值 f_{r-1}(f_{r-2}(...f_l(x)))
+ * 
+ * 使用 AssignZkwTree 维护线性函数，实现区间推平
  */
 
 struct Info {

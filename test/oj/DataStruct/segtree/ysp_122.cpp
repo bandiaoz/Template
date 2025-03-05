@@ -7,8 +7,11 @@
 [status](https://judge.yosupo.jp/submission/253569)
 */
 /**
- * 本题为单点修改，区间查询的线段树，使用 MonoZkwTree 实现
- * 将一次函数使用 op 操作复合
+ * 给定若干个线性函数 f_i(x) = a_i \times x + b_i，有 q 次操作：
+ * 0. 将 f_p(x) 修改为 f_p(x) = c \times x + d
+ * 1. 查询 f_{r - 1}(f_{r - 2}(...f_l(x)))
+ * 
+ * 维护线性操作而不是直接维护值，op 函数复合两个线性操作，线段树维护单点修改区间查询即可
  */
 
 using Z = OY::mint998244353;

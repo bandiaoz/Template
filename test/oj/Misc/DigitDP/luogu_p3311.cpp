@@ -7,7 +7,7 @@ using Z = OY::mint1000000007;
 
 /*
 [P3311 [SDOI2014] 数数](https://www.luogu.com.cn/problem/P3311)
-[status](https://www.luogu.com.cn/record/202879561)
+[status](https://www.luogu.com.cn/record/203761331)
 */
 /**
  * 给定 m 个模式串，求 [1, n] 中，有多少个数字不包含这些模式串
@@ -36,7 +36,7 @@ int main() {
     }
 
     ac.prepare();
-    ac.do_for_failing_nodes([&](auto u) {
+    ac.do_for_extending_nodes([&](auto u) {
         bad[u] |= bad[ac.query_fail(u)];
     });
 

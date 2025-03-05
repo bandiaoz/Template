@@ -101,17 +101,25 @@ namespace OY {
             }
             /**
              * @brief 基于点的树形 dp
+             * @param u 进行树形 dp 时的起始结点，或者说根结点
+             * @param pre_work `pre_work(u, f)`，每当来到一个结点处时，最先调用的回调函数
+             * @param report `report(u, v)`，每当来到一个结点处时，对其一个邻接点递归返回后，调用的回调函数
+             * @param after_work `after_work(u)`，每当来到一个结点处时，对所有邻接点递归返回后，调用的回调函数
              */
             template <typename PreWork = Ignore, typename Report = Ignore, typename AfterWork = Ignore>
-            void tree_dp_vertex(size_type a, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 
-                _tree_dp_vertex(a, -1, pre_work, report, after_work); 
+            void tree_dp_vertex(size_type u, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 
+                _tree_dp_vertex(u, -1, pre_work, report, after_work); 
             }
             /**
              * @brief 基于边的树形 dp
+             * @param u 进行树形 dp 时的起始结点，或者说根结点
+             * @param pre_work `pre_work(u, f, up_dis)`，每当来到一个结点处时，最先调用的回调函数
+             * @param report `report(u, v, dis)`，每当来到一个结点处时，对其一个邻接点递归返回后，调用的回调函数
+             * @param after_work `after_work(u)`，每当来到一个结点处时，对所有邻接点递归返回后，调用的回调函数
              */
             template <typename PreWork = Ignore, typename Report = Ignore, typename AfterWork = Ignore>
-            void tree_dp_edge(size_type a, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 
-                _tree_dp_edge(a, -1, {}, pre_work, report, after_work); 
+            void tree_dp_edge(size_type u, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 
+                _tree_dp_edge(u, -1, {}, pre_work, report, after_work); 
             }
         };
         template <typename Ostream, typename Tp>

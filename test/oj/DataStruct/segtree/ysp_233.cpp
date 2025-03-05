@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "src/Math/Modular/StaticModInt32.h"
 #include "src/DataStruct/Segtree/ZkwTree.h"
+#include "src/DataStruct/Segtree/SegTree.h"
 
 using Z = OY::mint998244353;
 
@@ -9,9 +10,9 @@ using Z = OY::mint998244353;
 [status](https://judge.yosupo.jp/submission/255565)
 */
 /**
- * 本题为区间更新区间查询线段树模板题
- * 区间更新：a_i <- b \times a_i + c
- * 区间查询：\sum_{i=l}^{r-1} a_i
+ * 给定长度为 n 的数组 a，有 q 次操作
+ * 0. 区间更新：a_i <- b \times a_i + c
+ * 1. 区间查询：\sum_{i=l}^{r-1} a_i
  */
 
 using Info = Z;
