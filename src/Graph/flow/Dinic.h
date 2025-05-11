@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_DINIC__
+#define __OY_DINIC__
 
 #include <algorithm>
 #include <cstdint>
@@ -189,3 +190,5 @@ namespace OY {
         };
     }
 }
+
+#endif

@@ -64,12 +64,22 @@ namespace OY {
             value_type _get(size_type i, size_type j) const { return ~i && ~j ? m_sum[i * m_column + j] : group::identity(); }
             void _adjacent_difference() const {
                 for (size_type i = m_row - 1; ~i; i--)
-                    for (size_type j = m_column - 1; ~j; j--) _plus(i, j, _get(i - 1, j - 1) - _get(i - 1, j) - _get(i, j - 1));
+                    for (size_type j = m_column - 1; ~j; j--) {
+                        auto val = _get(i - 1, j - 1);
+                        val = group::op(val, group::inverse(_get(i - 1, j)));
+                        val = group::op(val, group::inverse(_get(i, j - 1)));
+                        _plus(i, j, val);
+                    }
                 m_state = TableState(m_state - 1);
             }
             void _partial_sum() const {
                 for (size_type i = 0; i != m_row; i++)
-                    for (size_type j = 0; j != m_column; j++) _minus(i, j, _get(i - 1, j - 1) - _get(i - 1, j) - _get(i, j - 1));
+                    for (size_type j = 0; j != m_column; j++) {
+                        auto val = _get(i - 1, j - 1);
+                        val = group::op(val, _get(i - 1, j));
+                        val = group::op(val, _get(i, j - 1));
+                        _minus(i, j, val);
+                    }
                 m_state = TableState(m_state + 1);
             }
         public:

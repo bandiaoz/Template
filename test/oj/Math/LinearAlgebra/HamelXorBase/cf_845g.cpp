@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+#include "src/Math/LinearAlgebra/HamelXorBase.h"
+
+/*
+[G. Shortest Path Problem?](https://codeforces.com/contest/845/problem/G)
+[status](https://codeforces.com/contest/845/submission/310776954)
+*/
+/**
+ * 给定无向连通图，求一条从 1 到 n 的路径（可以不是简单路径），使得经过的边权异或和最小。
+ * 
+ * 任意求一条路径，异或和为 x，将所有环的异或和插入线性基中，求 x 与线性基的异或最小值即可。
+ * 所有可能得路径异或和，一定等于一条路径的异或和，异或上任意的环。
+ */
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int n, m;
+    std::cin >> n >> m;
+    std::vector<std::vector<std::pair<int, int>>> g(n);
+    while (m--) {
+        int u, v, w;
+        std::cin >> u >> v >> w;
+        u--, v--;
+        g[u].emplace_back(v, w);
+        g[v].emplace_back(u, w);
+    }
+
+    OY::StaticHamelXorBase32<30> hxb;
+    std::vector<int> dis(n, -1);
+    auto dfs = [&](auto &&self, int u, int d) -> void {
+        dis[u] = d;
+        for (auto [v, w] : g[u]) {
+            if (dis[v] != -1) {
+                int loop = dis[v] ^ d ^ w;
+                hxb.insert(loop);
+            } else {
+                self(self, v, d ^ w);
+            }
+        }
+    };
+    dfs(dfs, 0, 0);
+
+    std::cout << hxb.query_min_bitxor(dis[n - 1]) << "\n";
+
+    return 0;
+}

@@ -2,4 +2,4 @@
 *.zip
 **/.DS_Store
 *.pdf
-# 忽略所有的 .zip 文件
+build/**

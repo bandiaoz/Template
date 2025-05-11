@@ -8,6 +8,8 @@
 
 /**
  * @brief 马拉车算法
+ * @example OY::Manacher<true, true> mc(seq);
+ * @example OY::Manacher<true, true> mc(length, mapping);
  */
 namespace OY {
     template <bool Even = true, bool Odd = true>

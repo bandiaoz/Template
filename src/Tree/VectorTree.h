@@ -116,6 +116,7 @@ namespace OY {
              * @param pre_work `pre_work(u, f, up_dis)`，每当来到一个结点处时，最先调用的回调函数
              * @param report `report(u, v, dis)`，每当来到一个结点处时，对其一个邻接点递归返回后，调用的回调函数
              * @param after_work `after_work(u)`，每当来到一个结点处时，对所有邻接点递归返回后，调用的回调函数
+             * @note 这里 `up_dis` 是 `u` 到 `f` 的父亲的边权， `dis` 是 `u -> v` 的边权，
              */
             template <typename PreWork = Ignore, typename Report = Ignore, typename AfterWork = Ignore>
             void tree_dp_edge(size_type u, PreWork &&pre_work, Report &&report, AfterWork &&after_work) const { 

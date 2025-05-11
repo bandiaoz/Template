@@ -6,7 +6,7 @@
 #include <numeric>
 #include <vector>
 
-#include "src/MATH/NumberTheory/PrimeCheck.h"
+#include "src/Math/NumberTheory/PrimeCheck.h"
 
 /**
  * @brief Pollard Rho，因数分解

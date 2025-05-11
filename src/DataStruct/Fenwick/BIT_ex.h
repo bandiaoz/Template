@@ -6,7 +6,11 @@
 #include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 支持区间加的树状数组

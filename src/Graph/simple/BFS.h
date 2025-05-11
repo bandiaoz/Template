@@ -9,6 +9,9 @@
 
 /**
  * @brief 广度优先搜索
+ * @example OY::BFS::Graph graph(n, m);
+ *          graph.calc<CountType=void, GetPath=false>(source);
+ *          OY::BFS::Solver<CountType=void, GetPath=false> sol(vertex_cnt);
  */
 namespace OY {
     namespace BFS {

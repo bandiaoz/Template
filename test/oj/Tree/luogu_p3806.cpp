@@ -38,9 +38,9 @@ int main() {
     auto pre_work = [&](int root) { blocked[root] = true; };
     auto after_work = [&](int root) {
         std::set<int> total{0}; // 访问过的子树可以提供的路径长度
-        tree.do_for_each_adj_edge(root, [&](int v, int w) {
+        tree.do_for_each_adj_edge(root, [&](int son, int w) {
             std::set<int> curset; // 当前子树可以提供的路径长度
-            dis[v] = w;
+            dis[son] = w;
             auto dfs = [&](auto &&self, int u, int f) -> void {
                 if (blocked[u]) return;
                 curset.insert(dis[u]);
@@ -50,7 +50,7 @@ int main() {
                     self(self, v, u);
                 }
             };
-            dfs(dfs, v, -1);
+            dfs(dfs, son, -1);
             // 组合路径长度
             for (auto cur : curset) {
                 for (int i = 0; i < m; i++) {

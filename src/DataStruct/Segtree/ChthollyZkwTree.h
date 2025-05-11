@@ -6,11 +6,20 @@
 /**
  * @brief 珂朵莉 `zkw` 线段树，底层为 `AssignZkwTree`
  * @example OY::ChthollyZkwTree<Tp> cho(length, init_val = Tp());
- * @note 其中 `Tp` 为同值区间的判断依据，需要维护额外信息可以继承 `BaseSegment`
  */
 namespace OY {
     namespace ChthollyZkw {
         using size_type = ASZKW::size_type;
+        /**
+         * @brief 节点信息，需要维护额外信息可以仿照 `BaseSegment` 重写 `Segment`
+         * @tparam Tp 节点值类型，为同值区间的判断依据
+         * @note 至少需要包含以下信息：
+         *       1. 定义类型 `value_type`，作为单点的值类型
+         *       2. 定义无参构造函数和从 `value_type` 转换而来的构造函数
+         *       3. 定义加法运算，结果为两个相邻 `segment` 信息聚合的结果
+         *       4. 定义成员函数 `has_change()` 。定义一个 `segment` 为同值区间，当且仅当该 `segment` 所表示的区间内的每个点的值都相等。同值区间的 `has_change` 返回 `false` ，非同值区间的 `has_change` 返回 `true`。
+         *       5. 定义成员函数 `get()` ，表示区间任意一个点的值
+         */
         template <typename Tp>
         struct BaseSegment {
             using value_type = Tp;
@@ -30,17 +39,29 @@ namespace OY {
              */
             Tp get() const { return m_front; }
         };
+        /**
+         * @brief 半群信息
+         * @note 需要传递一个 `Segment` 类型，该类型需要满足 `BaseSegment` 的要求以外，加法运算要满足：如果两个同值区间的点值相等，则相加结果仍为其本身
+         */
         template <typename Segment>
         struct ValLazySemiGroup {
             using value_type = Segment;
             static constexpr bool val_is_lazy = true;
             static value_type op(const value_type &x, const value_type &y) { return x + y; }
         };
+        /**
+         * @brief 半群信息
+         * @note 需要传递一个 `Segment` 类型，满足 `BaseSegment` 的要求即可，无特殊要求。
+         */
         template <typename Segment>
         struct LazySemiGroup {
             using value_type = Segment;
             static value_type op(const value_type &x, const value_type &y) { return x + y; }
         };
+        /**
+         * @brief 半群信息
+         * @note 需要传递一个 `Segment` 类型，满足 `BaseSegment` 的要求以外，需要重载 `operator*` ，表示一个长度为 `1` 的 `segment` 乘以 `n` 后可以快速得到长度为 `n` 的同值区间。
+         */
         template <typename Segment>
         struct FastPowSemiGroup {
             using value_type = Segment;
@@ -79,6 +100,7 @@ namespace OY {
             size_type size() const { return m_inner_tree.size(); }
             /**
              * @brief 对区间 `[left, right)` 进行赋值
+             * @note 不允许区间为空 `left == right`
              */
             void modify(size_type left, size_type right, const value_type &val) { m_inner_tree.modify(left, right, _make_segment(val)); }
             /**

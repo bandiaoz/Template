@@ -9,7 +9,7 @@
  * @brief 单源最短路径 Dijkstra 算法
  * @example OY::Dijkstra::Graph<Tp> graph(n, m);
  *          using Group = OY::Dijkstra::AddGroup<ValueType, SumType=ValueType, Compare=std::less<SumType>, Inf=SafeInfinite<SumType>::max()>;
- *          graph.calc<Group, CountType, GetPath>(source, target);
+ *          graph.calc<Group=AddGroup<Tp>, CountType=void, GetPath=false>(source, target);
  * 
  *          OY::Dijkstra::Solver<Group, CountType, Compare, GetPath> sol(vertex_cnt);         
  */
@@ -80,6 +80,10 @@ namespace OY {
             template <typename Tp1, typename Tp2>
             bool operator()(const Tp1 &x, const Tp2 &y) const { return Compare()(y, x); }
         };
+        /**
+         * @brief 记录了每个点的前驱信息
+         * @note `prev = sol.m_dis_heap.m_distance[i].m_from`，表示从 `prev` 到 `i` 的边
+         */
         template <typename Node, typename Heap>
         struct DisHeap {
             std::vector<Node> m_distance;

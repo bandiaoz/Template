@@ -1,0 +1,24 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install compiler
+        run: sudo apt-get update && sudo apt-get install -y clang
+
+      - name: Build and run tests
+        working-directory: template/CP-algo
+        run: |
+          clang++ -std=c++20 -O2 -I. test/local/*.cpp third_party/catch/catch_amalgamated.cpp -o build/all_tests
+          ./build/all_tests --reporter compact 
