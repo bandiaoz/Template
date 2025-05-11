@@ -4,13 +4,21 @@ set -euo pipefail
 # 切换到脚本所在目录
 cd "$(dirname "$0")"
 
-# 编译所有测试
-clang++ -std=c++20 -O2 \
-  -I. \
-  test/local/*.cpp \
-  third_party/catch/catch_amalgamated.cpp \
-  -o build/all_tests
+mkdir -p build
 
-# 运行测试
-echo "Compiled successfully: build/all_tests"
+# 编译每个测试文件为单独可执行
+for testfile in test/local/*.cpp; do
+  base=$(basename "$testfile" .cpp)
+  clang++ -std=c++20 -O2 \
+    -I. \
+    "$testfile" \
+    third_party/catch/catch_amalgamated.cpp \
+    -o build/"$base"
+done
+
+# 运行所有测试
+for exe in build/*; do
+  echo "Running $exe"
+  "$exe" --reporter compact
+done
 
