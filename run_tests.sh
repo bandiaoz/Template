@@ -6,8 +6,8 @@ cd "$(dirname "$0")"
 
 mkdir -p build
 
-# 编译每个测试文件为单独可执行
-for testfile in test/local/*.cpp; do
+# 编译每个测试文件为单独可执行（递归查找 .cpp）
+find test/local -type f -name '*.cpp' -print0 | while IFS= read -r -d '' testfile; do
   base=$(basename "$testfile" .cpp)
   clang++ -std=c++20 -O2 \
     -I. \
@@ -21,4 +21,3 @@ for exe in build/*; do
   echo "Running $exe"
   "$exe" --reporter compact
 done
-

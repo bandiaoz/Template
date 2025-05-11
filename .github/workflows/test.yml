@@ -1,4 +1,4 @@
-name: C++ CI
+name: Test
 
 on:
   push:
@@ -19,9 +19,5 @@ jobs:
 
       - name: Build and run tests
         run: |
-          mkdir -p build
-          clang++ -std=c++20 -O2 -I. \
-            test/local/*.cpp \
-            third_party/catch/catch_amalgamated.cpp \
-            -o build/all_tests
-          ./build/all_tests --reporter compact 
+          chmod +x run_tests.sh
+          bash run_tests.sh 
