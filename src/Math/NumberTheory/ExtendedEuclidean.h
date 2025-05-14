@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_EXTENDEDEUCLIDEAN__
+#define __OY_EXTENDEDEUCLIDEAN__
 
 #include <algorithm>
 #include <cstdint>
@@ -54,3 +55,5 @@ namespace OY {
         }
     };
 }
+
+#endif

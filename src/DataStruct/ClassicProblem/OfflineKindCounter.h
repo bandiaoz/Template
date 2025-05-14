@@ -1,6 +1,8 @@
 #ifndef __OY_OFFLINEKINDCOUNTER__
 #define __OY_OFFLINEKINDCOUNTER__
 
+#include <algorithm>
+
 #include "src/DataStruct/container/GlobalHashMap.h"
 
 /**

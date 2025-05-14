@@ -3,8 +3,6 @@
 
 #include <algorithm>
 #include <array>
-#include <numeric>
-#include <tuple>
 #include <vector>
 
 /**

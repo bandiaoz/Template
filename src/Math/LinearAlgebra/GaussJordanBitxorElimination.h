@@ -1,9 +1,9 @@
-#pragma once
+#ifndef __OY_GAUSSJORDANBITXORELIMINATION__
+#define __OY_GAUSSJORDANBITXORELIMINATION__
 
 #include <algorithm>
 #include <bitset>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**
@@ -93,3 +93,5 @@ namespace OY {
         };
     }
 }
+
+#endif

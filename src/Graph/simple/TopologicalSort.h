@@ -1,9 +1,7 @@
 #ifndef __OY_TOPOLOGICALSORT__
 #define __OY_TOPOLOGICALSORT__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**

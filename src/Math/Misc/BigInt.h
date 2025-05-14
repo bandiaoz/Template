@@ -5,6 +5,11 @@
 #include <random>
 
 #include "src/Math/Misc/Montgomery.h"
+#if __has_include(<bit>)
+#include <bit>
+#else
+#include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 高精度整数
@@ -22,7 +27,7 @@ namespace OY {
         static constexpr uint32_t _N = bases.val[_W];
         static inline bint s_divThresh = bint(__int128_t(LLONG_MAX) / _N - 1);
         static inline Montgomery64 s_mg = Montgomery64(_P);
-        static inline uint64_t s_roots[std::__bit_ceil(_MAXN / _W) << 1], s_dftBuffer[std::__bit_ceil(_MAXN / _W) << 2], s_rootSize = 1;
+        static inline uint64_t s_roots[std::bit_ceil(_MAXN / _W) << 1], s_dftBuffer[std::bit_ceil(_MAXN / _W) << 2], s_rootSize = 1;
         static inline std::mt19937 s_rander;
         int *m_data;
         uint32_t m_length;
@@ -138,7 +143,7 @@ namespace OY {
             std::reverse(__buffer + 1, __buffer + __length);
         }
         static bint _dft_product(const bint &__a, const bint &__b) {
-            uint32_t length = std::__bit_ceil(__a.m_length + __b.m_length - 1);
+            uint32_t length = std::bit_ceil(__a.m_length + __b.m_length - 1);
             _dft(s_dftBuffer, length, __a);
             _dft(s_dftBuffer + length, length, __b);
             for (uint32_t i = 0; i < length; i++) s_dftBuffer[i] = s_mg.multiply(s_dftBuffer[i], s_dftBuffer[i + length]);
@@ -168,7 +173,7 @@ namespace OY {
             return res;
         }
         static bint _self_multiply(const bint &__a) {
-            uint32_t length = std::__bit_ceil(__a.m_length * 2 - 1);
+            uint32_t length = std::bit_ceil(__a.m_length * 2 - 1);
             _dft(s_dftBuffer, length, __a);
             std::transform(s_dftBuffer, s_dftBuffer + length, s_dftBuffer, [](uint64_t x) { return s_mg.multiply(x, x); });
             _idft(s_dftBuffer, length);

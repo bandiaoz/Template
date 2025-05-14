@@ -1,6 +1,6 @@
-#pragma once
+#ifndef __OY_LAGRANGEINTERPOLATION__
+#define __OY_LAGRANGEINTERPOLATION__
 
-#include <algorithm>
 #include <vector>
 
 /**
@@ -61,3 +61,5 @@ namespace OY {
         }
     };
 }
+
+#endif

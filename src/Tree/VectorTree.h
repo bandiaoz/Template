@@ -1,10 +1,7 @@
 #ifndef __OY_VECTORTREE__
 #define __OY_VECTORTREE__
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 #include <vector>
 
 /**

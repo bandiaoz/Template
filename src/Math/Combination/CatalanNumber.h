@@ -1,6 +1,6 @@
-#pragma once
+#ifndef __OY_CATALANNUMBER__
+#define __OY_CATALANNUMBER__
 
-#include <algorithm>
 #include <cstdint>
 
 /**
@@ -29,3 +29,5 @@ namespace OY {
         const Tp &operator[](uint32_t x) const { return m_val[x]; }
     };
 }
+
+#endif

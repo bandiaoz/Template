@@ -1,10 +1,8 @@
 #ifndef __OY_BFS__
 #define __OY_BFS__
 
-#include <algorithm>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <vector>
 
 /**

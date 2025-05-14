@@ -1,11 +1,9 @@
 #ifndef __OY_MONOSTACK__
 #define __OY_MONOSTACK__
 
-#include <algorithm>
 #include <cstdint>
 #include <functional>
 #include <limits>
-#include <numeric>
 #include <vector>
 
 /**

@@ -1,9 +1,7 @@
 #ifndef __OY_SQRTDECOMPOSITION__
 #define __OY_SQRTDECOMPOSITION__
 
-#include <algorithm>
 #include <cmath>
-#include <cstdint>
 
 /**
  * @brief 分块

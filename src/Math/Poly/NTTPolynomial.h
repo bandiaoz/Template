@@ -1,8 +1,15 @@
-#pragma once
+#ifndef __OY_NTTPOLYNOMIAL__
+#define __OY_NTTPOLYNOMIAL__
 
 #include <algorithm>
-#include <bit>
 #include <cstdint>
+
+#if __has_include(<bit>)
+#include <bit>
+#else
+#include "src/Misc/std_bit.h"
+#endif
+
 
 /**
  * @brief NTTPolynomial NTT 多项式
@@ -157,7 +164,7 @@ namespace OY {
                 for (auto &a : *this) a *= __other;
             return *this;
         }
-        poly &operator*=(const poly &__other) { return (*this = product(*this, __other, std::__bit_ceil(size() + __other.size() - 1))).shrink(); }
+        poly &operator*=(const poly &__other) { return (*this = product(*this, __other, std::bit_ceil(size() + __other.size() - 1))).shrink(); }
         poly &operator/=(_Tp __other) {
             for (auto &a : *this) a /= __other;
             return *this;
@@ -184,7 +191,7 @@ namespace OY {
             return res;
         }
         friend poly operator*(const poly &__a, const poly &__b) {
-            poly res(product(__a, __b, std::__bit_ceil(__a.size() + __b.size() - 1)));
+            poly res(product(__a, __b, std::bit_ceil(__a.size() + __b.size() - 1)));
             res.shrink();
             return res;
         }
@@ -213,7 +220,7 @@ namespace OY {
         }
         poly ChirpZ(_Tp __x, uint32_t __n) const {
             if (empty()) return poly(__n, 0);
-            const uint32_t length = std::__bit_ceil(size() + __n - 1);
+            const uint32_t length = std::bit_ceil(size() + __n - 1);
             const _Tp inv(__x.inv());
             _Tp cur(1), pow(1);
             for (uint32_t i = 0; i < size() + __n - 1; i++, cur *= pow, pow *= __x) s_dftBuffer[i] = cur;
@@ -229,12 +236,12 @@ namespace OY {
          */
         poly inv() const {
             static constexpr uint32_t R = 16;
-            const uint32_t Block = std::__bit_ceil((size() - 1) / R + 1);
+            const uint32_t Block = std::bit_ceil((size() - 1) / R + 1);
             _Tp f[Block * R * 2], g[Block * R * 2], res[Block * (R + 1)];
             res[0] = (*this)[0].inv();
             auto dfs = [&](auto self, uint32_t n) -> void {
                 if (n == 1) return;
-                const uint32_t block = std::__bit_ceil((n - 1) / R + 1);
+                const uint32_t block = std::bit_ceil((n - 1) / R + 1);
                 self(self, block);
                 dft(f, block * 2, begin(), block);
                 for (uint32_t k = 1; block * k < n; k++) {
@@ -252,12 +259,12 @@ namespace OY {
             if (empty()) return poly();
             static constexpr uint32_t R = 16;
             const _Tp inv2(_Tp::mod() / 2 + 1);
-            const uint32_t Block = std::__bit_ceil((size() - 1) / R + 1);
+            const uint32_t Block = std::bit_ceil((size() - 1) / R + 1);
             _Tp g[Block * R * 2], h[Block * 2], res[Block * (R + 1)];
             res[0] = __a0;
             auto dfs = [&](auto self, uint32_t n) {
                 if (n == 1) return;
-                const uint32_t block = std::__bit_ceil((n - 1) / R + 1);
+                const uint32_t block = std::bit_ceil((n - 1) / R + 1);
                 self(self, block);
                 dft(h, block * 2, poly(res, res + block).inv().begin(), block);
                 std::fill_n(g, block * R * 2, 0);
@@ -284,7 +291,7 @@ namespace OY {
         poly div(const poly &__other, uint32_t __length = -1) const {
             __length = std::min<uint32_t>(__length, size());
             static constexpr uint32_t R = 16;
-            const uint32_t Block = std::__bit_ceil((__length - 1) / R + 1);
+            const uint32_t Block = std::bit_ceil((__length - 1) / R + 1);
             _Tp f[Block * R * 2], g[Block * R * 2], h[Block * 2], a[Block * R], b[Block * R], res[Block * (R + 1)];
             poly binv(poly(__other).reverse().sizeTo(Block).inv());
             std::fill(std::copy_n(rbegin(), __length, a), a + Block * R, 0);
@@ -292,7 +299,7 @@ namespace OY {
             res[0] = a[0] * b[0].inv();
             auto dfs = [&](auto self, uint32_t n) -> void {
                 if (n == 1) return;
-                const uint32_t block = std::__bit_ceil((n - 1) / R + 1);
+                const uint32_t block = std::bit_ceil((n - 1) / R + 1);
                 self(self, block);
                 dft(h, block * 2, binv.begin(), block);
                 dft(f, block * 2, b, block);
@@ -319,7 +326,7 @@ namespace OY {
         poly exponent() const {
             if (empty()) return poly{_Tp(1)};
             static constexpr uint32_t R = 16;
-            const uint32_t Block = std::__bit_ceil((size() - 1) / R + 1);
+            const uint32_t Block = std::bit_ceil((size() - 1) / R + 1);
             _Tp f[Block * R * 2], g[Block * R * 2], h[Block * 2], a[Block * R], res[Block * (R + 1)];
             std::fill(std::copy_n(begin(), size(), a), a + Block * R, 0);
             for (uint32_t i = 0; i < size(); i++) a[i] *= i;
@@ -327,7 +334,7 @@ namespace OY {
             prepareInverse(Block * (R + 1));
             auto dfs = [&](auto self, uint32_t n) -> void {
                 if (n == 1) return;
-                const uint32_t block = std::__bit_ceil((n - 1) / R + 1);
+                const uint32_t block = std::bit_ceil((n - 1) / R + 1);
                 self(self, block);
                 dft(h, block * 2, poly(res, res + block).inv().begin(), block);
                 dft(f, block * 2, a, block);
@@ -370,7 +377,7 @@ namespace OY {
             s_treeSum[0] = _Tp(1);
         }
         static poly _calcTree(const poly &__f, uint32_t __resLength) {
-            const uint32_t length = std::__bit_ceil(std::max<uint32_t>(__f.size(), s_treeSum.size() / 2));
+            const uint32_t length = std::bit_ceil(std::max<uint32_t>(__f.size(), s_treeSum.size() / 2));
             poly res(length);
             std::copy_n(__f.div(s_treeSum.reverse()).reverse().begin(), __f.size(), res.begin() + length - __f.size());
             for (uint32_t h = length / 2; h; h /= 2)
@@ -380,7 +387,7 @@ namespace OY {
         }
         static poly fromPoints(const poly &__xs, const poly &__ys) {
             if (__xs.size() <= 1) return __ys;
-            const uint32_t length = std::__bit_ceil(__xs.size());
+            const uint32_t length = std::bit_ceil(__xs.size());
             _initTree(__xs, length);
             poly res(_calcTree(poly(s_treeSum).sizeTo(__xs.size() + 1).reverse().derivate(), __xs.size()).sizeTo(length));
             for (uint32_t i = 0; i < __ys.size(); i++) res[i] = __ys[i] / res[i];
@@ -394,8 +401,10 @@ namespace OY {
             return res;
         }
         poly calc(const poly &__xs) const {
-            _initTree(__xs, std::__bit_ceil(std::max<uint32_t>(__xs.size(), size())));
+            _initTree(__xs, std::bit_ceil(std::max<uint32_t>(__xs.size(), size())));
             return _calcTree(*this, __xs.size());
         }
     };
 }
+
+#endif

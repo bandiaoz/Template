@@ -1,9 +1,7 @@
 #ifndef __OY_KMP__
 #define __OY_KMP__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 #include <string>
 

@@ -7,6 +7,12 @@
 #include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
+#include "src/Misc/std_bit.h"
+#endif
+
 /**
  * @brief 猫树，可以看做不支持修改的线段树
  */

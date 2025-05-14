@@ -6,6 +6,12 @@
 
 #include "src/DataStruct/container/VectorBufferWithoutCollect.h"
 
+#if __has_include(<bit>)
+#include <bit>
+#else
+#include "src/Misc/std_bit.h"
+#endif
+
 /**
  * @brief 区间推平线段树，为 `AssignZkwTree` 的离散化版本，可以维护更长的区间范围。
  */

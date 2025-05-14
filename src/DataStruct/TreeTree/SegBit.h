@@ -6,6 +6,11 @@
 #include <numeric>
 
 #include "src/DataStruct/container/VectorBufferWithoutCollect.h"
+#if __has_include(<bit>)
+#include <bit>
+#else
+#include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 二维线段树（树状数组套动态开点线段树）

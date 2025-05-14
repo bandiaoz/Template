@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_LINEARMODEQUATIONS__
+#define __OY_LINEARMODEQUATIONS__
 
 #include "src/Math/NumberTheory/ChineseRemainderTheorem_ex.h"
 
@@ -24,3 +25,5 @@ namespace OY {
         }
     };
 }
+
+#endif

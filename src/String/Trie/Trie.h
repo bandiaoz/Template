@@ -1,10 +1,7 @@
 #ifndef __OY_TRIE__
 #define __OY_TRIE__
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 
 /**
  * @brief Trie 前缀树

@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <tuple>
 #include <vector>
 

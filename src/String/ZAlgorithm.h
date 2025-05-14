@@ -1,9 +1,7 @@
 #ifndef __OY_ZALGORITHM__
 #define __OY_ZALGORITHM__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 #include <string>
 

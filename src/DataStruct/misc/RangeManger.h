@@ -1,7 +1,6 @@
 #ifndef __OY_RANGEMANAGER__
 #define __OY_RANGEMANAGER__
 
-#include <algorithm>
 #include <iterator>
 #include <map>
 #include <vector>

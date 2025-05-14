@@ -1,8 +1,8 @@
-#pragma once
+#ifndef __OY_LUCASTABLE__
+#define __OY_LUCASTABLE__
 
 #include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**
@@ -45,3 +45,5 @@ namespace OY {
         }
     };
 }
+
+#endif

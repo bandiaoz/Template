@@ -1,9 +1,7 @@
 #ifndef __OY_EULERPATH_UDG__
 #define __OY_EULERPATH_UDG__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**

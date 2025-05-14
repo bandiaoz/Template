@@ -1,8 +1,9 @@
-#pragma once
+#ifndef __OY_KUHNMUNKRES__
+#define __OY_KUHNMUNKRES__
+
 #include <algorithm>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <vector>
 
 /**
@@ -125,3 +126,5 @@ namespace OY {
         };
     }
 }
+
+#endif

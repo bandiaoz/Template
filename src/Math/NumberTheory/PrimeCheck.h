@@ -1,10 +1,7 @@
 #ifndef __OY_PRIMECHECK0__
 #define __OY_PRIMECHECK0__
 
-#include <algorithm>
 #include <cstdint>
-#include <initializer_list>
-#include <numeric>
 
 /**
  * @brief 素数检测

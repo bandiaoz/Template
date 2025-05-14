@@ -4,9 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
-#include <iostream>
 #include <string>
-#include <vector>
 
 #define cin OY::IO::InputHelper::get_instance()
 #define cout OY::IO::OutputHelper::get_instance()

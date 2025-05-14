@@ -1,11 +1,9 @@
 #ifndef __OY_GLOBALHASHMAP__
 #define __OY_GLOBALHASHMAP__
 
-#include <algorithm>
 #include <bitset>
 #include <chrono>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**

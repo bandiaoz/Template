@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __OY_CHINESEREMAINDERTHEOREMEX__
+#define __OY_CHINESEREMAINDERTHEOREMEX__
 
 #include "src/Math/NumberTheory/ExtendedEuclidean.h"
 
@@ -29,3 +30,5 @@ namespace OY {
         node query() const { return m_res; }
     };
 }
+
+#endif

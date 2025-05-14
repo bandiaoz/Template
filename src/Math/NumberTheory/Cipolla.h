@@ -1,9 +1,6 @@
 #ifndef __OY_CIPOLLA__
 #define __OY_CIPOLLA__
 
-#include <algorithm>
-#include <cstdint>
-
 /**
  * @brief 二次剩余算法
  * @note 只解决模数为奇素数的情况

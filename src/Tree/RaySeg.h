@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <numeric>
 
 /**
  * @brief 树上最长线段射线

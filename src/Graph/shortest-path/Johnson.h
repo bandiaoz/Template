@@ -2,6 +2,7 @@
 #define __OY_JOHNSON__
 
 #include <limits>
+
 #include "src/DataStruct/container/FastHeap.h"
 
 /**

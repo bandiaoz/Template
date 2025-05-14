@@ -1,8 +1,7 @@
-#pragma once
+#ifndef __OY_PRUFER__
+#define __OY_PRUFER__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**
@@ -68,3 +67,5 @@ namespace OY {
         };
     }
 }
+
+#endif

@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 #include "src/Math/LinearAlgebra/HamelXorBase.h"

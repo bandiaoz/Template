@@ -1,7 +1,6 @@
-#pragma once
+#ifndef __OY_MODULAR__
+#define __OY_MODULAR__
 
-#include <algorithm>
-#include <bit>
 #include <cstdint>
 
 /**
@@ -87,3 +86,5 @@ namespace OY {
     template <uint64_t _P>
     using Modular64 = Modular<uint64_t, _P>;
 }
+
+#endif

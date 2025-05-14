@@ -1,7 +1,6 @@
 #ifndef __OY_VECTORBUFFERWITHOUTCOLLECT__
 #define __OY_VECTORBUFFERWITHOUTCOLLECT__
 
-#include <algorithm>
 #include <cstdint>
 #include <vector>
 

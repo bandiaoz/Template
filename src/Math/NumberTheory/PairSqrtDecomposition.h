@@ -2,8 +2,6 @@
 #define __OY_PAIRSQRTDECOMPOSITION__
 
 #include <algorithm>
-#include <cmath>
-#include <cstdint>
 
 /**
  * @brief 成对数论分块

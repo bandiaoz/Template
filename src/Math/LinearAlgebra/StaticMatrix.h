@@ -1,7 +1,6 @@
 #ifndef __OY_STATICMATRIX__
 #define __OY_STATICMATRIX__
 
-#include <algorithm>
 #include <cstdint>
 #include <iostream>
 

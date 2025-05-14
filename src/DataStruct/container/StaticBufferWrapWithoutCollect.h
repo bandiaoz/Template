@@ -1,7 +1,6 @@
 #ifndef __OY_STATICBUFFERWRAPWITHOUTCOLLECT__
 #define __OY_STATICBUFFERWRAPWITHOUTCOLLECT__
 
-#include <algorithm>
 #include <cstdint>
 
 namespace OY {

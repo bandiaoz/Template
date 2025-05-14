@@ -1,8 +1,8 @@
-#pragma once
+#ifndef __OY_GAUSSJORDANELIMINATION__
+#define __OY_GAUSSJORDANELIMINATION__
 
 #include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**
@@ -106,3 +106,5 @@ namespace OY {
         };
     }
 }
+
+#endif

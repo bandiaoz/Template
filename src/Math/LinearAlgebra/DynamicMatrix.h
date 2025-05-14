@@ -1,7 +1,6 @@
 #ifndef __OY_DYNAMICMATRIX__
 #define __OY_DYNAMICMATRIX__
 
-#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <valarray>

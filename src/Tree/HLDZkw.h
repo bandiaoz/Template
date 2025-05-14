@@ -1,10 +1,7 @@
 #ifndef __OY_HLDZKW__
 #define __OY_HLDZKW__
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 
 #include "src/DataStruct/Segtree/ZkwTree.h"
 #include "src/Tree/HeavyLightDecomposition.h"

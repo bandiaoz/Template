@@ -1,10 +1,7 @@
 #ifndef __OY_ADJDIFFTREE__
 #define __OY_ADJDIFFTREE__
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 #include <vector>
 
 /**

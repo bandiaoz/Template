@@ -8,6 +8,12 @@
 #include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
+#include "src/Misc/std_bit.h"
+#endif
+
 /**
  * @brief MonoZkw 线段树，只支持单点修改的特化
  */

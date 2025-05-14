@@ -1,9 +1,7 @@
 #ifndef __OY_ACAUTOMATON__
 #define __OY_ACAUTOMATON__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**

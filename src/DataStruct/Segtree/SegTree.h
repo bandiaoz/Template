@@ -1,7 +1,5 @@
-#pragma once
-
-#include <functional>
-#include <numeric>
+#ifndef __OY_SEGTREE__
+#define __OY_SEGTREE__
 
 #include "src/DataStruct/container/VectorBufferWithCollect.h"
 
@@ -616,3 +614,5 @@ namespace OY {
     template <typename Tp, typename SizeType = uint64_t>
     using VectorSegLazySumTree = Seg::Tree<Seg::LazyNode<Tp, Tp, SizeType>, Seg::Ignore, SizeType>;
 }
+
+#endif

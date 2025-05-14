@@ -1,9 +1,7 @@
 #ifndef __OY_BIPARTITE__
 #define __OY_BIPARTITE__
 
-#include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
 /**
