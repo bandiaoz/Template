@@ -17,7 +17,7 @@ namespace OY {
         template <typename Tp, Tp Identity, typename Operation>
         struct BaseMonoid {
             using value_type = Tp;
-            static constexpr Tp identity() { return Identity; }
+            static constexpr value_type identity() { return Identity; }
             static value_type op(const value_type &x, const value_type &y) { return Operation()(x, y); }
         };
         template <typename Tp, typename Compare>

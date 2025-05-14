@@ -33,7 +33,7 @@ namespace OY {
         template <typename Tp, Tp Identity, typename Operation>
         struct BaseCommutativeMonoid {
             using value_type = Tp;
-            static constexpr Tp identity() { return Identity; }
+            static constexpr value_type identity() { return Identity; }
             static value_type op(const value_type &x, const value_type &y) { return Operation()(x, y); }
         };
         /**
@@ -42,7 +42,7 @@ namespace OY {
         template <typename Tp, Tp Identity, typename Operation, typename Inverse>
         struct BaseCommutativeGroup {
             using value_type = Tp;
-            static constexpr Tp identity() { return Identity; }
+            static constexpr value_type identity() { return Identity; }
             static value_type inverse(const value_type &x) { return Inverse()(x); }
             static value_type op(const value_type &x, const value_type &y) { return Operation()(x, y); }
         };
