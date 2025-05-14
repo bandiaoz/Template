@@ -3,11 +3,13 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 倍增法求 `LCA`

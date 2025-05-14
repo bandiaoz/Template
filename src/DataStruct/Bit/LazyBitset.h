@@ -1,8 +1,6 @@
 #ifndef __OY_LAZYBITSET__
 #define __OY_LAZYBITSET__
 
-#include <functional>
-#include <numeric>
 
 #include "src/DataStruct/container/VectorBufferWithCollect.h"
 

@@ -1,9 +1,7 @@
 #ifndef __OY_ADJDIFF__
 #define __OY_ADJDIFF__
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
 #include <numeric>
 #include <vector>
 

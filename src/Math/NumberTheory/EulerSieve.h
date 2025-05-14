@@ -5,10 +5,13 @@
 #include <bitset>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 欧拉筛

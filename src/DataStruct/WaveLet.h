@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <numeric>
 #include <vector>
 
 #if __has_include(<bit>)

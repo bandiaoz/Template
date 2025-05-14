@@ -7,7 +7,11 @@
 #include <random>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief Hopcroft Karp 算法（压位版）。

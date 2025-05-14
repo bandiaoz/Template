@@ -3,8 +3,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 #include <vector>
 
 #if __has_include(<bit>)

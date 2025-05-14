@@ -1,10 +1,7 @@
 #ifndef __OY_ADJDIFF2D__
 #define __OY_ADJDIFF2D__
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <numeric>
 #include <vector>
 
 /**

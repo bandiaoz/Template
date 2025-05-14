@@ -1,10 +1,6 @@
 #ifndef __OY_BITRIE__
 #define __OY_BITRIE__
 
-#include <bitset>
-#include <functional>
-#include <numeric>
-
 #include "src/DataStruct/container/VectorBufferWithCollect.h"
 
 /**

@@ -17,7 +17,6 @@ std::popcount
 */
 
 #include <cstdint>
-#include <type_traits>
 
 #ifdef _MSC_VER
 #define CPP_STANDARD _MSVC_LANG

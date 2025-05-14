@@ -3,10 +3,8 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <numeric>
 #include <vector>
 
-#include "src/Misc/std_bit.h"
 #include "src/Math/LinearAlgebra/HamelXorBase.h"
 
 /**

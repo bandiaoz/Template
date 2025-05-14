@@ -1,11 +1,14 @@
 #ifndef __OY_BIT01__
 #define __OY_BIT01__
 
-#include <algorithm>
 #include <cstdint>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 01 树状数组

@@ -1,11 +1,10 @@
-#pragma once
+#ifndef __OY_POTENTIALIZEDDSU__
+#define __OY_POTENTIALIZEDDSU__
 
 #include <algorithm>
 #include <cstdint>
 #include <numeric>
 #include <vector>
-
-#include "src/Misc/std_bit.h"
 
 /**
  * @brief 带权并查集，维护势能关系
@@ -163,3 +162,5 @@ namespace OY {
     template <typename Tp, Tp Mod, bool MaintainGroupSize>
     using ModAddPDSUTable = PDSU::Table<PDSU::ModAddGroup<Tp, Mod>, MaintainGroupSize>;
 }
+
+#endif

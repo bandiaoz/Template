@@ -6,7 +6,11 @@
 #include <cstdint>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 区间众数

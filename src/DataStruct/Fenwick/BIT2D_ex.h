@@ -1,12 +1,14 @@
 #ifndef __OY_BIT2DEX__
 #define __OY_BIT2DEX__
 
-#include <algorithm>
 #include <cstdint>
-#include <type_traits>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 二维树状数组

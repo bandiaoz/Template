@@ -1,15 +1,17 @@
 #ifndef __OY_KBIT__
 #define __OY_KBIT__
 
-#include <algorithm>
 #include <array>
 #include <assert.h>
 #include <cstdint>
-#include <functional>
 #include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief K 阶树状数组

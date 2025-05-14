@@ -1,15 +1,16 @@
 #ifndef __OY_MOBIUS__
 #define __OY_MOBIUS__
 
-#include <algorithm>
 #include <bitset>
-#include <cmath>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <vector>
 
+#if __has_include(<bit>)
+#include <bit>
+#else
 #include "src/Misc/std_bit.h"
+#endif
 
 /**
  * @brief 莫比乌斯函数
