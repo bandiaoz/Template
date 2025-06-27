@@ -107,13 +107,13 @@ TEST_CASE("BiTrie::CountTree", "[BiTrie]") {
     std::sort(kth_xor_correct.begin(), kth_xor_correct.end());
     REQUIRE(kth_xor == kth_xor_correct);
 
-    // x 和 6 的异或值是 res 的，查询 res 是第几大异或（0 表示最大的）
+    // x 和 6 的异或值是 res 的，查询 res 是第几小异或（rank，0 表示最小的）
     for (int res = 0; res <= trie._mask(); res++) {
         if (int x = res ^ 6; !trie.contains(x)->is_null()) {
             auto rank = trie.rank_bitxor(6, res);
-            // 计算第几大：0 表示最大的
-            // 等价于所有的异或可能中，有多少个数比 res 大
-            int correct_rank = std::distance(std::upper_bound(kth_xor_correct.begin(), kth_xor_correct.end(), res), kth_xor_correct.end());
+            // 计算第几小：0 表示最小的
+            // 等价于所有的异或可能中，有多少个数比 res 小
+            int correct_rank = std::distance(kth_xor_correct.begin(), std::lower_bound(kth_xor_correct.begin(), kth_xor_correct.end(), res));
             REQUIRE(rank == correct_rank);
         }
     }
