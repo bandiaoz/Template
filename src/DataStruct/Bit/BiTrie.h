@@ -341,19 +341,29 @@ namespace OY {
                 });
             }
             /**
-             * @brief 查询和 `number` 的异或值等于 `result` 的叶子节点，在字典树中的排名
+             * @brief 查询和 `number` 的异或值等于 `result` 的叶子节点，是第几大异或值 (0 表示最大的)
              * @param number 要查询的数字
              * @param result 要查询的异或值
-             * @return 返回和 `number` 的异或值等于 `result` 的叶子节点，在字典树中的排名
+             * @return 返回和 `number` 的异或值等于 `result` 的叶子节点，是第几大异或值
              */
             CountType rank_bitxor(Key number, Key result) const {
-                CountType smaller{};
+                // 计算比 result 小的数量
+                CountType smaller = 0;
                 handler::_query(m_tree, number, [&, it = NumberIteration<Key, L>(result).begin()](node *p) mutable {
-                    if (!*it) return ++it, true;
+                    if (!*it) {
+                        ++it;
+                        return true;
+                    }
                     smaller += p->count();
-                    return ++it, false;
+                    ++it;
+                    return false;
                 });
-                return smaller;
+                // 计算元素总数和 result 的出现次数
+                CountType total = root()->count();
+                const node *leaf = contains(number ^ result);
+                CountType occ = (leaf && !leaf->is_null()) ? leaf->count() : 0;
+                // 返回第几大：比 result 大的数量
+                return total - smaller - occ;
             }
             /**
              * @brief 枚举字典树中所有的数字
