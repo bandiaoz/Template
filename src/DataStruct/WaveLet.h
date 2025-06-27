@@ -148,11 +148,13 @@ namespace OY {
                         size_type d1, d2;
                         for (d1 = d - 1; cur && l1 != r1; d1--, cur <<= 1) {
                             size_type zl = m_ranks[d1].rank0(l1), zr = m_ranks[d1].rank0(r1), z = zr - zl;
-                            if (!(floor >> d1 & 1))
+                            if (!(floor >> d1 & 1)) {
                                 if (filter.get_left(d1)) {
                                     if (z) q(call, m_sumer[d1], zl, zr - 1);
-                                } else if (z != r1 - l1)
+                                } else if (z != r1 - l1) {
                                     q(call, m_sumer[d1], l1 + m_pos[d1] - zl, r1 + m_pos[d1] - zr - 1);
+                                }
+                            }
                             if ((floor >> d1 & 1) == filter.get_left(d1))
                                 l1 = zl, r1 = zr;
                             else
@@ -161,11 +163,13 @@ namespace OY {
                         Tp cur2 = ((~ceil) << (mask_size - d));
                         for (d2 = d - 1; cur2 && l2 != r2; d2--, cur2 <<= 1) {
                             size_type zl = m_ranks[d2].rank0(l2), zr = m_ranks[d2].rank0(r2), z = zr - zl;
-                            if (ceil >> d2 & 1)
+                            if (ceil >> d2 & 1) {
                                 if (filter.get_left(d2)) {
                                     if (z != r2 - l2) q(call, m_sumer[d2], l2 + m_pos[d2] - zl, r2 + m_pos[d2] - zr - 1);
-                                } else if (z)
+                                } else if (z) {
                                     q(call, m_sumer[d2], zl, zr - 1);
+                                }
+                            }
                             if ((ceil >> d2 & 1) == filter.get_left(d2))
                                 l2 = zl, r2 = zr;
                             else
@@ -176,7 +180,7 @@ namespace OY {
                     }
                 };
                 for (size_type d = m_alpha - 1; ~d && l != r; d--) {
-                    size_type zl = m_ranks[d].rank0(l), zr = m_ranks[d].rank0(r), z = zr - zl;
+                    size_type zl = m_ranks[d].rank0(l), zr = m_ranks[d].rank0(r);
                     if ((floor >> d & 1) == (ceil >> d & 1))
                         if ((floor >> d & 1) == filter.get_left(d))
                             l = zl, r = zr;
@@ -416,6 +420,7 @@ namespace OY {
             }
             /**
              * @brief 查询 [left, right] 中值在 [minimum, maximum] 之间的元素个数
+             * @note 允许区间为空
              */
             size_type count(size_type left, size_type right, const Tp &minimum, const Tp &maximum) const {
                 size_type find1 = _find(minimum), find2 = _find2(maximum);

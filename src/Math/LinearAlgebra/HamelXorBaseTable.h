@@ -126,9 +126,9 @@ namespace OY {
             }
         };
     }
-    template <HAMELTABLE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH>::type>
+    template <HAMELTABLE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH != 0>::type>
     using StaticHamelXorBaseTable32 = HAMELTABLE::HamelXorBaseTable<uint32_t, MAX_WIDTH>;
-    template <HAMELTABLE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH>::type>
+    template <HAMELTABLE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH != 0>::type>
     using StaticHamelXorBaseTable64 = HAMELTABLE::HamelXorBaseTable<uint64_t, MAX_WIDTH>;
     using DynamicHamelXorBaseTable32 = HAMELTABLE::HamelXorBaseTable<uint32_t, 0>;
     using DynamicHamelXorBaseTable64 = HAMELTABLE::HamelXorBaseTable<uint64_t, 0>;

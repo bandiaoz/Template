@@ -138,9 +138,9 @@ namespace OY {
             }
         };
     }
-    template <HAMELTREE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH>::type>
+    template <HAMELTREE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH != 0>::type>
     using StaticHamelXorBaseTree32 = HAMELTREE::HamelXorBaseTree<uint32_t, MAX_WIDTH>;
-    template <HAMELTREE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH>::type>
+    template <HAMELTREE::size_type MAX_WIDTH, typename = typename std::enable_if<MAX_WIDTH != 0>::type>
     using StaticHamelXorBaseTree64 = HAMELTREE::HamelXorBaseTree<uint64_t, MAX_WIDTH>;
     using DynamicHamelXorBaseTree32 = HAMELTREE::HamelXorBaseTree<uint32_t, 0>;
     using DynamicHamelXorBaseTree64 = HAMELTREE::HamelXorBaseTree<uint64_t, 0>;
