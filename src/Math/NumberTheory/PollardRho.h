@@ -154,6 +154,7 @@ namespace OY {
         /**
          * @brief 返回 n 的欧拉函数值
          * @note 复杂度 $$O(n^\frac{1}{4})$$
+         * @note $$p_i$$ 为 $$n$$ 的所有质因子，则 $$\varphi(n) = n \times \prod_{i = 1}^k \frac{p_i - 1}{p_i} = \prod_{i = 1}^k (p_i - 1) \times p_i^{c_i - 1}$$
          */
         static uint64_t get_Euler_Phi(uint64_t n) {
             for (const auto &pair : decomposite(n)) n = n / pair.m_prime * (pair.m_prime - 1);
