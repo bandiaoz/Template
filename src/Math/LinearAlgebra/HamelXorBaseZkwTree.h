@@ -10,7 +10,8 @@
 /**
  * @brief 异或线性基线段树
  * @example OY::StaticHamelXorBaseZkwTree32<MAX_WIDTH> hxb(length, mapping);
- * @note 构造的复杂度为 $O(n\cdot\log n\cdot\omega^2)$ ，此处 $\omega$ 指线性基的维数。
+ * @note 构造的复杂度为 $$O(n\cdot\log n\cdot\omega^2)$$ ，此处 $$\omega$$ 指线性基的维数。
+ * @note 线性基合并的复杂度为 $$O(\omega^2)$$，需要做 $$\omega$$ 次插入操作。
  */
 namespace OY {
     namespace HAMELZKW {
@@ -61,12 +62,14 @@ namespace OY {
             static size_type _lowbit(size_type x) { return x & -x; }
             static void _insert(MaskNodes<Tp, MAX_WIDTH> &node, Tp mask) {
                 for (size_type i = std::bit_width(mask) - 1; mask && ~i; i--)
-                    if (mask >> i & 1)
+                    if (mask >> i & 1) {
                         if (!node.m_val[i]) {
                             node.m_val[i] = mask, node.m_mask |= Tp(1) << i;
                             return;
-                        } else
+                        } else {
                             mask ^= node.m_val[i];
+                        }
+                    }
             }
             static void _merge(MaskNodes<Tp, MAX_WIDTH> &node, const MaskNodes<Tp, MAX_WIDTH> &other) {
                 for (Tp mask = other.m_mask; mask && !node.is_full();) {
@@ -135,7 +138,7 @@ namespace OY {
             }
             /**
              * @brief 对区间 `[left, right)` 的数异或 `val`
-             * @note 复杂度为 $O(\log n \cdot \omega^2)$
+             * @note 复杂度为 $$O(\log n \cdot \omega^2)$$
              */
             void range_xor(size_type left, size_type right, Tp val) {
                 right--;
@@ -151,7 +154,7 @@ namespace OY {
             }
             /**
              * @brief 枚举区间 `[left, right)` 的向量所能形成的所有基向量
-             * @note 复杂度为 $O(\log n \cdot \omega^2)$
+             * @note 复杂度为 $$O(\log n \cdot \omega^2)$$
              */
             template <typename Callback>
             void enumerate_base(size_type left, size_type right, Callback &&call) const {
@@ -176,7 +179,7 @@ namespace OY {
             }
             /**
              * @brief 将区间 `[left, right)` 的向量转为基础异或线性基
-             * @note 复杂度为 $O(\log n \cdot \omega^2)$
+             * @note 复杂度为 $$O(\log n \cdot \omega^2)$$
              */
             base_type to_base_type(size_type left, size_type right) const {
                 base_type res{};
@@ -185,7 +188,7 @@ namespace OY {
             }
             /**
              * @brief 查询编号 `pos` 处的向量
-             * @note 复杂度为 $O(\log n)$
+             * @note 复杂度为 $$O(\log n)$$
              */
             Tp query(size_type pos) const {
                 Tp mask{};
@@ -194,7 +197,7 @@ namespace OY {
             }
             /**
              * @brief 查询区间 `[left, right)` 的向量所能形成的最大异或和
-             * @note 复杂度为 $O(\log n \cdot \omega^2)$
+             * @note 复杂度为 $$O(\log n \cdot \omega^2)$$
              */
             Tp query_max_bitxor(size_type left, size_type right, Tp base = 0) const {
                 right--;

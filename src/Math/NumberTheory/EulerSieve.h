@@ -108,6 +108,7 @@ namespace OY {
             bool is_prime(size_type i) const { return (i & 1) || i == 2 ? m_isprime[i] : false; }
             /**
              * @brief 查询欧拉函数值
+             * @note $$\varphi(n)$$ 表示从 1 到 $$n$$ 中与 $$n$$ 互质的数的个数
              */
             size_type get_Euler_Phi(size_type i) const {
                 static_assert(GetPhi);

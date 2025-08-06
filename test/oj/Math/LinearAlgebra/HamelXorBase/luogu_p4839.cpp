@@ -11,8 +11,8 @@
  * 1. 在第 k 个桶加入价值为 x 的球
  * 2. 查询 [l, r] 桶内，拿出若干球，组成的最大异或和
  * 
- * 用线段树维护线性基，线性基合并复杂度为 O(\omega^2)
- * 单点修改复杂度为 O(\log n \omega)，查询复杂度为 O(\log n \omega^2)
+ * 用线段树维护线性基，线性基合并复杂度为 $$O(\omega^2)$$
+ * 单点修改复杂度为 $$O(\log n \omega)$$，查询复杂度为 $$O(\log n \omega^2)$$
  */
 
 using Info = OY::StaticHamelXorBase32<31>;

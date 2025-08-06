@@ -10,7 +10,7 @@
  * 1. 将区间 [l, r] 内的数异或上 x
  * 2. 查询区间 [l, r] 内的数，任选若干个数，使得这些数的异或和最大，输出最大异或和
  * 
- * 使用 HamelXorBaseZkwTree 维护，区间异或复杂度为 O(\log n \cdot \omega^2)，查询复杂度为 O(\log n \cdot \omega^2)
+ * 使用 HamelXorBaseZkwTree 维护，区间异或复杂度为 $$O(\log n \cdot \omega^2)$$，查询复杂度为 $$O(\log n \cdot \omega^2)$$
  */
 
 int main() {

@@ -63,6 +63,7 @@ namespace OY {
         static void enumerate_factors(uint64_t n, Callback &&call) { enumerate_factors(decomposite<false>(n), call); }
         /**
          * @brief 返回 n 的一个非平凡因数，需要保证 n 不是质数
+         * @note 复杂度 $$O(n^\frac{1}{4})$$
          */
         static uint64_t pick(uint64_t n) {
             if (n % 2 == 0) { return 2; }
@@ -114,6 +115,7 @@ namespace OY {
          * @brief 分解质因数
          * @tparam Sorted 表示返回的质因数是否按照升序排列
          * @return `std::vector<PollardRhoPair>` ，其中 `PollardRhoPair` 包含 `m_prime` 和 `m_count` 两个属性，表示包含的质因子以及包含的数量。
+         * @note 复杂度 $$O(n^\frac{1}{4})$$
          */
         template <bool Sorted = false>
         static std::vector<PollardRhoPair> decomposite(uint64_t n) {
@@ -136,6 +138,7 @@ namespace OY {
         /**
          * @brief 返回 n 的所有因数
          * @tparam Sorted 表示返回的因数是否按照升序排列
+         * @note 复杂度 $$O(n^\frac{1}{3})$$
          */
         template <bool Sorted = false>
         static std::vector<uint64_t> get_factors(uint64_t n) {
@@ -150,6 +153,7 @@ namespace OY {
         }
         /**
          * @brief 返回 n 的欧拉函数值
+         * @note 复杂度 $$O(n^\frac{1}{4})$$
          */
         static uint64_t get_Euler_Phi(uint64_t n) {
             for (const auto &pair : decomposite(n)) n = n / pair.m_prime * (pair.m_prime - 1);

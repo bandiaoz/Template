@@ -8,6 +8,7 @@
 /**
  * 有 n 个单词，求每个单词在所有单词中的出现次数（可以认为文本串是 word[1] + '#' + word[2] + '#' + ... + word[n]）
  * 
+ * 做法同 P5357
  * 对于 words[i]，统计所有单词在 words[i] 中出现的次数
  * 注意需要在 fail 树上做前缀和
  */
@@ -26,8 +27,7 @@ int main() {
     std::vector<std::string> words(n);
     for (int i = 0; i < n; i++) {
         std::cin >> words[i];
-        int p = ac.insert_lower(words[i]);
-        pos[i] = p;
+        pos[i] = ac.insert_lower(words[i]);
     }
 
     ac.prepare();

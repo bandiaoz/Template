@@ -4,7 +4,8 @@
 #include "src/Math/NumberTheory/ExtendedEuclidean.h"
 
 /**
- * @brief 中国剩余定理 Chinese Remainder Theorem
+ * @brief 扩展中国剩余定理 Extended Chinese Remainder Theorem
+ * @note 本模板可以解决除数不互质的情况，不互质时可能无解。
  */
 namespace OY {
     struct ChineseRemainderTheorem_ex {

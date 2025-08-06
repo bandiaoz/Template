@@ -9,6 +9,11 @@
  * @example OY::ACAM<ChildCount> ac;
  * @note 模板参数 `size_type ChildCount` ，表示 `AC` 自动机的每个结点里有多少个孩子结点。
  * @note fail 指针指向当前状态「最长可识别后缀」
+ * @note 如果结点 $$u$$ 被匹配到，那么 $$u$$ 的 fail 指针指向的结点也一定被匹配到。
+ * @note m_data 的第 0 个元素是 trie 树的根节点，不是有效的状态节点
+ * @note 模式串 x 在模式串 y 中出现次数等价于所有 y 的前缀中，有多少个状态可以通过 fail 跳到 x，即 x 是 y 的前缀的后缀
+ *       进一步转换为，在 fail 树上，x 子树中，有多少状态是 y 的前缀状态。
+ * @note 模式串 x 在文本串 text 中的出现次数，等价于 fail 树中，模式串的结尾对子树做贡献
  */
 namespace OY {
     namespace AC {
@@ -76,6 +81,8 @@ namespace OY {
             /**
              * @brief 构建 AC 自动机
              * @param child_call 回调函数，`child_call(u, v)`，字典树上存在 `u` 到 `v` 的边，不包括虚拟孩子
+             *        此时已经处理好 u 的 fail 指针，没有处理好 v 的 fail 指针。
+             *        这里 u 可以是 trie 的根节点，也就是 0。
              * @note 按照 trie 树的 bfs 序，构建 fail 指针，`m_queue` 为所有状态节点的 bfs 序
              * @note `u` 通过字符 `c` 连向 `v`，则 `v` 的 `fail` 指针指向 `u` 的 `fail` 指针的 `c` 孩子。
              */

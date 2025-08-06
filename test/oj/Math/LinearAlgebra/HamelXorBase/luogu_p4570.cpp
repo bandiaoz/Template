@@ -4,13 +4,14 @@
 using ll = long long;
 
 /*
-[P4570 [BJWC2011] 元素](https://www.luogu.com.cn/problem/P4301)
+[P4570 [BJWC2011] 元素](https://www.luogu.com.cn/problem/P4570)
 [status](https://www.luogu.com.cn/record/207039112)
 */
 /**
- * 给定若干数，每个数有一个权值，求权值之和最大的线性基
+ * 给定若干数，每个数有一个权值，求权值之和最大的线性基（所选的数不能组成异或和为 0 的集合）
  * 
  * 按照权值从大到小插入线性基，如果插入成功，则将权值加入答案
+ * 无论怎么插入，最终线性基的数量都是相同的
  */
 
 int main() {

@@ -4,6 +4,7 @@
 /*
 [P3808 AC 自动机（简单版）](https://www.luogu.com.cn/problem/P3808)
 [status](https://www.luogu.com.cn/record/197125869)
+[status](https://www.luogu.com.cn/record/224493268)
 */
 /**
  * 给定 n 个模式串，一个文本串，求有多少个不同的模式串在文本串中出现
@@ -21,12 +22,11 @@ int main() {
     OY::ACAM<26> ac;
     const int N = 1000000;
     ac.reserve(N);
-    std::vector<int> cnt(N + 1);
+    std::vector<int> pos(n);
     for (int i = 0; i < n; i++) {
         std::string s;
         std::cin >> s;
-        int p = ac.insert_lower(s);
-        cnt[p]++;
+        pos[i] = ac.insert_lower(s);
     }
 
     ac.prepare();
@@ -34,17 +34,17 @@ int main() {
     std::string text;
     std::cin >> text;
 
-    int ans = 0;
+    std::vector<int> cnt(N + 1);
     for (int i = 0, j = 0; i < text.size(); i++) {
         j = ac.next(j, text[i] - 'a');
-        // 可以边搜边改，搜过的就清空，以避免重复统计；同时也保证了时间复杂度
-        for (int x = j; x && cnt[x]; x = ac.query_fail(x)) {
-            ans += cnt[x];
-            cnt[x] = 0;
-        }
+        cnt[j]++;
     }
 
-    std::cout << ans << '\n';
+    ac.do_for_failing_nodes([&](int u) {
+        cnt[ac.query_fail(u)] += cnt[u];
+    });
+
+    std::cout << std::count_if(pos.begin(), pos.end(), [&](int p) { return cnt[p] != 0; }) << '\n';
 
     return 0;
 }

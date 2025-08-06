@@ -10,8 +10,8 @@
 /**
  * @brief 前缀异或线性基
  * @example OY::StaticHamelXorBaseTable32<MAX_WIDTH> hxb(length, mapping);
- * @note 构造的复杂度为 $O(n\cdot\omega)$ ，此处 $\omega$ 指线性基的维数。
- * @note 本模板用于加速查询区间线性基。
+ * @note 构造的复杂度为 $$O(n\cdot\omega)$$ ，此处 $$\omega$$ 指线性基的维数。
+ * @note 本模板用于加速查询区间线性基，可以 $$O(\omega)$$ 时间内枚举区间所有的基向量。
  */
 namespace OY {
     namespace HAMELTABLE {
@@ -96,7 +96,7 @@ namespace OY {
             void pop_back(Tp mask) { m_masks.pop_back(); }
             /**
              * @brief 从高位到低位顺序枚举区间 [left, right) 中所有基向量
-             * @note 复杂度为 $O(\omega)$
+             * @note 复杂度为 $$O(\omega)$$
              */
             template <typename Callback>
             void enumerate_base(size_type left, size_type right, Callback &&call) const {
@@ -107,7 +107,7 @@ namespace OY {
             }
             /**
              * @brief 将区间 [left, right) 中的所有基向量加入到基础异或线性基中
-             * @note 复杂度为 $O(\omega^2)$
+             * @note 复杂度为 $$O(\omega^2)$$
              */
             base_type to_base_type(size_type left, size_type right) const {
                 base_type res{};
@@ -116,7 +116,7 @@ namespace OY {
             }
             /**
              * @brief 查询区间 [left, right) 中所有基向量所能形成的异或线性基的最大异或和
-             * @note 复杂度为 $O(\omega)$
+             * @note 复杂度为 $$O(\omega)$$
              */
             Tp query_max_bitxor(size_type left, size_type right, Tp base = 0) const {
                 auto &node = m_masks[right];

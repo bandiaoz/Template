@@ -6,6 +6,11 @@
 /**
  * @brief Trie 前缀树
  * @example OY::Trie::StaticTrie<NodeWrap, ChildCount> trie;
+ * @example
+    template <typename Node>
+    struct NodeWrap : OY::Trie::BaseNodeWrap<Node> {
+        int cnt = 0;
+    };
  */
 namespace OY {
     namespace Trie {

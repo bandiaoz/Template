@@ -6,8 +6,8 @@
 [status](https://www.luogu.com.cn/record/202399625)
 */
 /**
- * 有一个字典 D，里面有 n 个单词
- * 有 m 次询问，每次给出一个文本串，问在字典 D 下，可以理解文本串的最长前缀长度，也就是这个前缀由给定的单词拼接而成
+ * 有一个字典 D，里面有 $$n (1 \leq n \leq 20)$$ 个单词，每个单词 $$s_i (1 \leq |s_i| \leq 20)$$
+ * 有 $$m (1 \leq m \leq 50)$$ 次询问，每次给出一个文本串 $$t (1 \leq |t| \leq 2 \times 10^6)$$，问在字典 D 下，可以理解文本串的最长前缀长度，也就是这个前缀由给定的单词拼接而成
  * 
  * 本题为多模式字符串匹配，使用 ac 自动机
  * 记录每个节点可以匹配的单词长度，在 trie 树上从上到下继承 fail 指针的匹配长度，然后状压做 dp 即可
@@ -21,9 +21,9 @@ int main() {
     std::cin >> n >> m;
 
     OY::ACAM<26> ac;
-    const int N = 20;
-    ac.reserve(20 * n);
-    std::vector<int> len(20 * n + 1), masks(20 * n + 1);
+    const int N = 20 * n;
+    ac.reserve(N);
+    std::vector<int> len(N + 1), masks(N + 1);
     for (int i = 0; i < n; i++) {
         std::string s;
         std::cin >> s;
