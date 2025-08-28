@@ -13,8 +13,74 @@
 #endif
 
 /**
- * @brief 莫比乌斯函数
- * @example OY::MOBIUS::Table<MAX_RANGE, RangeQuery = false> Mu;
+ * @brief 莫比乌斯函数，积性函数
+ * @example OY::MOBIUS::Table<MAX_RANGE, RangeQuery = false> mobius;
+ * @note 数论函数（也称算数函数）指定义域为正整数的函数，也可以视为数列。
+ *
+ * @note 在数论中，若函数 $$f(n)$$ 满足 $$f(1) = 1$$ 且 $$\forall x, y \in \mathbb{N}^*, \gcd(x, y) = 1$$ 都有 $$f(xy) = f(x) f(y)$$，则 $$f(n)$$ 为积性函数。
+ *       在数论中，若函数 $$f(n)$$ 满足 $$f(1) = 1$$ 且 $$\forall x, y \in \mathbb{N}^*$$ 都有 $$f(xy) = f(x) f(y)$$，则 $$f(n)$$ 为完全积性函数。
+ * @note 积性函数的例子：
+ *       单位函数：$$\varepsilon(n) = [n = 1]$$，完全积性，有 $$\varepsilon \ast f = f$$
+ *       恒等函数：$$id_k(n) = n^k$$，通常地，将 $$id_1(n)$$ 记为 $$id(n)$$，完全积性
+ *       常数函数：$$1(n) = 1$$，完全积性，有 $$1^{-1} = \mu$$
+ *
+ *       除数函数：$$\sigma_k(n) = \sum_{d \mid n} d^k$$，通常地，将 $$\sigma_0(n)$$ 记为 $$d(n)$$ 或者 $$\tau(n)$$，$$\sigma_1(n)$$ 记为 $$\sigma(n)$$，并且有 $$\sigma_k = \mathrm{id}_k \ast 1$$
+ *
+ *       欧拉函数：$$\varphi(n) = \sum_{i = 1}^n [\gcd(i, n) = 1] = \mu \ast id$$，并且有 $$\varphi \ast 1 = \mathrm{id}$$
+ *
+ *       莫比乌斯函数：$$\mu(n)$$，$$\mu \ast 1 = \varepsilon$$
+ *
+ * @note Dirichlet 卷积：对于两个数论函数 $$f$$ 和 $$g$$，其 Dirichlet 卷积定义为：
+ *
+ *       $$h(n) = (f \ast g)(n) = \sum_{d \mid n} f(d) g(\frac{n}{d}) = \sum_{ab = n} f(a) g(b)$$
+ * @note Dirichlet 性质：
+ *      1. 交换律：$$f \ast g = g \ast f$$
+ *      2. 结合律：$$(f \ast g) \ast h = f \ast (g \ast h)$$
+ *      3. 分配律：$$(f + g) \ast h = f \ast h + g \ast h$$
+ *      4. 等式的性质：$$f = g$$ 的充要条件是 $$f \ast h = g \ast h$$，其中数论函数 $$h(x)$$ 要满足 $$h(1) \neq 0$$。
+ *      5. 单位元：$$f \ast \varepsilon = f$$
+ *      6. 逆元：$$f \ast f^{-1} = \varepsilon$$，其中 $$f^{-1}$$ 为 $$f$$ 的逆元
+ * @note 重要结论 1：若 $$f$$ 和 $$g$$ 为积性函数，则其 Dirichlet 卷积也是积性函数
+ *       证明如下：
+ *       设两个积性函数 $$f(x)$$ 和 $$g(x)$$，记 $$h = f \ast g$$，$$(a, b) = 1$$，则有
+ *
+ *       $$h(a)h(b) = \sum_{d_1 \mid a} f(d_1) g(\frac{a}{d_1}) \sum_{d_2 \mid b} f(d_2) g(\frac{b}{d_2}) = \sum_{d \mid ab} f(d)g(\frac{ab}{d}) = h(ab)$$
+ *
+ * @note 重要结论 2：积性函数的逆元也是积性函数
+ *
+ * @note 引理 1：
+ *       $$\forall a, b, c \in \mathbb{Z}, \left\lfloor \frac{a}{bc} \right\rfloor = \left\lfloor \frac{\left\lfloor \frac{a}{b} \right\rfloor}{c} \right\rfloor$$
+ *
+ *      证明如下：
+ *      设 $$a = qc + r$$，其中 $$0 \leq r < c$$，则 $$\left\lfloor \frac{a}{c} \right\rfloor = q$$，
+ *
+ *      于是 $$\left\lfloor \frac{a}{bc} \right\rfloor = \left\lfloor \frac{qc + r}{bc} \right\rfloor = \left\lfloor \frac{q}{b} + \frac{r}{bc} \right\rfloor = \left\lfloor \frac{q}{b} \right\rfloor = \left\lfloor \frac{\left\lfloor \frac{a}{b} \right\rfloor}{c} \right\rfloor$$
+ *
+ *      （由于 $$\frac{r}{c} < 1$$，无法造成有效的贡献，故舍去）
+ *
+ * @note 定义莫比乌斯函数 $$\mu(x)$$：
+ *       $$\mu(x) = \begin{cases}
+        1, & x = 1 \\
+        (-1)^k, & x = p_1p_2\cdots p_k \\
+        0, & \text{otherwise}(p^2 \mid x)
+        \end{cases}$$
+ * @note $$\mu$$ 函数有个性质：$$\sum_{d \mid n} \mu(d) = [n = 1]$$，也可以写成 $$\mu \ast 1 = \varepsilon$$
+ *       证明如下：
+ *       考虑 $$n = \prod p_i^{c_i}$$，$$n' = \prod p_i$$，则
+ *
+ *       $$\sum_{d \mid n} \mu(d) = \sum_{d \mid n'} \mu(d) = \sum_{i = 0}^k \binom{k}{i}(-1)^i = (1 + (-1))^k = [n = 1]$$
+ *       
+ *       根据这个公式可以得到反演公式：$$[\gcd(i, j) = 1] = \sum_{d \mid \gcd(i, j)} \mu(d)$$
+ *
+ * @note 莫比乌斯反演：设 $$f(n)$$ 和 $$g(n)$$ 为两个数论函数
+ *
+ *       1. 若 $$f(n) = \sum_{d \mid n} g(d)$$，则有 $$g(n) = \sum_{d \mid n} \mu(d) f(\frac{n}{d})$$，也可以表达为 $$f = g \ast 1 \Leftrightarrow g = f \ast \mu$$
+ *
+ *       证明：$$f = g \ast 1$$，则 $$f \ast \mu = g \ast 1 \ast \mu = g \ast \varepsilon = g$$
+ *
+ *       2. 若 $$f(n) = \sum_{n \mid d} g(d)$$，则有 $$g(n) = \sum_{n \mid d} \mu(\frac{d}{n}) f(d)$$
+ *
+ * @note 记 $$d(x)$$ 为 $$x$$ 的因数个数，有公式 $$d(ij) = \sum_{x \mid i} \sum_{y \mid j} [(x, y) = 1]$$
  */
 namespace OY {
     namespace MOBIUS {
@@ -148,6 +214,14 @@ namespace OY {
                     }
                 }
             }
+            /**
+             * @brief 计算积性函数，返回一个数组
+             * @note 对于积性函数 $$f$$，如果 $$\gcd(n, m) = 1$$ 有 $$f(n, m) = f(n) f(m)$$。
+             * @param range 范围
+             * @param calc_prime(p) 计算 $$f(p)$$ 的值，其中 $$p$$ 为质数
+             * @param calc_prime_pow(p, c, low) 计算 $$f(p^c)$$ 的值，其中 $$p$$ 为质数，$$c$$ 为质数幂，$$low$$ 为 $$p^{c-1}$$
+             * @return 积性函数数组
+             */
             template <typename Tp, typename CalcPrime, typename CalcPrimePow>
             std::vector<Tp> solve(size_type range, CalcPrime &&calc_prime, CalcPrimePow &&calc_prime_pow) {
                 std::vector<Tp> res(range + 1);

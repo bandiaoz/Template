@@ -137,7 +137,7 @@ namespace OY {
                     return rt;
                 }
                 p->m_val = group::op(p->m_val, val);
-                if (w)
+                if (w) {
                     if (i >> (w - 1) & 1) {
                         size_type rc = p->m_rc ? _add(_copynode(p->m_rc), i, val) : _newnode(val, i | mask);
                         _ptr(cur)->m_rc = rc;
@@ -145,6 +145,7 @@ namespace OY {
                         size_type lc = p->m_lc ? _add(_copynode(p->m_lc), i, val) : _newnode(val, i | mask);
                         _ptr(cur)->m_lc = lc;
                     }
+                }
                 return cur;
             }
             static bool _contains(size_type cur, SizeType i) {

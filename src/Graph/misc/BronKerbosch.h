@@ -13,6 +13,9 @@
 
 /**
  * @brief Bron-Kerbosch 算法。
+ * @note 团：无向图中，一个点集使得任意两点之间都有边。
+ * @note 独立集：无向图中，一个点集使得任意两点之间都没有边。
+ * @example OY::BK::Graph<uint64_t, MAX_VERTEX> graph(n);
  */
 namespace OY {
     namespace BK {

@@ -2,4 +2,4 @@
 *.zip
 **/.DS_Store
 *.pdf
-build/**
+build/
