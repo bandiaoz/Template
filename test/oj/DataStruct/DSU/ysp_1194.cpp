@@ -52,7 +52,7 @@ void main_non_commutative() {
     static constexpr uint32_t Mod = 998244353;
     struct Group {
         using value_type = std::array<std::array<int, 2>, 2>;
-        static value_type identity() { return {1, 0, 0, 1}; }
+        static value_type identity() { return {{{1, 0}, {0, 1}}}; }
         static value_type op(value_type lhs, value_type rhs) { 
             value_type ans{};
             for (int i = 0; i < 2; i++) {

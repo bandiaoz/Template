@@ -16,7 +16,7 @@ namespace OY {
     namespace DSU {
         using size_type = uint32_t;
         template <bool MaintainGroupSize>
-        class Table {
+        struct Table {
             mutable std::vector<size_type> m_parent, m_group_size;
             size_type m_size, m_group_cnt;
         public:

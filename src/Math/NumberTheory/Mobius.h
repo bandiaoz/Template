@@ -72,6 +72,10 @@
  *       
  *       根据这个公式可以得到反演公式：$$[\gcd(i, j) = 1] = \sum_{d \mid \gcd(i, j)} \mu(d)$$
  *
+ * @note 欧拉反演：由 $$\varphi \ast 1 = \mathrm{id}$$，也就是 $$\sum_{d \mid n} \varphi(d) = n$$，可以得到 $$\gcd(i, j) = \sum_{d \mid \gcd(i, j)} \varphi(d)$$
+ *
+ *       $$\sum_{i = 1}^n \gcd(i, n) = \sum_{i = 1}^n \sum_{d \mid \gcd(i, n)} \varphi(d) = \sum_{d \mid n} \left\lfloor\frac{n}{d}\right\rfloor \varphi(d)$$
+ *
  * @note 莫比乌斯反演：设 $$f(n)$$ 和 $$g(n)$$ 为两个数论函数
  *
  *       1. 若 $$f(n) = \sum_{d \mid n} g(d)$$，则有 $$g(n) = \sum_{d \mid n} \mu(d) f(\frac{n}{d})$$，也可以表达为 $$f = g \ast 1 \Leftrightarrow g = f \ast \mu$$

@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 #include "src/Math/Modular/StaticModInt32.h"
 #include "src/DataStruct/Segtree/ZkwTree.h"
-#include "src/DataStruct/Segtree/SegTree.h"
 
 using Z = OY::mint998244353;
 
@@ -40,9 +39,6 @@ int main() {
         std::cin >> x;
         return x;
     };
-    // auto seg = OY::make_lazy_SegTree<Info, Tag, true>(
-    //     n, read, std::plus<>(), map, com, Tag{1, 0}
-    // );
     auto seg = OY::make_lazy_ZkwTree<Info, Tag, true>(
         n, read, std::plus<>(), map, com, Tag{1, 0}
     );
