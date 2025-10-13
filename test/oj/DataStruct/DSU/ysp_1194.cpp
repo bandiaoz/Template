@@ -51,7 +51,7 @@ void main_non_commutative() {
 
     static constexpr uint32_t Mod = 998244353;
     struct Group {
-        using value_type = std::array<std::array<int, 2>, 2>;
+        using value_type = std::array<std::array<uint32_t, 2>, 2>;
         static value_type identity() { return {{{1, 0}, {0, 1}}}; }
         static value_type op(value_type lhs, value_type rhs) { 
             value_type ans{};
@@ -65,10 +65,10 @@ void main_non_commutative() {
             return ans;
         }
         static value_type inverse(value_type x) { 
-            return {
-                x[1][1], x[0][1] ? Mod - x[0][1] : 0, 
-                x[1][0] ? Mod - x[1][0] : 0, x[0][0]
-            }; 
+            return {{
+                {{x[1][1], x[0][1] ? Mod - x[0][1] : 0}}, 
+                {{x[1][0] ? Mod - x[1][0] : 0, x[0][0]}}
+            }}; 
         }
     };
     using value_type = Group::value_type;

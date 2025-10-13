@@ -1,19 +1,20 @@
-#ifndef __OY_BITRIE__
-#define __OY_BITRIE__
+#ifndef __OY_PERSISTENTBITRIE__
+#define __OY_PERSISTENTBITRIE__
 
-#include "src/DataStruct/container/VectorBufferWithCollect.h"
+#include "src/DataStruct/container/VectorBufferWithoutCollect.h"
 
 /**
- * @brief 01 字典树
+ * @brief 可持久化 01 字典树
  * @tparam Key 字典树的元素类型，一般为 `uint32_t` 或 `uint64_t`
  * @tparam L 字典树的位数，表示对每个数字的 `[0, L)` 位，从高位到低位进行考虑，`uint32_t` 可取 `32`
- * @example OY::BiTrie::Tree<Key, L, Info> trie;
- * @example OY::BiTrie::CountTree<Key, CountType, L> cnt_trie;
+ * @example OY::PerBiTrie::Tree<Key, L, Info> trie;
+ * @example OY::PerBiTrie::CountTree<Key, CountType, L> cnt_trie;
  * @note 可处理范围为 $[0, 2^L - 1]$ 的数字
  * @note judge(Tree::node *child) 表示对 child 节点的检查，是否可以从 child 节点继续向下走
+ * @note 可持久化往往需要使用差分来处理问题，所以一般情况下都会使用 CountTree
  */
 namespace OY {
-    namespace BiTrie {
+    namespace PerBiTrie {
         using size_type = uint32_t;
         struct Ignore {};
         struct BaseEraseJudger {
@@ -54,7 +55,7 @@ namespace OY {
          * @tparam L 字典树的位数
          * @tparam Info 字典树的节点额外信息类型
          */
-        template <typename Key, size_type L, typename Info = Ignore, template <typename> typename BufferType = VectorBufferWithCollect>
+        template <typename Key, size_type L, typename Info = Ignore, template <typename> typename BufferType = VectorBufferWithoutCollect>
         class Tree {
         public:
             using tree_type = Tree<Key, L, Info, BufferType>;
@@ -65,17 +66,13 @@ namespace OY {
                 node *child1() const { return _ptr(m_child[1]); }
             };
             struct handler {
-                /**
-                 * @brief 查询和 `number` 的最相似的数字，也就是和 `number` 的异或值最小的数字
-                 * @tparam Judger 
-                 * @param tr 字典树
-                 * @param number 要查询的数字
-                 * @param judge 每次面临左右孩子分叉时，最佳分叉的检查条件
-                 * @return 返回适配的叶子结点指针，以及逐位判定相同与否的 `mask`
-                 */
+                static size_type &root_of(tree_type &tr) { return tr.m_rt; }
+                static size_type root_of(const tree_type &tr) { return tr.m_rt; }
+                static node *_ptr(size_type x) { return tree_type::_ptr(x); }
+                static size_type _child(size_type cur, size_type i) { return tree_type::_child(cur, i); }
                 template <typename Judger>
                 static std::pair<node *, Key> _query(const tree_type &tr, Key number, Judger &&judge) {
-                    size_type it = tr.m_root;
+                    size_type it = tr.m_rt;
                     Key res{};
                     for (size_type ch : NumberIteration<Key, L>(number)) {
                         res *= 2;
@@ -89,33 +86,29 @@ namespace OY {
                 }
             };
             using buffer_type = BufferType<node>;
+            static constexpr Key _mask() { return (L == sizeof(Key) << 3) ? -1 : (Key(1) << L) - 1; }
             static void _reserve(size_type capacity) {
                 static_assert(buffer_type::is_vector_buffer, "Only In Vector Mode");
                 buffer_type::s_buf.reserve(capacity);
             }
-            static constexpr Key _mask() { return (L == sizeof(Key) << 3) ? -1 : (Key(1) << L) - 1; }
         private:
-            size_type m_root{};
+            size_type m_rt{};
             static node *_ptr(size_type cur) { return buffer_type::data() + cur; }
             static size_type _newnode() { return buffer_type::newnode(); }
-            static void _collect(size_type x) { buffer_type::collect(x); }
+            static size_type _copynode(size_type x) {
+                size_type c = buffer_type::newnode();
+                *_ptr(c) = *_ptr(x);
+                return c;
+            }
             static size_type _child(size_type cur, size_type i) { return _ptr(cur)->m_child[i]; }
             static size_type _get_child(size_type cur, size_type i) {
-                if (!_ptr(cur)->m_child[i]) {
-                    size_type c = _newnode();
-                    return _ptr(cur)->m_child[i] = c;
-                }
-                return _ptr(cur)->m_child[i];
+                size_type c = _ptr(cur)->m_child[i] ? _copynode(_ptr(cur)->m_child[i]) : _newnode();
+                return _ptr(cur)->m_child[i] = c;
             }
-            template <size_type I>
-            static void _collect_all(size_type it) {
-                if constexpr (buffer_type::is_collect) {
-                    if constexpr (I != L) {
-                        if (_child(it, 0)) _collect_all<I + 1>(_child(it, 0));
-                        if (_child(it, 1)) _collect_all<I + 1>(_child(it, 1));
-                    }
-                    _collect(it);
-                }
+            static size_type _child_of(size_type cur, size_type i) {
+                if (!_ptr(cur)->m_child[i]) return 0;
+                size_type c = _copynode(_ptr(cur)->m_child[i]);
+                return _ptr(cur)->m_child[i] = c;
             }
             template <size_type I, typename Callback>
             static void _dfs(size_type it, Key cur, Callback &&call) {
@@ -137,10 +130,10 @@ namespace OY {
             bool _erase(size_type it, Iterator first, Iterator last, Judger &&judge) {
                 if (first == last) return judge(_ptr(it));
                 size_type ch = *first;
-                size_type c = _child(it, ch);
+                size_type c = _child_of(it, ch);
                 if (!c) return false;
                 if (!_erase(c, ++first, last, judge)) return false;
-                _collect(_ptr(it)->m_child[ch]), _ptr(it)->m_child[ch] = 0;
+                _ptr(it)->m_child[ch] = 0;
                 return !_ptr(it)->m_child[ch ^ 1];
             }
             template <typename Modify>
@@ -161,55 +154,52 @@ namespace OY {
             }
         public:
             Tree() = default;
-            Tree(const tree_type &rhs) = delete;
-            Tree(tree_type &&rhs) noexcept { std::swap(m_root, rhs.m_root); }
-            ~Tree() { clear(); }
-            tree_type &operator=(const tree_type &rhs) = delete;
-            tree_type &operator=(tree_type &&rhs) noexcept {
-                std::swap(m_root, rhs.m_root);
-                return *this;
+            /**
+             * @brief 拷贝字典树
+             * @note 时间复杂度为 $$O(1)$$
+             */
+            tree_type copy() const {
+                tree_type res;
+                if (m_rt) res.m_rt = _copynode(m_rt);
+                return res;
             }
-            void clear() {
-                if (m_root) _collect_all<0>(m_root), m_root = 0;
-            }
-            node *root() const { return _ptr(m_root); }
+            node *root() const { return _ptr(m_rt); }
+            void clear() { m_rt = 0; }
             /**
              * @brief 查询字典树是否为空
              */
-            bool empty() const { return !m_root; }
+            bool empty() const { return !m_rt; }
             /**
-             * @brief 插入一个数 `number`
+             * @brief 插入一个数字 `number`
              * @param modify 表示从根节点到叶子节点，对一路上的节点所做的操作，
              *               参数为 modify(Tree::node*) 
-             * @return 插入元素后的叶子节点
+             * @return 插入后的节点
              */
             template <typename Modify = Ignore>
             node *insert(Key number, Modify &&modify = Modify()) {
                 NumberIteration<Key, L> num(number);
-                if (!m_root) m_root = _newnode();
-                return _ptr(_insert(m_root, num.begin(), num.end(), modify));
+                if (!m_rt) m_rt = _newnode();
+                return _ptr(_insert(m_rt, num.begin(), num.end(), modify));
             }
             /**
-             * @brief 删除一个数 `number`
+             * @brief 删除一个数字 `number`
              * @param judge 表示对叶子节点删除之前进行的检查
              * @note 如果没有指定数字，则不删除
              */
             template <typename Judger = BaseEraseJudger>
             void erase(Key number, Judger &&judge = Judger()) {
                 NumberIteration<Key, L> num(number);
-                if (_erase(m_root, num.begin(), num.end(), judge)) {
-                    _collect(m_root), m_root = 0;
-                }
+                _erase(m_rt, num.begin(), num.end(), judge);
             }
             /**
              * @brief 对于从根到`number`节点的路径上的每个节点，执行 `modify` 操作
              * @param modify 表示从根节点到叶子节点，对一路上的节点所做的操作，
-             *               参数为 modify(Tree::node*)
+             *               参数为 modify(Tree::node*) 
              */
-            template <typename Modify>
-            void trace(Key number, Modify &&modify) {
+            template <typename Modify = Ignore>
+            void trace(Key number, Modify &&modify = Modify()) {
                 NumberIteration<Key, L> num(number);
-                _trace(m_root, num.begin(), num.end(), modify);
+                _trace(m_rt, num.begin(), num.end(), modify);
             }
             /**
              * @brief 是否包含数字 `number`
@@ -218,7 +208,7 @@ namespace OY {
              */
             const node *contains(Key number) const {
                 NumberIteration<Key, L> num(number);
-                return _find(m_root, num.begin(), num.end());
+                return _find(m_rt, num.begin(), num.end());
             }
             /**
              * @brief 查询和 `number` 的异或值最小的叶子节点
@@ -239,28 +229,28 @@ namespace OY {
              * @return 返回适配的叶子结点指针和异或得到的最大值
              */
             template <typename Judger = BaseQueryJudger>
-            std::pair<node *, Key> max_bitxor(Key number, Judger &&judge = Judger()) const { 
-                return handler::_query(*this, number ^ _mask(), judge); 
-            }
+            std::pair<node *, Key> max_bitxor(Key number, Judger &&judge = Judger()) const { return handler::_query(*this, number ^ _mask(), judge); }
             /**
              * @brief 枚举树中所有的数字
              * @param call 对每个数字的回调函数
              */
             template <typename Callback>
             void enumerate(Callback &&call) const {
-                if (m_root) _dfs<0>(m_root, 0, call);
+                if (m_rt) _dfs<0>(m_rt, 0, call);
             }
         };
         /**
-         * @brief 计数字典树，可以统计每个数字出现的次数
+         * @brief 可持久化 01 字典树，维护一个数字集合
          * @tparam Key 字典树的元素类型
          * @tparam CountType 计数类型
          * @tparam L 字典树的位数
          */
-        template <typename Key, typename CountType, size_type L, template <typename> typename BufferType = VectorBufferWithCollect>
-        struct CountTree {
+        template <typename Key, typename CountType, size_type L, template <typename> typename BufferType = VectorBufferWithoutCollect>
+        class CountTree {
+        public:
             struct CountInfo {
                 CountType m_cnt;
+                void add(CountType inc) { m_cnt += inc; }
                 void add_one() { ++m_cnt; }
                 void remove_one() { --m_cnt; }
                 CountType count() const { return m_cnt; }
@@ -269,16 +259,91 @@ namespace OY {
             using inner_type = Tree<Key, L, CountInfo, BufferType>;
             using node = typename inner_type::node;
             using handler = typename inner_type::handler;
-            static void _reserve(size_type capacity) { inner_type::_reserve(capacity); }
             static constexpr Key _mask() { return inner_type::_mask(); }
+            static void _reserve(size_type capacity) { inner_type::_reserve(capacity); }
+        private:
             inner_type m_tree;
+            struct DiffTree {
+                const tree_type &m_base, &m_end;
+                bool contains(Key number) const {
+                    size_type base_cur = handler::root_of(m_base.m_tree), end_cur = handler::root_of(m_end.m_tree);
+                    for (size_type ch : NumberIteration<Key, L>(number)) {
+                        base_cur = _child(base_cur, ch), end_cur = _child(end_cur, ch);
+                        if (!(_ptr(end_cur)->count() > _ptr(base_cur)->count())) return false;
+                    }
+                    return true;
+                }
+                Key min_bitxor(Key number) const {
+                    return _reduce(m_base, m_end, number, [](node *x, node *y) { return y->count() > x->count(); }) ^ _mask();
+                }
+                Key max_bitxor(Key number) const {
+                    return _reduce(m_base, m_end, number ^ _mask(), [](node *x, node *y) { return y->count() > x->count(); });
+                }
+                Key kth_bitxor(Key number, CountType k) const {
+                    return _reduce(m_base, m_end, number ^ _mask(), [rnk = m_end.root()->count() - m_base.root()->count() - 1 - k](node *x, node *y) mutable {
+                        auto cnt = y->count() - x->count();
+                        if (rnk < cnt) return true;
+                        return rnk -= cnt, false;
+                    });
+                }
+                CountType rank_bitxor(Key number, Key result) const {
+                    CountType smaller{};
+                    _reduce(m_base, m_end, number, [&, it = NumberIteration<Key, L>(result).begin()](node *x, node *y) mutable {
+                        if (!*it) return ++it, true;
+                        smaller += y->count() - x->count();
+                        return ++it, false;
+                    });
+                    return smaller;
+                }
+                template <typename Callback>
+                void enumerate(Callback &&call) const { _dfs<0>(handler::root_of(m_base.m_tree), handler::root_of(m_end.m_tree), 0, call); }
+                template <typename Ostream>
+                friend Ostream &operator<<(Ostream &out, const DiffTree &x) {
+                    out << "{";
+                    auto call = [&out, i = 0](node *p1, node *p2, Key x) mutable {
+                        if (i++) out << ", ";
+                        out << x << '*' << p2->count() - p1->count();
+                    };
+                    x.enumerate(call);
+                    return out << "}";
+                }
+            };
+            static node *_ptr(size_type x) { return handler::_ptr(x); }
+            static size_type _child(size_type cur, size_type i) { return handler::_child(cur, i); }
+            template <size_type I, typename Callback>
+            static void _dfs(size_type it1, size_type it2, Key cur, Callback &&call) {
+                if constexpr (I == L)
+                    call(_ptr(it1), _ptr(it2), cur);
+                else {
+                    if (_ptr(_child(it2, 0))->count() > _ptr(_child(it1, 0))->count()) _dfs<I + 1>(_child(it1, 0), _child(it2, 0), cur * 2, call);
+                    if (_ptr(_child(it2, 1))->count() > _ptr(_child(it1, 1))->count()) _dfs<I + 1>(_child(it1, 1), _child(it2, 1), cur * 2 + 1, call);
+                }
+            }
+            template <typename Judger>
+            static Key _reduce(const tree_type &base, const tree_type &end, Key number, Judger &&judge = Judger()) {
+                size_type base_cur = handler::root_of(base.m_tree), end_cur = handler::root_of(end.m_tree);
+                Key res{};
+                for (size_type ch : NumberIteration<Key, L>(number)) {
+                    res *= 2;
+                    size_type base_c = _child(base_cur, ch), end_c = _child(end_cur, ch);
+                    if (judge(_ptr(base_c), _ptr(end_c)))
+                        base_cur = base_c, end_cur = end_c, res++;
+                    else
+                        base_cur = _child(base_cur, ch ^ 1), end_cur = _child(end_cur, ch ^ 1);
+                }
+                return res;
+            }
+        public:
             /**
-             * @brief 获取根节点
+             * @brief 拷贝字典树
+             * @note 时间复杂度为 $$O(1)$$
              */
+            tree_type copy() const {
+                tree_type res;
+                res.m_tree = m_tree.copy();
+                return res;
+            }
             node *root() const { return m_tree.root(); }
-            /**
-             * @brief 判断字典树是否为空
-             */
             bool empty() const { return m_tree.empty(); }
             /**
              * @brief 插入一个数字 `number`
@@ -291,6 +356,7 @@ namespace OY {
             }
             /**
              * @brief 删除一个数字 `number`
+             * @param number 要删除的数字
              */
             void erase_one(Key number) {
                 bool changed = false;
@@ -310,13 +376,13 @@ namespace OY {
             /**
              * @brief 查询和 `number` 的异或值最小的叶子节点
              * @param number 要查询的数字
-             * @return 返回适配的叶子结点指针和异或的最小值
+             * @return 返回适配的叶子结点指针和异或得到的最小值
              */
-            std::pair<node *, Key> min_bitxor(Key number) const { return m_tree.min_bitxor(number); }
+            std::pair<node *, Key> min_bitxor(Key number) const { return m_tree.max_bitxor(number ^ _mask()); }
             /**
              * @brief 查询和 `number` 的异或值最大的叶子节点
              * @param number 要查询的数字
-             * @return 返回适配的叶子结点指针和异或的最大值
+             * @return 返回适配的叶子结点指针和异或得到的最大值
              */
             std::pair<node *, Key> max_bitxor(Key number) const { return m_tree.max_bitxor(number); }
             /**
@@ -333,8 +399,6 @@ namespace OY {
             }
             /**
              * @brief 查询和 `number` 的异或值等于 `result` 的叶子节点，是第几小异或值 (0 表示最小的)
-             * @note 可以理解为字典树中所有数和 `number` 异或得到有序数组 `[number ^ x]` 中，比 `result` 小的数有多少个
-             *       `result` 不一定出现在有序数组 `[number ^ x]` 中
              */
             CountType rank_bitxor(Key number, Key result) const {
                 CountType smaller{};
@@ -345,12 +409,13 @@ namespace OY {
                 });
                 return smaller;
             }
-            /**
-             * @brief 枚举字典树中所有的数字
-             * @param call 对每个数字的回调函数
-             */
             template <typename Callback>
             void enumerate(Callback &&call) const { m_tree.enumerate(call); }
+            /**
+             * @brief 构造一个差分字典树
+             * @note 需要保证 `other` 是 `*this` 的严格前缀
+             */
+            DiffTree operator-(const tree_type &other) const { return DiffTree{other, *this}; }
         };
         template <typename Ostream, typename Key, size_type L, typename Info, template <typename> typename BufferType>
         Ostream &operator<<(Ostream &out, const Tree<Key, L, Info, BufferType> &x) {

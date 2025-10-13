@@ -9,9 +9,10 @@
  * @brief 单源最短路径 Dijkstra 算法
  * @example OY::Dijkstra::Graph<Tp> graph(n, m);
  *          using Group = OY::Dijkstra::AddGroup<ValueType, SumType=ValueType, Compare=std::less<SumType>, Inf=SafeInfinite<SumType>::max()>;
- *          graph.calc<Group=AddGroup<Tp>, CountType=void, GetPath=false>(source, target);
+ *          也可以按照 AddGroup 的写法，定义一个自己的 sum_type 和 Group
+ *          auto sol = graph.calc<Group=AddGroup<Tp>, CountType=void, GetPath=false>(source, target);
  * 
- *          OY::Dijkstra::Solver<Group, CountType, Compare, GetPath> sol(vertex_cnt);         
+ *          直接定义 sol: OY::Dijkstra::Solver<Group, CountType, Compare, GetPath> sol(vertex_cnt);         
  */
 namespace OY {
     namespace Dijkstra {

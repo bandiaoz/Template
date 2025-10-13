@@ -106,7 +106,7 @@ namespace OY {
             /**
              * @brief 单点修改，将 `(i, j)` 的值修改为 `val`
              */
-            void modify(size_type i, size_type j, value_type val) { _auto_to_value(), _plus(i, j, val - _get(i, j)); }
+            void modify(size_type i, size_type j, value_type val) { _auto_to_value(), _plus(i, j, group::op(val, group::inverse(_get(i, j)))); }
             /**
              * @brief 区间增值，将区间 `[r1, r2) x [c1, c2)` 的值增加 `inc`
              */
@@ -123,7 +123,7 @@ namespace OY {
              */
             value_type query(size_type r1, size_type r2, size_type c1, size_type c2) const { 
                 r2--, c2--;
-                return _auto_to_presum(), _get(r1 - 1, c1 - 1) - _get(r1 - 1, c2) - _get(r2, c1 - 1) + _get(r2, c2); 
+                return _auto_to_presum(), group::op(group::op(_get(r1 - 1, c1 - 1), _get(r2, c2)), group::inverse(group::op(_get(r1 - 1, c2), _get(r2, c1 - 1))));
             }
             value_type query_all() const { return _auto_to_presum(), _get(m_row - 1, m_column - 1); }
             void switch_to_difference() const {

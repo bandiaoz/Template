@@ -17,6 +17,9 @@ namespace OY {
         std::vector<_Tp> m_coef;
         LagrangeInterpolation(uint32_t __pointNum = 0) { m_points.reserve(__pointNum); }
         void addPoint(_Tp __x, _Tp __y) { m_points.push_back({__x, __y}); }
+        /**
+         * @brief 预处理，复杂度为 $$O(n^2)$$
+         */
         void prepare() {
             m_coef.reserve(m_points.size());
             for (auto &[xi, yi] : m_points) {
@@ -28,9 +31,10 @@ namespace OY {
         }
         /**
          * @brief 如果输入的满足横坐标递增并且间隔为 1，可以使用这个函数进行预处理
+         * @note 复杂度为 $$O(n)$$
          */
         void prepareIfSpecialX() {
-            _Tp fac[m_points.size()], facInv[m_points.size() + 1];
+            std::vector<_Tp> fac(m_points.size()), facInv(m_points.size() + 1);
             fac[0] = 1;
             for (uint32_t i = 1; i < m_points.size(); i++) fac[i] = fac[i - 1] * i;
             facInv[m_points.size()] = 1;
@@ -49,7 +53,7 @@ namespace OY {
         _Tp calc(_Tp __x) const {
             for (auto &[xi, yi] : m_points)
                 if (__x == xi) return yi;
-            _Tp dif[m_points.size() + 1];
+            std::vector<_Tp> dif(m_points.size() + 1);
             dif[m_points.size()] = 1;
             for (uint32_t i = m_points.size() - 1; ~i; i--) dif[i] = dif[i + 1] * (__x - m_points[i].x);
             _Tp res = 0, prod = dif[0], inv = 1 / prod;

@@ -14,6 +14,7 @@
 
 /**
  * @brief AssignZkwTree
+ * @example auto S = OY::make_lazy_AssignZkwTree<Info>(n, op, read, identity);
  */
 namespace OY {
     namespace ASZKW {
@@ -190,6 +191,7 @@ namespace OY {
             }
             /**
              * @brief 区间推平，将区间 [left, right) 的元素修改为 val
+             * @note 不允许 left == right
              */
             void modify(size_type left, size_type right, value_type val) {
                 right--;

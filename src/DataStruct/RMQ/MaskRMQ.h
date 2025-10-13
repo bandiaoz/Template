@@ -5,7 +5,7 @@
 
 /**
  * @brief 状压 RMQ
- * @example OY::MASKRMQ::MaskRMQMaxValueTable<int> table(n, [&](size_type i) { return a[i]; });
+ * @example OY::MaskRMQMaxValueTable<int> table(n, [&](uint32_t i) { return a[i]; });
  */
 namespace OY {
     namespace MASKRMQ {

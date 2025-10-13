@@ -179,9 +179,31 @@ namespace OY {
             /**
              * @brief 判断 `u` 是否是 `v` 的祖先
              */
-            bool isAncestor(int u, int v) {
+            bool isAncestor(size_type u, size_type v) const {
                 auto info = m_info.data();
                 return info[u].m_dfn <= info[v].m_dfn && info[v].m_dfn < info[u].m_dfn + info[u].m_size;
+            }
+            /**
+             * @brief 从 `u` 出发，找到 `v` 方向上的第一个节点
+             */
+            size_type rootedChild(size_type u, size_type v) const {
+                if (u == v) return u;
+                if (!isAncestor(u, v)) return find_parent(u);
+                return find_son(u, v);
+            }
+            /**
+             * @brief 将根重定为 `root` 后，`u` 的子树大小
+             */
+            size_type rootedSize(size_type root, size_type u) const {
+                if (root == u) return m_rooted_tree->vertex_cnt();
+                if (!isAncestor(u, root)) return m_info[u].m_size;
+                return m_rooted_tree->vertex_cnt() - m_info[rootedChild(u, root)].m_size;
+            }
+            /**
+             * @brief 将根重定为 `root` 后，查询 `u` 和 `v` 的 LCA
+             */
+            size_type rootedLca(size_type u, size_type v, size_type root) const {
+                return lca(u, v) ^ lca(v, root) ^ lca(root, u);
             }
         };
     }

@@ -89,6 +89,7 @@ namespace OY {
             size_type query(size_type i) const { return m_bits[i >> MASK_WIDTH] >> (i & (MASK_SIZE - 1)) & 1; }
             /**
              * @brief 区间查询，返回区间 `[left, right)` 的和
+             * @note 如果 `left == right` ，则返回 `0`
              */
             size_type query(size_type left, size_type right) const { return presum(right) - presum(left); }
             /**
