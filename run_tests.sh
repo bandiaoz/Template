@@ -6,16 +6,48 @@ cd "$(dirname "$0")"
 
 mkdir -p build
 
-# 支持单测：如果提供一个参数，则只编译/运行该测试
-if [ $# -eq 1 ]; then
-  name="$1"
-  # 查找指定测试文件
+CXX=${CXX:-clang++}
+CXXFLAGS=(-std=c++20 -O2 -I.)
+CATCH_SRC=third_party/catch/catch_amalgamated.cpp
+CATCH_OBJ=build/catch_amalgamated.o
+CATCH_DEP=build/catch_amalgamated.d
+
+needs_rebuild() {
+  local target="$1"
+  local depfile="$2"
+
+  if [ ! -e "$target" ] || [ ! -f "$depfile" ] || [ "$0" -nt "$target" ]; then
+    return 0
+  fi
+
+  local deps
+  deps=$(tr '\\\n' '  ' < "$depfile" | sed -e 's/^[^:]*: //')
+  for dep in $deps; do
+    if [[ "$dep" == *: ]]; then
+      continue
+    fi
+    if [ -f "$dep" ] && [ "$dep" -nt "$target" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+if needs_rebuild "$CATCH_OBJ" "$CATCH_DEP"; then
+  echo "Building $CATCH_OBJ"
+  "$CXX" "${CXXFLAGS[@]}" -MMD -MP -MF "$CATCH_DEP" -c "$CATCH_SRC" -o "$CATCH_OBJ"
+fi
+
+# 支持局部测试：传入一个或多个测试名时，只编译/运行这些测试
+if [ $# -gt 0 ]; then
   files=()
-  while IFS= read -r -d '' file; do
-    files+=("$file")
-  done < <(find test/local -type f -name "${name}.cpp" -print0)
+  for name in "$@"; do
+    while IFS= read -r -d '' file; do
+      files+=("$file")
+    done < <(find test/local -type f -name "${name}.cpp" -print0)
+  done
   if [ ${#files[@]} -eq 0 ]; then
-    echo "No test file found for name: $name"
+    echo "No test file found for: $*"
     exit 1
   fi
 else
@@ -29,11 +61,14 @@ fi
 # 编译测试文件
 for testfile in "${files[@]}"; do
   base=$(basename "$testfile" .cpp)
-  clang++ -std=c++20 -O2 \
-    -I. \
-    "$testfile" \
-    third_party/catch/catch_amalgamated.cpp \
-    -o build/"$base"
+  exe="build/$base"
+  depfile="build/$base.d"
+  if needs_rebuild "$exe" "$depfile" || [ "$CATCH_OBJ" -nt "$exe" ]; then
+    echo "Building $exe"
+    "$CXX" "${CXXFLAGS[@]}" -MMD -MP -MF "$depfile" "$testfile" "$CATCH_OBJ" -o "$exe"
+  else
+    echo "Up to date $exe"
+  fi
 done
 
 # 运行测试
