@@ -9,8 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 enable_testing()
 
-add_library(catch_amalgamated STATIC third_party/catch/catch_amalgamated.cpp)
-target_include_directories(catch_amalgamated PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(GTest REQUIRED)
+include(GoogleTest)
 
 file(GLOB_RECURSE LOCAL_TESTS CONFIGURE_DEPENDS test/local/*.cpp)
 foreach(test_src IN LISTS LOCAL_TESTS)
@@ -20,11 +20,12 @@ foreach(test_src IN LISTS LOCAL_TESTS)
 
     add_executable(${test_name} ${test_src})
     target_include_directories(${test_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-    target_link_libraries(${test_name} PRIVATE catch_amalgamated)
+    target_link_libraries(${test_name} PRIVATE GTest::gtest_main)
 
-    add_test(NAME ${test_name} COMMAND ${test_name} --reporter compact)
     if(test_dir)
         string(REPLACE "/" ";" test_labels "${test_dir}")
-        set_tests_properties(${test_name} PROPERTIES LABELS "${test_labels}")
+        gtest_discover_tests(${test_name} PROPERTIES LABELS "${test_labels}")
+    else()
+        gtest_discover_tests(${test_name})
     endif()
 endforeach()
