@@ -37,11 +37,7 @@ TEST_CASE("Point supports floating geometry helpers", "[Geometry][Point]") {
     REQUIRE(std::abs((double)r.y - 2.0) < 1e-12);
 }
 
-TEST_CASE("Point line intersection returns real coordinates", "[Geometry][Point]") {
-    auto p = OY::GEO::line_intersection(IP(0, 0), IP(2, 2), IP(0, 2), IP(2, 0));
-    REQUIRE(std::abs((double)p.x - 1.0) < 1e-12);
-    REQUIRE(std::abs((double)p.y - 1.0) < 1e-12);
-
+TEST_CASE("Point supports angle and distance helpers", "[Geometry][Point]") {
     REQUIRE(std::abs((double)OY::GEO::angle(IP(1, 0), IP(0, 1)) -
                      std::acos(-1.0) / 2) < 1e-12);
     REQUIRE(std::abs((double)OY::GEO::angle(IP(1, 0), IP(0, 0), IP(0, 1)) -

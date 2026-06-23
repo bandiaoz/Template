@@ -3,8 +3,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <istream>
-#include <ostream>
 #include <type_traits>
 
 namespace OY {
@@ -182,19 +180,6 @@ namespace OY {
          */
         template <typename Tp, typename Up, typename Vp>
         real_type angle(const Point<Tp> &a, const Point<Up> &b, const Point<Vp> &c) { return angle(a - b, c - b); }
-
-        /**
-         * @brief 两条直线 ab 与 cd 的交点；调用前需保证两直线不平行。
-         */
-        template <typename Ap, typename Bp, typename Cp, typename Dp>
-        Point<real_type> line_intersection(const Point<Ap> &a, const Point<Bp> &b,
-                                           const Point<Cp> &c, const Point<Dp> &d) {
-            auto u = b - a;
-            auto v = d - c;
-            real_type t = (real_type)cross(c - a, v) / (real_type)cross(u, v);
-            return Point<real_type>((real_type)a.x + (real_type)u.x * t,
-                                    (real_type)a.y + (real_type)u.y * t);
-        }
     }
 
     /**

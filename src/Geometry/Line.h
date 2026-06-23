@@ -150,7 +150,13 @@ namespace OY {
              * @brief 两条直线的交点；调用前需保证两直线不平行。
              */
             template <typename Up>
-            Point<real_type> line_intersection(const Line<Up> &rhs) const { return GEO::line_intersection(s, t, rhs.s, rhs.t); }
+            Point<real_type> line_intersection(const Line<Up> &rhs) const {
+                auto u = vec();
+                auto v = rhs.vec();
+                real_type k = (real_type)cross(rhs.s - s, v) / (real_type)cross(u, v);
+                return Point<real_type>((real_type)s.x + (real_type)u.x * k,
+                                        (real_type)s.y + (real_type)u.y * k);
+            }
 
             /**
              * @brief 判断两条闭线段是否相交；只需要布尔结果时用这个。
