@@ -1,20 +1,61 @@
 #include <bits/stdc++.h>
+#include "src/String/Suffix/SAM.h"
 #include "src/String/Suffix/SuffixArray.h"
-#include "src/DataStruct/RMQ/SparseTable.h"
+// #include "src/DataStruct/RMQ/SparseTable.h"
 
 /*
 [P2852 [USACO06DEC] Milk Patterns G](https://www.luogu.com.cn/problem/P2852)
-[status](https://www.luogu.com.cn/record/192167141)
+[status(SA)](https://www.luogu.com.cn/record/192167141)
+[status(SAM)](https://www.luogu.com.cn/record/222209783)
 */
 /**
  * 本题为经典子串问题，给定子串出现次数 $k(k >= 2)$，在至少出现 $k$ 次的子串里找最长，可以有多种做法
  * 
- * 可以使用后缀数组解决，相同子串对应的后缀排序后一定是连续的，所以可以维护长度为 $k$ 的区间，单调队列维护这个区间对应后缀的 lcp
+ * SA：相同子串对应的后缀排序后一定是连续的，所以可以维护长度为 $k$ 的区间，单调队列维护这个区间对应后缀的 lcp
+ * SAM：
  * 
  * 可以用字符串哈希解决
  * 可以使用后缀树解决
- * 可以使用后缀自动机解决
  */
+
+struct MapNode {
+    std::map<uint32_t, uint32_t> m_child;
+    void set_child(uint32_t index, uint32_t child) { m_child[index] = child; }
+    uint32_t get_child(uint32_t index) const { return m_child.contains(index) ? m_child.at(index) : 0; }
+    void copy_children(const MapNode &rhs) { m_child = rhs.m_child; }
+};
+struct Node_cnt : MapNode {
+    uint32_t m_cnt{};
+};
+
+void solve_sam() {
+    int n, k;
+    std::cin >> n >> k;
+
+    OY::SAM::Automaton<Node_cnt> sam;
+    sam.reserve(n);
+    for (int i = 0; i < n; i++) {
+        int x;
+        std::cin >> x;
+        sam.push_back(x);
+        sam.get_node(sam.query_node_index(i))->m_cnt++;
+    }
+
+    sam.prepare();
+
+    uint32_t ans = 0;
+    sam.do_for_failing_nodes([&](uint32_t u) {
+        auto node = sam.get_node(u);
+        if (node->m_cnt >= k) {
+            ans = std::max(ans, node->m_length);
+        }
+        if (auto f = sam.query_fail(u); ~f) {
+            sam.get_node(f)->m_cnt += node->m_cnt;
+        }
+    });
+
+    std::cout << ans << "\n";
+}
 
 void solve_sa() {
     int n, k;
@@ -57,7 +98,8 @@ int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    solve_sa();
+    solve_sam();
+    // solve_sa();
 
     return 0;
 }

@@ -37,10 +37,10 @@ $$\sum_{g = 1}^n \sum_{d = 1}^{\left\lfloor \frac{n}{g} \right\rfloor} \mu(d) \s
 $$\sum_{g = 1}^n \sum_{d = 1}^{\left\lfloor \frac{n}{g} \right\rfloor} \mu(d) \sigma(g) \left\lfloor \frac{n}{t} \right\rfloor \left\lfloor \frac{m}{t} \right\rfloor$$
 
 
-$$\sum_{t = 1}^n \left\lfloor \frac{n}{t} \right\rfloor \left\lfloor \frac{m}{t} \right\rfloor \sum_{g \mid t} \mu(\frac{t}{g}) \sigma(g)$$
+$$\sum_{t = 1}^n \left\lfloor \frac{n}{t} \right\rfloor \left\lfloor \frac{m}{t} \right\rfloor \sum_{g \mid t} \mu\left(\frac{t}{g}\right) \sigma(g)$$
 
 
-后面部分可以预处理，$$f(t) = \sum_{g \mid t} \mu(\frac{t}{g}) \sigma(g)$$
+后面部分可以预处理，$$f(t) = \sum_{g \mid t} \mu\left(\frac{t}{g}\right) \sigma(g)$$
 
 再看限制 $$\sigma(\gcd(i, j)) \leq a$$，则只有 $$\sigma(g) \leq a$$ 的 $$f(t)$$ 有贡献，于是可以离线处理
 */

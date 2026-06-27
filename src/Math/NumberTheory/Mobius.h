@@ -26,7 +26,7 @@
  *
  *       除数函数：$$\sigma_k(n) = \sum_{d \mid n} d^k$$，通常地，将 $$\sigma_0(n)$$ 记为 $$d(n)$$ 或者 $$\tau(n)$$，$$\sigma_1(n)$$ 记为 $$\sigma(n)$$，并且有 $$\sigma_k = \mathrm{id}_k \ast 1$$
  *
- *       欧拉函数：$$\varphi(n) = \sum_{i = 1}^n [\gcd(i, n) = 1] = \mu \ast id$$，并且有 $$\varphi \ast 1 = \mathrm{id}$$
+ *       欧拉函数：$$\varphi(n) = \sum_{i = 1}^n [\gcd(i, n) = 1] = \mu \ast id$$，并且有 $$\varphi \ast 1 = \mathrm{id}$$，以及 $$\mu^2(n) = \sum_{i^2 \mid n} \mu(i)$$，故 $$\sum_{i = 1}^n \mu^2(i) = \sum_{i = 1}^n \mu(i) \left\lfloor \frac{n}{i^2} \right\rfloor$$
  *
  *       莫比乌斯函数：$$\mu(n)$$，$$\mu \ast 1 = \varepsilon$$
  *

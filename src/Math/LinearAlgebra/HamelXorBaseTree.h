@@ -13,6 +13,7 @@
  *          auto mapping = [&](size_type u) { return a[u]; };
  * @example OY::StaticHamelXorBaseTree64<MAX_WIDTH> hxb(&tree, mapping);
  * @note MAX_WIDTH 最大宽度，插入的数最多有 MAX_WIDTH 位，即 [0, 2^MAX_WIDTH)
+ * @note 构造的复杂度为 $$O(n\cdot\omega^2)$$ ，此处 $$\omega$$ 指线性基的维数。
  * @note 可以在 $$O(\omega)$$ 的时间内查询树上从上到下链的线性基，可以在 $$O(\omega^2)$$ 的时间内查询树上任意路径的线性基
  * 
  */

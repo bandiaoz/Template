@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "src/Math/NumberTheory/EulerSieve.h"
-#include "src/Math/NumberTheory/MOBIUS.h"
+#include "src/Math/NumberTheory/Mobius.h"
 #include "src/Math/Modular/StaticModInt32.h"
 #include "src/Math/NumberTheory/SqrtDecomposition.h"
 
