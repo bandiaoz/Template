@@ -84,7 +84,7 @@
  *
  *       2. 若 $$f(n) = \sum_{n \mid d} g(d)$$，则有 $$g(n) = \sum_{n \mid d} \mu(\frac{d}{n}) f(d)$$
  *
- * @note 记 $$d(x)$$ 为 $$x$$ 的因数个数，有公式 $$d(ij) = \sum_{x \mid i} \sum_{y \mid j} [(x, y) = 1]$$
+ * @note 记 $$d(x)$$ 为 $$x$$ 的因数个数，有公式 $$d(ij) = \sum_{x \mid i} \sum_{y \mid j} [(x, y) = 1]$$，类似地，有 $$\sigma(ijk) = \sum_{x \mid i} \sum_{y \mid j} \sum_{z \mid k} [(x, y) = 1] [(y, z) = 1] [(x, z) = 1]$$
  */
 namespace OY {
     namespace MOBIUS {
@@ -233,6 +233,14 @@ namespace OY {
                 return res;
             }
         };
+        /**
+         * @brief 狄利克雷前缀和，计算数论函数 $$f(i) = \sum_{d \mid i} a_d$$ 
+         * @note 复杂度为 $$O(n \log \log n)$$
+         * @param range 范围
+         * @param array 数组
+         * @param find_kth_prime 找到第 `k` 个质数，需要预处理出大于 `range` 的质数
+         * @param op 操作
+         */
         template <typename Tp, typename FindKthPrime, typename Operation = CompoundPlus>
         inline void partial_sum_Dirichlet_divisor(size_type range, Tp *array, FindKthPrime &&find_kth_prime, Operation &&op = Operation()) {
             for (size_type i = 0;; i++) {
@@ -249,6 +257,14 @@ namespace OY {
                 for (size_type j = range / p, k = j * p; k; j--, k -= p) op(array[k], array[j]);
             }
         }
+        /**
+         * @brief 狄利克雷后缀和，计算数论函数 $$f(i) = \sum_{i \mid d} a_d$$ 
+         * @note 复杂度为 $$O(n \log \log n)$$
+         * @param range 范围
+         * @param array 数组
+         * @param find_kth_prime 找到第 `k` 个质数，需要预处理出大于 `range` 的质数
+         * @param op 操作
+         */
         template <typename Tp, typename FindKthPrime, typename Operation = CompoundPlus>
         inline void partial_sum_Dirichlet_multiple(size_type range, Tp *array, FindKthPrime &&find_kth_prime, Operation &&op = Operation()) {
             for (size_type i = 0;; i++) {

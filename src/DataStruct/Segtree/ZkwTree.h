@@ -149,7 +149,7 @@ namespace OY {
                 size_type m_index;
                 node *m_ptr;
             };
-        private:
+        // private:
             mutable std::vector<node> m_sub;
             size_type m_size, m_capacity, m_depth;
             static void _apply(node *p, const modify_type &modify, size_type len) { node::map(modify, p, len), node::com(modify, p); }

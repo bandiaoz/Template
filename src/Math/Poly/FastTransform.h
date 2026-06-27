@@ -7,11 +7,21 @@
 
 /**
  * @brief 快速卷积变换
- * @note 用于解决形如 $$c_k = \sum_{op(i,j)=k}a_i\cdot b_j$$ 的卷积问题
- * 
- * @note 其中 $$op$$ 是一种二元运算，例如按位与、按位或、按位异或、最大值、最小值、gcd、lcm 等
+ * @note 用于解决形如 $$c_k = \sum_{op(i,j)=k}a_i\cdot b_j$$ 的卷积问题，其中 $$op$$ 是一种二元运算，例如按位与、按位或、按位异或、最大值、最小值、gcd、lcm 等
+ *
+ * @note OY::FASTTRANS::fast_xxx_transform<Forward>(Iterator first, Iterator last);
+ *       Forward 为 true 表示从点值域变换为卷积域，为 false 表示从卷积域变换为点值域
  */
 namespace OY {
+    /**
+     * 原理概述：将按某种二元运算定义的卷积，转化为适配该运算的线性变换（如 Hadamard、子集/超集 zeta、
+     *  以及在约数-倍数偏序上的 Dirichlet zeta）。做两次变换（正变换与逆变换）之间即可逐点相乘，从而把卷积从“卷积域”转到“点值域”。不同运算对应不同的可逆线性变换。
+     * 常见复杂度：
+     *  XOR 变换（Hadamard/FWT-XOR）：O(n log n)
+     *  OR / AND 变换（子集/超集 FWT）：O(n log n)
+     *  max / min 变换（前缀和或后缀和形式）：O(n)
+     *  gcd / lcm 变换（在约数-倍数偏序上的 zeta，按质数枚举）：O(n log log n)
+     */
     namespace FASTTRANS {
         using size_type = uint32_t;
         struct DivideBy2_naive {
@@ -49,6 +59,15 @@ namespace OY {
                             *it = div_by2(x + y), *it2 = div_by2(x - y);
                     }
         }
+        /**
+         * @brief 按位或变换
+         *
+         * @note 正变换：$$A_i = \sum_{j \text{ or } i = i} A_j$$，
+         *
+         * @note 逆变换：
+         *
+         * @note 复杂度：$$O(n \log n)$$
+         */
         template <bool Forward, typename Iterator>
         void fast_bitor_transform(Iterator first, Iterator last) {
             const size_type length = last - first;
